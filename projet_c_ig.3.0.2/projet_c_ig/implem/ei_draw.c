@@ -99,33 +99,33 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
 	ei_size_t size = hw_surface_get_size(surface);
 	int width = size.width;
-	int delta_x = point_deux.x - point_un.x;
-	int delta_y = point_deux.y - point_un.y;
-        int x = point_un.x;
-        int y = point_un.y;
-        int E = 2*delta_y - delta_x;
+	int x0 = point_un.x;
+	int y0 = point_un.y;
+	int x1 = point_deux.x;
+	int y1 = point_deux.y;
+	//Bresenham
+	int dx = x1-x0;
+	int dy = y1-y0;
+	int e =0;
+        //int E = 2*delta_y - delta_x;
 
 	//if only on point in the array
-        if((point_un.x == point_deux.x) && (point_un.y == point_deux.y)) {
-        	u_int32_t* pixel = surface_buffer + width*y + x;
+        if((x0 == x1) && (y0 == y1)) {
+        	u_int32_t* pixel = surface_buffer + width*y0 + x0;
 		draw_pixel(pixel, surface, color);
 		return;
         }
 
-        while(x < point_deux.x){
-		u_int32_t* pixel = surface_buffer + width*y + x;
-        	if (E > 0)
+        while(x0 < x1){
+		u_int32_t* pixel = surface_buffer + width*y0 + x0; //SZEDRFGHJU
+		draw_pixel(pixel, surface, color);
+		x0+=1;
+		e+=dy;
+        	if (2*e > dx)
         	{
-        		draw_pixel(pixel, surface, color);
-        		y++;
-        		E = E + 2*delta_y - 2*delta_x;
+        		y0+=1;
+        		e-=dx;
         	}
-        	else
-        	{
-        		draw_pixel(pixel, surface, color);
-        		E = E + 2*delta_y;
-        	}
-        	x++;
         }
 
 }

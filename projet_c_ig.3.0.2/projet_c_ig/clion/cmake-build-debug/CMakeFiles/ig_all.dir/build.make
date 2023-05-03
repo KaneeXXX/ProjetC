@@ -62,10 +62,10 @@ RM = /opt/clion-2021.1.1/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
+CMAKE_SOURCE_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
+CMAKE_BINARY_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
 
 # Utility rule file for ig_all.
 
@@ -86,6 +86,6 @@ CMakeFiles/ig_all.dir/clean:
 .PHONY : CMakeFiles/ig_all.dir/clean
 
 CMakeFiles/ig_all.dir/depend:
-	cd /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles/ig_all.dir/DependInfo.cmake --color=$(COLOR)
+	cd /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles/ig_all.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ig_all.dir/depend
 

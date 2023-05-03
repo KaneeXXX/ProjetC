@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
 	ei_fill(main_window, &color, NULL);
 
 	//test drawline puis polyline
-	ei_point_t p1 = {1,1};
-	ei_point_t p2 = {100,800};
+	ei_point_t p1 = {50,50};
+	ei_point_t p2 = {50,50};
 	static const ei_color_t	color_line = { 0x00, 0x00, 0x00, 0xff }; //black
 	draw_line(main_window, p1, p2, color_line);
 

@@ -67,18 +67,18 @@ RM = /opt/clion-2021.1.1/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
+CMAKE_SOURCE_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
+CMAKE_BINARY_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/opt/clion-2021.1.1/bin/cmake/linux/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/opt/clion-2021.1.1/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -99,9 +99,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -156,19 +156,6 @@ doc/fast:
 .PHONY : doc/fast
 
 #=============================================================================
-# Target rules for targets named external_class
-
-# Build rule for target.
-external_class: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 external_class
-.PHONY : external_class
-
-# fast build rule for target.
-external_class/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/build
-.PHONY : external_class/fast
-
-#=============================================================================
 # Target rules for targets named lines
 
 # Build rule for target.
@@ -193,58 +180,6 @@ ei: cmake_check_build_system
 ei/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/build
 .PHONY : ei/fast
-
-#=============================================================================
-# Target rules for targets named minimal
-
-# Build rule for target.
-minimal: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 minimal
-.PHONY : minimal
-
-# fast build rule for target.
-minimal/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/build
-.PHONY : minimal/fast
-
-#=============================================================================
-# Target rules for targets named hello_world
-
-# Build rule for target.
-hello_world: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hello_world
-.PHONY : hello_world
-
-# fast build rule for target.
-hello_world/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/build
-.PHONY : hello_world/fast
-
-#=============================================================================
-# Target rules for targets named test_fill
-
-# Build rule for target.
-test_fill: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_fill
-.PHONY : test_fill
-
-# fast build rule for target.
-test_fill/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fill.dir/build.make CMakeFiles/test_fill.dir/build
-.PHONY : test_fill/fast
-
-#=============================================================================
-# Target rules for targets named two048
-
-# Build rule for target.
-two048: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 two048
-.PHONY : two048
-
-# fast build rule for target.
-two048/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/build
-.PHONY : two048/fast
 
 #=============================================================================
 # Target rules for targets named frame
@@ -273,6 +208,45 @@ button/fast:
 .PHONY : button/fast
 
 #=============================================================================
+# Target rules for targets named minimal
+
+# Build rule for target.
+minimal: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 minimal
+.PHONY : minimal
+
+# fast build rule for target.
+minimal/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/build
+.PHONY : minimal/fast
+
+#=============================================================================
+# Target rules for targets named hello_world
+
+# Build rule for target.
+hello_world: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hello_world
+.PHONY : hello_world
+
+# fast build rule for target.
+hello_world/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/build
+.PHONY : hello_world/fast
+
+#=============================================================================
+# Target rules for targets named two048
+
+# Build rule for target.
+two048: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 two048
+.PHONY : two048
+
+# fast build rule for target.
+two048/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/build
+.PHONY : two048/fast
+
+#=============================================================================
 # Target rules for targets named puzzle
 
 # Build rule for target.
@@ -298,302 +272,288 @@ minesweeper/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/build
 .PHONY : minesweeper/fast
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
+#=============================================================================
+# Target rules for targets named external_class
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o
+# Build rule for target.
+external_class: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 external_class
+.PHONY : external_class
 
-# target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
+# fast build rule for target.
+external_class/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/build
+.PHONY : external_class/fast
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i
-
-# target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
-
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
-
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s
-
-# target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
-
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
-
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ei.dir/build.make CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/button.dir/build.make CMakeFiles/button.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/external_class.dir/build.make CMakeFiles/external_class.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frame.dir/build.make CMakeFiles/frame.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lines.dir/build.make CMakeFiles/lines.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minesweeper.dir/build.make CMakeFiles/minesweeper.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minimal.dir/build.make CMakeFiles/minimal.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fill.dir/build.make CMakeFiles/test_fill.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fill.dir/build.make CMakeFiles/test_fill.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fill.dir/build.make CMakeFiles/test_fill.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/puzzle.dir/build.make CMakeFiles/puzzle.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.c.s
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o
 
 # target to build an object file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.o
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i
 
 # target to preprocess a source file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.i
 
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s: user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s: user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
 
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s
 
 # target to generate assembly for a file
-user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
-.PHONY : user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
+user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/two048.dir/build.make CMakeFiles/two048.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
+.PHONY : user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.c.s
 
 # Help Target
 help:
@@ -614,41 +574,37 @@ help:
 	@echo "... minesweeper"
 	@echo "... minimal"
 	@echo "... puzzle"
-	@echo "... test_fill"
 	@echo "... two048"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/test_fill.s"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i"
-	@echo "... user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/button.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/external_class.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/frame.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/hello_world.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/lines.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minesweeper.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/minimal.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/puzzle.s"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.o"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.i"
+	@echo "... user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/tests/two048.s"
 .PHONY : help
 
 

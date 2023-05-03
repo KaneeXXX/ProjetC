@@ -62,10 +62,10 @@ RM = /opt/clion-2021.1.1/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
+CMAKE_SOURCE_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
+CMAKE_BINARY_DIR = /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/ei.dir/depend.make
@@ -76,30 +76,30 @@ include CMakeFiles/ei.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/ei.dir/flags.make
 
-CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o: CMakeFiles/ei.dir/flags.make
-CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o: /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o -c /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
+CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o: CMakeFiles/ei.dir/flags.make
+CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o: /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o -c /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
 
-CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c > CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
+CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c > CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.i
 
-CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c -o CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
+CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c -o CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.s
 
 # Object files for target ei
 ei_OBJECTS = \
-"CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o"
+"CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o"
 
 # External object files for target ei
 ei_EXTERNAL_OBJECTS =
 
-libei.a: CMakeFiles/ei.dir/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
+libei.a: CMakeFiles/ei.dir/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c.o
 libei.a: CMakeFiles/ei.dir/build.make
 libei.a: CMakeFiles/ei.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libei.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libei.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/ei.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ei.dir/link.txt --verbose=$(VERBOSE)
 
@@ -113,6 +113,6 @@ CMakeFiles/ei.dir/clean:
 .PHONY : CMakeFiles/ei.dir/clean
 
 CMakeFiles/ei.dir/depend:
-	cd /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles/ei.dir/DependInfo.cmake --color=$(COLOR)
+	cd /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/CMakeFiles/ei.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ei.dir/depend
 

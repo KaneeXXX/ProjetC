@@ -1,4 +1,4 @@
-# Install script for directory: /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
+# Install script for directory: /user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

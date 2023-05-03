@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api -I/usr/include/SDL2
+C_INCLUDES = -I/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api -I/usr/include/SDL2
 
 C_FLAGS =  -Wall -Wextra -Wno-unknown-pragmas -Wno-unused-parameter -Werror -g
 

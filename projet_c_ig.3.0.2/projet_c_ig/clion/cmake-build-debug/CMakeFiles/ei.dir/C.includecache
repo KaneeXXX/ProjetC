@@ -6,37 +6,37 @@
 
 #IncludeRegexTransform: 
 
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_draw.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_draw.h
 stdint.h
 -
 ei_types.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
 hw_interface.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/hw_interface.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/hw_interface.h
 
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
 SDL_keycode.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/SDL_keycode.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/SDL_keycode.h
 stdint.h
 -
 stdbool.h
 -
 
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/hw_interface.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/hw_interface.h
 stdint.h
 -
 ei_types.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/api/ei_types.h
 
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.c
 stdint.h
 -
 ei_types.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_types.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_types.h
 hw_interface.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/hw_interface.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/hw_interface.h
 ei_draw.h
-/user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.h
+/user/5/gregoije/ProjetC/PROJET_C/projetc/projet_c_ig.3.0.2/projet_c_ig/implem/ei_draw.h
 
 /usr/include/SDL2/SDL_config.h
 SDL2/_real_SDL_config.h
