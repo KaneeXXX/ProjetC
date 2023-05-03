@@ -101,7 +101,7 @@ target_link_libraries(frame		ei ${PLATFORM_LIB_FLAGS})
 
 # target button
 
-add_executable(button			${TEST_DIR}/button.c)
+add_executable(button			${TEST_DIR}/button.c implem/ei_draw.c)
 target_link_libraries(button		ei ${PLATFORM_LIB_FLAGS})
 
 # target hello_world

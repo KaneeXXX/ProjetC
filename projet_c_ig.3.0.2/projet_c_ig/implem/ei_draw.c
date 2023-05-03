@@ -7,7 +7,10 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
     hw_surface_lock(surface); 
 
     //Returns a pointer to the address of the pixel at coordinated (0, 0) of the surface.
-    uint8_t* surface_buffer = hw_surface_get_buffer(surface); 
+    uint8_t* surface_buffer = hw_surface_get_buffer(surface);   //*surface_buffer = adresse pixel coordinate (0,0)
+
+    //get size if the surface
+    ei_size_t size = hw_surface_get_size(surface);
 
     //test if color is NULL
     if (color == NULL){
