@@ -11,6 +11,8 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 
     //get size if the surface
     ei_size_t size = hw_surface_get_size(surface);
+    int width = size.width;
+    int height = size.height;
 
     //test if color is NULL
     if (color == NULL){
