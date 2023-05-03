@@ -1,5 +1,17 @@
-#include "ei_draw.h"
+/**
+ *  @file	ei_draw.c
+ *  @brief	Graphical primitives to draw lines, polygons, text, and operation of drawing
+ *		surfaces.
+ *
+ *  \author
+ *  Created by Notre Groupe on 03.05.23.
+ *
+ */
+
+#include <stdint.h>
+#include "ei_types.h"
 #include "hw_interface.h"
+#include "ei_draw.h"
 
 void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* clipper) {
 

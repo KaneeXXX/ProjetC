@@ -41,7 +41,7 @@ struct ei_impl_placer_params_t;
 
 /**
  * \brief	Tells the placer to recompute the geometry of a widget.
- *		The widget must have been previsouly placed by a call to \ref ei_place.
+ *		The widget must have been previously placed by a call to \ref ei_place.
  *		Geometry re-computation is necessary for example when the text label of
  *		a widget has changed, and thus the widget "natural" size has changed.
  *
