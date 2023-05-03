@@ -76,7 +76,7 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
     }
 }
 
-void draw__pixel(int x, int y, ei_color_t color){
+void draw_pixel(int x, int y, ei_color_t color){
 
 }
 
