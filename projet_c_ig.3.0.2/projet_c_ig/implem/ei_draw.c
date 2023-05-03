@@ -76,7 +76,7 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
     }
 }
 
-void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t	color, const ei_rect_t*	clipper) {
+void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t color, const ei_rect_t*	clipper) {
 
 }
 

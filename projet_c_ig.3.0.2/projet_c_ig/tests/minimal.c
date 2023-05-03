@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	uint32_t*			pixel_ptr;
 	int				i, ir, ig, ib, ia;
 
-	// Init acces to hardware.
+	// Init access to hardware.
 	hw_init();
 
 	// Create the main window.
@@ -38,6 +38,17 @@ int main(int argc, char* argv[])
 
 	for (i = 0; i < (main_window_size.width * (main_window_size.height/2)); i++)
 		*pixel_ptr++ = *((uint32_t*)red);
+
+	// unlock, update screen.
+	hw_surface_unlock(main_window);
+	hw_surface_update_rects(main_window, NULL);
+
+	// Lock the surface for drawing,
+	//our own test for ei_fill
+	hw_surface_lock(main_window);
+
+	static const ei_color_t	color	= { 0xff, 0xff, 0xff, 0xff }; //blanc
+	ei_fill(main_window, &color, NULL);
 
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
