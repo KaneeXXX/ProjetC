@@ -13,15 +13,18 @@
 #include "hw_interface.h"
 #include "ei_draw.h"
 
+//sans clipper ici
+//lock before ei_fill call
+//unlock before ei_fill call
+//Requests that a list of rectangular regions of the root surface be updated on screen. (NULL -> update all the screen)
+//hw_surface_update_rects(surface, NULL);
 void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* clipper) {
 
-    //lock the surface.
-    hw_surface_lock(surface); 
-
     //Returns a pointer to the address of the pixel at coordinated (0, 0) of the surface.
-    uint8_t* surface_buffer = hw_surface_get_buffer(surface);   //*surface_buffer = adresse pixel coordinate (0,0)
+    uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);   //surface_buffer = address pixel coordinate (0,0)
+    //On a déclaré un pointeur sur 32bit (4 octets) quand on incrémente surface_buffer de 1 on se déplace de 4 octets dans la mémoire (d'un pixel à l'autre)
 
-    //get size if the surface
+    //get size of the surface
     ei_size_t size = hw_surface_get_size(surface);
     int width = size.width;
     int height = size.height;
@@ -71,12 +74,10 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
             *surface_buffer++ = pixel_value; //<=> *surface_buffer=pixel_value; surface_buffer++
         }
     }
+}
 
-    //unlock the surface
-    hw_surface_unlock(surface);
+void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t	color, const ei_rect_t*	clipper) {
 
-    //Requests that a list of rectangular regions of the root surface be updated on screen. (NULL -> update all the screen)
-    hw_surface_update_rects(surface, NULL);
 }
 
 
