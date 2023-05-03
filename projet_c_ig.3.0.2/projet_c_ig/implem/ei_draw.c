@@ -84,7 +84,7 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 	//point_array[0] donne le premier point
 
 	for(uint32_t i = 0; i <= point_array_size - 1; i++){
-		
+
 	}
 }
 
