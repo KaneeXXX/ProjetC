@@ -118,7 +118,7 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
 
-
+void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux, ei_color_t color);
 
 
 #endif

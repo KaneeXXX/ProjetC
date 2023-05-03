@@ -76,15 +76,75 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
     }
 }
 
-void draw_pixel(int x, int y, ei_color_t color){
+void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color){
+
+	//get order of colors in pixel
+	int ir, ig, ib, ia;
+	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
+
+	uint32_t pixel_value;
+	//déclare pointeur vers pixel_value
+	uint8_t* channel_ptr = (uint8_t*) &pixel_value;
+
+	channel_ptr[ir] = color.red;
+	channel_ptr[ig] = color.green;
+	channel_ptr[ib] = color.blue;
+	channel_ptr[ia] = color.alpha;
+
+	*addr = pixel_value;
+}
+
+void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux, ei_color_t color){
+
+	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
+	ei_size_t size = hw_surface_get_size(surface);
+	int width = size.width;
+	int delta_x = point_deux.x - point_un.x;
+	int delta_y = point_deux.y - point_un.y;
+        int x = point_un.x;
+        int y = point_un.y;
+        int E = 2*delta_y - delta_x;
+
+	//if only on point in the array
+        if((point_un.x == point_deux.x) && (point_un.y == point_deux.y)) {
+        	u_int32_t* pixel = surface_buffer + width*y + x;
+		draw_pixel(pixel, surface, color);
+		return;
+        }
+
+        while(x < point_deux.x){
+		u_int32_t* pixel = surface_buffer + width*y + x;
+        	if (E > 0)
+        	{
+        		draw_pixel(pixel, surface, color);
+        		y++;
+        		E = E + 2*delta_y - 2*delta_x;
+        	}
+        	else
+        	{
+        		draw_pixel(pixel, surface, color);
+        		E = E + 2*delta_y;
+        	}
+        	x++;
+        }
 
 }
 
 void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
 	//point_array[0] donne le premier point
 
-	for(uint32_t i = 0; i <= point_array_size - 1; i++){
+	//if empty array
+	if (point_array_size == 0){
+		return;
+	}
 
+	//1 point in the array
+	if(point_array_size == 1){
+		draw_line(surface, point_array[0], point_array[0], color);
+	}
+
+	for(uint32_t i = 0; i <= point_array_size - 2; i++){
+		draw_line(surface, point_array[i], point_array[i+1], color);
 	}
 }
 

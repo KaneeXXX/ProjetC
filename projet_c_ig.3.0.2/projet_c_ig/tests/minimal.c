@@ -54,6 +54,14 @@ int main(int argc, char* argv[])
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
 
+	//test drawline puis polyline
+	ei_point_t p1 = {1,1};
+	ei_point_t p2 = {50,50};
+	static const ei_color_t	color_line = { 0x00, 0x00, 0x00, 0xff }; //black
+	draw_line(main_window, p1, p2, color_line);
+
+	//end of our own test
+
 	// Wait for a key press.
 	event.type = ei_ev_none;
 	while ((event.type != ei_ev_close) && (event.type != ei_ev_keydown))
