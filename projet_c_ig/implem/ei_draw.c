@@ -246,15 +246,12 @@ struct lc
     struct lc *suiv; ///< suivant
 };
 
-void ei_draw_polygon (ei_surface_t surface, ei_point_t*        point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
-
-}
 
 ei_point_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 	int max = point_array[0].y;
 	int min = point_array[0].y;
 
-	for (int i = 0; i < point_array_size -1; i++ ){
+	for (size_t i = 0; i < point_array_size -1; i++ ){
 		if (point_array[i].y > max){
 			max = point_array[i].y;
 		}
@@ -265,6 +262,16 @@ ei_point_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 	}
 	ei_point_t res = {min, max};
 	return res;
+}
+
+void ei_draw_polygon (ei_surface_t surface, ei_point_t*        point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
+
+	ei_point_t min_max = min_max_sur_y(point_array, point_array_size);
+
+	// tableau de pointeurs de type struct lc * initialisés à NULL de taille ymax -ymin +1
+	struct lc** tab_tc = calloc((min_max.y - min_max.x +1 ), sizeof(struct lc*));
+	
+
 }
 
 
