@@ -123,6 +123,7 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 		return;
 	}
 
+	//vertical
 	if (x0 == x1) {
 		if (y1 < y0) {
 			swap(&x0, &x1);
@@ -135,6 +136,7 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 		}
 	}
 
+	//horizontal
 	if (y0 == y1) {
 		if (x1 < x0) {
 			swap(&x1, &x0);
@@ -147,6 +149,7 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 		}
 	}
 
+
 	if (((x0 < x1) && (y0 < y1)) || ((x1 < x0) && (y1 < y0))) {
 		if (x1 < x0 && y1 < y0) {
 			//inverser le role de (x0,y0) et (x1,y1)
@@ -154,9 +157,9 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 			swap(&y0, &y1);
 
 		}
+		dx=abs(dx);
+		dy=abs(dy);
 		if (abs(dx) > abs(dy)) {
-			dx=abs(dx);
-			dy=abs(dy);
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -168,8 +171,6 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 				}
 			}
 		} else {
-			dx=abs(dx);
-			dy=abs(dy);
 			while (y0 < y1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -187,11 +188,10 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 	if (((x1 < x0) && (y0 < y1)) || ((x0 < x1) && (y1 < y0))) {
 		if (x1 < x0 && y0 < y1) {
 			//inverser le role de (x0,y0) et (x1,y1)
-			//inverser le role de (x0,y0) et (x1,y1)
 			swap(&x0, &x1);
 			swap(&y0, &y1);
 		}
-		dy = abs(y0 - y1); //dy négatif dans ce cas sinon
+		dy = abs(dy); //dy négatif dans ce cas sinon
 		if (abs(dx) > abs(dy)) {
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
