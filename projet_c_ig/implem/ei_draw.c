@@ -269,12 +269,3 @@ ei_point_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 
 
 
-
-
-
-
-
-//
-// Created by kanee on 04/05/2023.
-//
-
