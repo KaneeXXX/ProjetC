@@ -142,7 +142,7 @@ int main(int argc, char** argv)
 	test_octogone	(main_window, clipper_ptr);
 	test_square	(main_window, clipper_ptr);
 	test_dot	(main_window, clipper_ptr);
-	
+
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);

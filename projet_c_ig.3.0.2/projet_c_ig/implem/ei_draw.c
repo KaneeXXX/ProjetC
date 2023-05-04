@@ -94,40 +94,128 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color){
 	*addr = pixel_value;
 }
 
-void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux, ei_color_t color){
+void swap(int *a, int *b) {
+	int temp = *a;
+	*a=*b;
+	*b=temp;
+}
 
-	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
+void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux, ei_color_t color) {
+
+	uint32_t *surface_buffer = (uint32_t *) hw_surface_get_buffer(surface);
 	ei_size_t size = hw_surface_get_size(surface);
 	int width = size.width;
+
 	int x0 = point_un.x;
 	int y0 = point_un.y;
 	int x1 = point_deux.x;
 	int y1 = point_deux.y;
-	//Bresenham
-	int dx = x1-x0;
-	int dy = y1-y0;
-	int e =0;
-        //int E = 2*delta_y - delta_x;
+
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+
+	int E = 0;
 
 	//if only on point in the array
-        if((x0 == x1) && (y0 == y1)) {
-        	u_int32_t* pixel = surface_buffer + width*y0 + x0;
+	if ((point_un.x == point_deux.x) && (point_un.y == point_deux.y)) {
+		u_int32_t *pixel = surface_buffer + width * y0 + x0;
 		draw_pixel(pixel, surface, color);
 		return;
-        }
+	}
 
-        while(x0 < x1){
-		u_int32_t* pixel = surface_buffer + width*y0 + x0; //SZEDRFGHJU
-		draw_pixel(pixel, surface, color);
-		x0+=1;
-		e+=dy;
-        	if (2*e > dx)
-        	{
-        		y0+=1;
-        		e-=dx;
-        	}
-        }
+	if (x0 == x1) {
+		if (y1 < y0) {
+			swap(&x0, &x1);
+			swap(&y0, &y1);
+		}
+		while (y0 < y1) {
+			u_int32_t *pixel = surface_buffer + width * y0 + x0;
+			draw_pixel(pixel, surface, color);
+			y0++;
+		}
+	}
 
+	if (y0 == y1) {
+		if (x1 < x0) {
+			swap(&x1, &x0);
+			swap(&y0, &y1);
+		}
+		while (x0 < x1) {
+			u_int32_t *pixel = surface_buffer + width * y0 + x0;
+			draw_pixel(pixel, surface, color);
+			x0++;
+		}
+	}
+
+	if (((x0 < x1) && (y0 < y1)) || ((x1 < x0) && (y1 < y0))) {
+		if (x1 < x0 && y1 < y0) {
+			//inverser le role de (x0,y0) et (x1,y1)
+			swap(&x0, &x1);
+			swap(&y0, &y1);
+
+		}
+		if (abs(dx) > abs(dy)) {
+			dx=abs(dx);
+			dy=abs(dy);
+			while (x0 < x1) {
+				u_int32_t *pixel = surface_buffer + width * y0 + x0;
+				draw_pixel(pixel, surface, color);
+				x0 += 1;
+				E += dy;
+				if (2 * E > dx) {
+					y0 += 1;
+					E -= dx;
+				}
+			}
+		} else {
+			dx=abs(dx);
+			dy=abs(dy);
+			while (y0 < y1) {
+				u_int32_t *pixel = surface_buffer + width * y0 + x0;
+				draw_pixel(pixel, surface, color);
+				y0 += 1;
+				E += dx;
+				if (2 * E > dy) {
+					x0 += 1;
+					E -= dy;
+				}
+			}
+		}
+
+	}
+
+	if (((x1 < x0) && (y0 < y1)) || ((x0 < x1) && (y1 < y0))) {
+		if (x1 < x0 && y0 < y1) {
+			//inverser le role de (x0,y0) et (x1,y1)
+			//inverser le role de (x0,y0) et (x1,y1)
+			swap(&x0, &x1);
+			swap(&y0, &y1);
+		}
+		dy = abs(y0 - y1); //dy négatif dans ce cas sinon
+		if (abs(dx) > abs(dy)) {
+			while (x0 < x1) {
+				u_int32_t *pixel = surface_buffer + width * y0 + x0;
+				draw_pixel(pixel, surface, color);
+				x0 += 1;
+				E += dy;
+				if (2 * E > dx) {
+					y0 -= 1;
+					E -= abs(dx);
+				}
+			}
+		} else {
+			while (y0 > y1) {
+				u_int32_t *pixel = surface_buffer + width * y0 + x0;
+				draw_pixel(pixel, surface, color);
+				y0 -= 1;
+				E += abs(dx);
+				if (2 * E > abs(dy)) {
+					x0 += 1;
+					E -= abs(dy);
+				}
+			}
+		}
+	}
 }
 
 void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
