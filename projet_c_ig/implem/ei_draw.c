@@ -247,30 +247,99 @@ struct lc
 };
 
 
-ei_point_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
+struct minmax{
+    int y_min;
+    int y_max;
+    ei_point_t p_min;
+    int index_p_min;
+    ei_point_t p_max;
+    int index_p_max;
+};
+
+struct minmax min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
+	// Récupère les ordonnées minimale et maximale des points du tableau
+	// en entrée ainsi que les points ayant ces ordonnées extrêmes
+        // On retourne, par ailleurs, les indices dans le tableau de ces
+        // points...
+
 	int max = point_array[0].y;
 	int min = point_array[0].y;
-
+        ei_point_t p_min;
+        int index_p_min;
+        int index_p_max;
+        ei_point_t p_max;
 	for (size_t i = 0; i < point_array_size -1; i++ ){
 		if (point_array[i].y > max){
 			max = point_array[i].y;
+			p_max = point_array[i];
+			index_p_max = i;
 		}
 		if (point_array[i].y < min){
 			min = point_array[i].y;
+			p_min = point_array[i];
+			index_p_min = i;
 
 		}
 	}
-	ei_point_t res = {min, max};
+	struct minmax res = {min, max, p_min, index_p_min, p_max, index_p_max};
 	return res;
 }
 
-void ei_draw_polygon (ei_surface_t surface, ei_point_t*        point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
 
-	ei_point_t min_max = min_max_sur_y(point_array, point_array_size);
 
-	// tableau de pointeurs de type struct lc * initialisés à NULL de taille ymax -ymin +1
-	struct lc** tab_tc = calloc((min_max.y - min_max.x +1 ), sizeof(struct lc*));
-	
+ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_array_size){
+	ei_point_t voisin_gauche;
+	ei_point_t voisin_droite;
+	if (indice != 0 && indice != point_array_size -1){
+		voisin_gauche = point_array[(int)(indice -1)];
+		voisin_droite = point_array[(int)(indice +1)];
+	}
+	if (indice == 0){
+		voisin_gauche = point_array[(int)(point_array_size-1)];
+		voisin_droite = point_array[1];
+	}
+	if (indice == point_array_size -1){
+		voisin_gauche = point_array[(int)(indice -1)];
+		voisin_droite = point_array[0];
+	}
+
+	ei_point_t* res = calloc(2, sizeof(ei_point_t));
+	res[0] = voisin_gauche;
+	res[1] = voisin_droite;
+
+	return res;
+}
+
+
+void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
+
+	struct minmax critical_pts = min_max_sur_y(point_array, point_array_size);
+
+	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
+
+	int taille_tc = (critical_pts.y_max - critical_pts.y_min +1 );
+	struct lc** tab_tc = calloc(taille_tc, sizeof(struct lc*));
+
+	//Le point B sur le graphique et son indice dans le tableau point_array..
+	ei_point_t point_plus_haut = critical_pts.p_min;
+	size_t indice = critical_pts.index_p_min;
+
+
+
+	// On parcourt le tableau tab_tc qu'on remplit par des listes chaînées...
+	// i = 0 correspond à la scanline y = ymin... i= taille_tc -1 correspond à la
+	// scanline y = ymax...
+	// Pour un numéro de scanline y donné, sa position i dans le tableau tab_tc sera
+	// i = y - ymin
+
+	for(int i = 0; i < taille_tc; i++){
+
+		ei_point_t* voisins = get_voisins(point_array, indice, point_array_size);
+
+
+	}
+
+
 
 }
 
