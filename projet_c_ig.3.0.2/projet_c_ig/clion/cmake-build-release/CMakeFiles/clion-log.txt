@@ -1,5 +1,0 @@
-/opt/clion-2021.1.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion
--- Building for Linux with eibase: /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/_x11/libeibase.a
--- Configuring done
--- Generating done
--- Build files have been written to: /user/7/serafith/C/projetC/projetc/projet_c_ig.3.0.2/projet_c_ig/clion/cmake-build-release
