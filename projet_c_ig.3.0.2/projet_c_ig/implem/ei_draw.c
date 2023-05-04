@@ -238,6 +238,14 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 	}
 }
 
+struct lc
+{
+    int	y_max; ///< ordonnée maximale
+    int	x_ymin; ///< ordonnée minimale
+    float un_sur_m; ///< 1/m, ce qu'il faut ajouter à x quand y progresse de 1
+    struct lc *suiv; ///< suivant
+};
+
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*	point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
 
 }
