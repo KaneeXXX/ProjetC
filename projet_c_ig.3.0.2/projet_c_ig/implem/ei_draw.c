@@ -78,6 +78,8 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 
 void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color){
 
+	
+
 	//get order of colors in pixel
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
@@ -234,6 +236,10 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 	for(uint32_t i = 0; i <= point_array_size - 2; i++){
 		draw_line(surface, point_array[i], point_array[i+1], color);
 	}
+}
+
+void ei_draw_polygon (ei_surface_t surface, ei_point_t*	point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
+
 }
 
 
