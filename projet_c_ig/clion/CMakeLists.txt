@@ -5,4 +5,5 @@ project("ProjetC_IG")
 
 include("../CMakeLists.txt")
 
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 

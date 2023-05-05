@@ -19,7 +19,8 @@ set(SRC_DIR				"${ROOT_DIR}/implem")
 set(LIB_FLAGS				-lfreeimage -lSDL2 -lSDL2_ttf)
 
 if(NOT DEFINED WIN32)
-	set(CMAKE_C_FLAGS		"${CMAKE_C_FLAGS} -Wall -Wextra -Wno-unknown-pragmas -Wno-unused-parameter -Werror")
+	# set(CMAKE_C_FLAGS		"${CMAKE_C_FLAGS} -Wall -Wextra -Wno-unknown-pragmas -Wno-unused-parameter -Werror")
+	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 endif(NOT DEFINED WIN32)
 
 if(IG_ASAN)
