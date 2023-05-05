@@ -330,13 +330,17 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	// On complète v_g
 	v_g->y_max = voisin_gauche.y;
 	v_g->x_ymin = point_plus_haut.x;
-	//A CHANGER: v_g->un_sur_m = un_sur_pente(point_plus_haut, voisin_gauche);
+	v_g->abs_dx = abs(voisin_gauche.x-point_plus_haut.x);
+	v_g->abs_dy = abs(voisin_gauche.y-point_plus_haut.y);
+	v_g->E = 0;
 	v_g->next = v_d;
 
 	// On complète v_d
 	v_d->y_max = voisin_droite.y;
 	v_d->x_ymin = point_plus_haut.x;
-	//A CHANGER: v_d->un_sur_m = un_sur_pente(point_plus_haut, voisin_droite);
+	v_d->abs_dx = abs(voisin_droite.x-point_plus_haut.x);
+	v_d->abs_dy = abs(voisin_droite.y-point_plus_haut.y);
+	v_d->E = 0;
 	v_d->next = NULL;
 
 	//  Point B déjà traitÉ...
