@@ -193,16 +193,18 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 	}
 }
 
-typedef struct lc_t {
+typedef struct lc_t lc_t;
+
+struct lc_t {
 	int        			y_max; // max ord
 	int        			x_ymin; // min ord
 	int 				E;
 	int 				abs_dx;
 	int 				abs_dy;
-	struct 				lc_t *next; // next
-} lc_t;
+	 				lc_t *next; // next
+};
 
-typedef struct minmax_t {
+typedef struct {
 	int 				y_min;
 	int 				y_max;
 	ei_point_t 			p_min;
@@ -289,7 +291,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 
 // On crée TC
 
-
+	printf("1");
 	// Ce tableau contient l'indice dans point_array des points déjà traités...
 	// A l'indice 0 de ce tableau, il y a le nombre de points déjà traitées...
 	size_t* points_to_ignore_indice = calloc(point_array_size +1, sizeof(size_t));
@@ -342,7 +344,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	v_d->abs_dy = abs(voisin_droite.y-point_plus_haut.y);
 	v_d->E = 0;
 	v_d->next = NULL;
-
+	printf("3");
 	//  Point B déjà traitÉ...
 	// On initialise current à A...
 	minmax_t current_critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
@@ -351,10 +353,8 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	// On actualise le tableau points_to_ignore_indice
 	points_to_ignore_indice[points_to_ignore_indice[0]+1]= current_critical_pts.index_p_min;
 	points_to_ignore_indice[0]++;
-
-
+	printf("4");
 	while( points_to_ignore_indice[0] < point_array_size){ /* On s'arrête quand on a traité tous les points*/
-
 		ei_point_t* current_voisins = get_voisins(point_array, (size_t)(current_indice), point_array_size);
 		ei_point_t current_voisin_gauche = voisins[0];
 		ei_point_t current_voisin_droite = voisins[1];

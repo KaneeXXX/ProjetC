@@ -38,6 +38,10 @@ int main(int argc, char* argv[])
 	for (i = 0; i < (main_window_size.width * (main_window_size.height/2)); i++)
 		*pixel_ptr++ = *((uint32_t*)red);
 
+	ei_point_t  point_array[6] = {{20, 30}, {90, 10}, {130, 50}, {120, 100}, {70, 70}, {20, 90}};
+	size_t length=6;
+	ei_color_t color = {0, 255, 255, 0};
+	ei_draw_polygon (main_window, point_array, length, color, NULL);
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
