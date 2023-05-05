@@ -4,7 +4,7 @@
 *            surfaces.
 *
 *  \author
-*  Created by Notre Groupe on 03.05.23.
+*  Created by Notre Groupe.
 *
 */
 
@@ -13,120 +13,87 @@
 #include "hw_interface.h"
 #include "ei_draw.h"
 
-//sans clipper ici
-//lock before ei_fill call
-//unlock before ei_fill call
-//Requests that a list of rectangular regions of the root surface be updated on screen. (NULL -> update all the screen)
-//hw_surface_update_rects(surface, NULL);
-void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* clipper) {
+//NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
+//hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
 
-	//Returns a pointer to the address of the pixel at coordinated (0, 0) of the surface.
-	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);   //surface_buffer = address pixel coordinate (0,0)
-	//On a déclaré un pointeur sur 32bit (4 octets) quand on incrémente surface_buffer de 1 on se déplace de 4 octets dans la mémoire (d'un pixel à l'autre)
+void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* clipper)
+{
+	//Returns a pointer pointing at the address of the pixel at coordinates (0, 0) of the surface.
+	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface); //surface_buffer = address pixel coordinate (0,0)
+	//When surface_buffer++, move to the next pixel (+4 bytes in memory)
 
 	//get size of the surface
 	ei_size_t size = hw_surface_get_size(surface);
-	int width = size.width;
-	int height = size.height;
-
-	int nb_pixel = width*height;
+	int nb_pixel = size.width*size.height;
 
 	//get order of colors in pixel
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-	//test if color is NULL
-	if (color == NULL){
-		//painted black (opaque)
-
+	if (color == NULL) { //then draw in black
 		for(int i = 0; i <= nb_pixel - 1; i++){
-			//treatment of pixel
-
-			//create vector of 4 byte (4 octet)
-			uint32_t pixel_value;
-			//déclare pointeur vers pixel_value
-			uint8_t* channel_ptr = (uint8_t*) &pixel_value;
-
-			channel_ptr[ir] = 0x00;
-			channel_ptr[ig] = 0x00;
-			channel_ptr[ib] = 0x00;
-			channel_ptr[ia] = 0xff;
-
+			//Treatment of pixel
+			uint32_t pixel_value; //vector of 4 bytes
+			uint8_t* channel_ptr = (uint8_t*) &pixel_value; //pointer to that vector (pixel_value)
+			channel_ptr[ir] = channel_ptr[ig] = channel_ptr[ib] = 0x00; //BLACK
+			channel_ptr[ia] = 0xff; //OPAQUE
 			*surface_buffer++ = pixel_value; //<=> *surface_buffer=pixel_value; surface_buffer++
 		}
-
 	} else {
-		//paint of the surface with color (don't take clipper into account for now)
-
-		for(int i = 0; i <= nb_pixel - 1; i++){
-			//treatment of pixel
-
-			//create vector of 4 byte (4 octet)
-			uint32_t pixel_value;
-			//déclare pointeur vers pixel_value
-			uint8_t* channel_ptr = (uint8_t*) &pixel_value;
-
+		for(int i = 0; i <= nb_pixel - 1; i++) {
+			//Treatment of pixel
+			uint32_t pixel_value; //vector of 4 bytes
+			uint8_t* channel_ptr = (uint8_t*) &pixel_value; //pointer to that vector (pixel_value)
 			channel_ptr[ir] = color->red;
 			channel_ptr[ig] = color->green;
 			channel_ptr[ib] = color->blue;
 			channel_ptr[ia] = color->alpha;
-
 			*surface_buffer++ = pixel_value; //<=> *surface_buffer=pixel_value; surface_buffer++
 		}
 	}
 }
 
-void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color){
-
-
-
-	//get order of colors in pixel
+void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color)
+{
+	//Get order of colors in pixel because it's not always the same
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
 	uint32_t pixel_value;
-	//déclare pointeur vers pixel_value
-	uint8_t* channel_ptr = (uint8_t*) &pixel_value;
-
+	uint8_t* channel_ptr = (uint8_t*) &pixel_value; //ptr to pixel_value
 	channel_ptr[ir] = color.red;
 	channel_ptr[ig] = color.green;
 	channel_ptr[ib] = color.blue;
 	channel_ptr[ia] = color.alpha;
-
 	*addr = pixel_value;
 }
 
-void swap(int *a, int *b) {
+void swap(int *a, int *b)
+{
 	int temp = *a;
 	*a=*b;
 	*b=temp;
 }
 
-void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux, ei_color_t color) {
-
+void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t color)
+{
 	uint32_t *surface_buffer = (uint32_t *) hw_surface_get_buffer(surface);
 	ei_size_t size = hw_surface_get_size(surface);
 	int width = size.width;
-
-	int x0 = point_un.x;
-	int y0 = point_un.y;
-	int x1 = point_deux.x;
-	int y1 = point_deux.y;
-
+	int x0 = pt1.x;
+	int y0 = pt1.y;
+	int x1 = pt2.x;
+	int y1 = pt2.y;
 	int dx = x1 - x0;
 	int dy = y1 - y0;
-
 	int E = 0;
 
-	//if only on point in the array
-	if ((point_un.x == point_deux.x) && (point_un.y == point_deux.y)) {
+	if ((x0 == x1) && (y0 == y1)) { //pt1==pt2 (draw point)
 		u_int32_t *pixel = surface_buffer + width * y0 + x0;
 		draw_pixel(pixel, surface, color);
 		return;
 	}
-
-	//vertical
-	if (x0 == x1) {
+	else if (x0 == x1) { //vertical
 		if (y1 < y0) {
 			swap(&x0, &x1);
 			swap(&y0, &y1);
@@ -137,11 +104,9 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 			y0++;
 		}
 	}
-
-	//horizontal
-	if (y0 == y1) {
+	else if (y0 == y1) { //horizontal
 		if (x1 < x0) {
-			swap(&x1, &x0);
+			swap(&x0, &x1);
 			swap(&y0, &y1);
 		}
 		while (x0 < x1) {
@@ -150,14 +115,10 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 			x0++;
 		}
 	}
-
-
-	if (((x0 < x1) && (y0 < y1)) || ((x1 < x0) && (y1 < y0))) {
+	else if (((x0 < x1) && (y0 < y1)) || ((x1 < x0) && (y1 < y0))) {
 		if (x1 < x0 && y1 < y0) {
-			//inverser le role de (x0,y0) et (x1,y1)
 			swap(&x0, &x1);
 			swap(&y0, &y1);
-
 		}
 		dx=abs(dx);
 		dy=abs(dy);
@@ -184,16 +145,13 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 				}
 			}
 		}
-
 	}
-
-	if (((x1 < x0) && (y0 < y1)) || ((x0 < x1) && (y1 < y0))) {
+	else { //(((x1 < x0) && (y0 < y1)) || ((x0 < x1) && (y1 < y0)))
 		if (x1 < x0 && y0 < y1) {
-			//inverser le role de (x0,y0) et (x1,y1)
 			swap(&x0, &x1);
 			swap(&y0, &y1);
 		}
-		dy = abs(dy); //dy négatif dans ce cas sinon
+		dy = abs(dy); //dy<0 in this case
 		if (abs(dx) > abs(dy)) {
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
@@ -220,41 +178,36 @@ void draw_line(ei_surface_t surface, ei_point_t point_un, ei_point_t point_deux,
 	}
 }
 
-void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
-	//point_array[0] donne le premier point
-
-	//if empty array
-	if (point_array_size == 0){
+void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
+{
+	if (point_array_size == 0) { //empty array
 		return;
 	}
-
-	//1 point in the array
-	if(point_array_size == 1){
+	else if (point_array_size == 1) { //draw a point
 		draw_line(surface, point_array[0], point_array[0], color);
 	}
-
-	for(uint32_t i = 0; i <= point_array_size - 2; i++){
-		draw_line(surface, point_array[i], point_array[i+1], color);
+	else {
+		for (int i = 0; i <= point_array_size - 2; i++) {
+			draw_line(surface, point_array[i], point_array[i+1], color);
+		}
 	}
 }
 
-struct lc
-{
-    int        y_max; ///< ordonnée maximale
-    int        x_ymin; ///< ordonnée minimale
-    float un_sur_m; ///< 1/m, ce qu'il faut ajouter à x quand y progresse de 1
-    struct lc *suiv; ///< suivant
-};
+typedef struct lc {
+	int        			y_max; // max ord
+	int        			x_ymin; // min ord
+	float 				one_on_m; // when y++, x+=1/m
+	struct 				lc *next; // next
+} lc;
 
-
-struct minmax{
-    int y_min;
-    int y_max;
-    ei_point_t p_min;
-    int index_p_min;
-    ei_point_t p_max;
-    int index_p_max;
-};
+typedef struct minmax {
+	int 				y_min;
+	int 				y_max;
+	ei_point_t 			p_min;
+	int 				index_p_min;
+	ei_point_t 			p_max;
+	int 				index_p_max;
+} minmax;
 
 bool is_in_tab(size_t i, size_t* tab){
 	for (size_t j =1; j<= tab[0]; j++){
