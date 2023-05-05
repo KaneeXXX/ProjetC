@@ -145,7 +145,6 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 				}
 			}
 		}
-
 	}
 	else { //(((x1 < x0) && (y0 < y1)) || ((x0 < x1) && (y1 < y0)))
 		if (x1 < x0 && y0 < y1) {
