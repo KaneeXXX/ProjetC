@@ -256,7 +256,18 @@ struct minmax{
     int index_p_max;
 };
 
-struct minmax min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
+bool is_in_tab(size_t i, size_t* tab){
+	for (size_t j =1; j<= tab[0]; j++){
+		if (i==j){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+struct minmax min_max_sur_y(ei_point_t* point_array, size_t point_array_size, size_t* tab){
 	// Récupère les ordonnées minimale et maximale des points du tableau
 	// en entrée ainsi que les points ayant ces ordonnées extrêmes
         // On retourne, par ailleurs, les indices dans le tableau de ces
@@ -269,6 +280,11 @@ struct minmax min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
         int index_p_max;
         ei_point_t p_max;
 	for (size_t i = 0; i < point_array_size -1; i++ ){
+		if (is_in_tab(i, tab)){
+			//On sort de la boucle for parce qu'on ne veut pas traiter
+			// ces points là...
+			continue;
+		}
 		if (point_array[i].y > max){
 			max = point_array[i].y;
 			p_max = point_array[i];
@@ -311,9 +327,28 @@ ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_arr
 }
 
 
+float un_sur_pente(ei_point_t p1, ei_point_t p2){
+	float pente = (p2.y - p1.y)/(p2.x - p1.x);
+	return 1/pente;
+}
+
+void print_lc(struct lc liste_chaine) {
+	printf("y_max=%i, x_ymin=%i 1/m=%f \n", liste_chaine.y_max, liste_chaine.x_ymin, liste_chaine.un_sur_m);
+}
+
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
 
-	struct minmax critical_pts = min_max_sur_y(point_array, point_array_size);
+// On crée TC
+
+
+	// Ce tableau contient l'indice dans point_array des points déjà traités...
+	// A l'indice 0 de ce tableau, il y a le nombre de points déjà traitées...
+	size_t* points_to_ignore_indice = calloc(point_array_size +1, sizeof(size_t));
+
+	struct minmax critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
+	points_to_ignore_indice[0]++;
+	points_to_ignore_indice[1] = critical_pts.index_p_min;
+
 
 	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
 
@@ -323,6 +358,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//Le point B sur le graphique et son indice dans le tableau point_array..
 	ei_point_t point_plus_haut = critical_pts.p_min;
 	size_t indice = critical_pts.index_p_min;
+	int y_min = critical_pts.y_min;
 
 
 
@@ -332,15 +368,83 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	// Pour un numéro de scanline y donné, sa position i dans le tableau tab_tc sera
 	// i = y - ymin
 
-	for(int i = 0; i < taille_tc; i++){
+	// On remplit tab_tc à l'indice 0. (Point B)...
+	ei_point_t* voisins = get_voisins(point_array, indice, point_array_size);
+	ei_point_t voisin_gauche = voisins[0];
+	ei_point_t voisin_droite = voisins[1];
 
-		ei_point_t* voisins = get_voisins(point_array, indice, point_array_size);
-		
+	// On réserve de la mémoire poour les voisins de B
+	struct lc* v_g = calloc(1, sizeof(struct lc));
+	struct lc* v_d = calloc(1, sizeof(struct lc));
+	tab_tc[0] = v_g;
+	print_lc(*tab_tc[0]);
+	// On complète v_g
+	v_g->y_max = voisin_gauche.y;
+	v_g->x_ymin = point_plus_haut.x;
+	v_g->un_sur_m = un_sur_pente(point_plus_haut, voisin_gauche);
+	v_g->suiv = v_d;
+
+	// On complète v_d
+	v_d->y_max = voisin_droite.y;
+	v_d->x_ymin = point_plus_haut.x;
+	v_d->un_sur_m = un_sur_pente(point_plus_haut, voisin_droite);
+	v_d->suiv = NULL;
+
+	//  Point B déjà traitÉ...
+	// On initialise current à A...
+	struct minmax current_critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
+	ei_point_t current_point = current_critical_pts.p_min;
+	int current_indice = current_critical_pts.index_p_min;
+	// On actualise le tableau points_to_ignore_indice
+	points_to_ignore_indice[points_to_ignore_indice[0]+1]= current_critical_pts.index_p_min;
+	points_to_ignore_indice[0]++;
 
 
+	while( points_to_ignore_indice[0] < point_array_size){ /* On s'arrête quand on a traité tous les points*/
+
+		ei_point_t* current_voisins = get_voisins(point_array, (size_t)(current_indice), point_array_size);
+		ei_point_t current_voisin_gauche = voisins[0];
+		ei_point_t current_voisin_droite = voisins[1];
+
+		bool has_voisin_gauche = false;
+		if (current_voisin_gauche.y > current_point.y ){
+			struct lc* current_v_g = calloc(1, sizeof(struct lc));
+			tab_tc[current_point.y - y_min] = current_v_g;
+			current_v_g->y_max = current_voisin_gauche.y;
+			current_v_g->x_ymin = current_point.x;
+			current_v_g->un_sur_m = un_sur_pente(current_point, current_voisin_gauche);
+			current_v_g->suiv = NULL;
+			has_voisin_gauche = true;
+
+		}
+		if (current_voisin_droite.y > current_point.y ){
+			struct lc* current_v_d = calloc(1, sizeof(struct lc));
+			current_v_d->y_max = current_voisin_droite.y;
+			current_v_d->x_ymin = current_point.x;
+			current_v_d->un_sur_m = un_sur_pente(current_point, current_voisin_droite);
+			current_v_d->suiv = NULL;
+			if (has_voisin_gauche == true) {
+				tab_tc[current_point.y - y_min]->suiv = current_v_d;
+			} else {
+				tab_tc[current_point.y - y_min] = current_v_d;
+			}
+		}
+		//On cherche le nouveau à traiter...Le point à l'ordonnée la plus petite, A et B exclus.
+		current_critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
+		current_point = current_critical_pts.p_min;
+		current_indice = current_critical_pts.index_p_min;
+
+		//On actualise le tableau points_to_ignore_indice
+		points_to_ignore_indice[points_to_ignore_indice[0]+1]= current_critical_pts.index_p_min;
+		points_to_ignore_indice[0]++;
+		print_lc(*tab_tc[current_point.y - y_min]);
 	}
+//
+//
+//	int scanline = y_min;
+//	struct lc* TCA = calloc(1, sizeof(struct lc));
 
-
+	return;
 
 }
 
