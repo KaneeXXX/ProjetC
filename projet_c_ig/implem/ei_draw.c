@@ -335,6 +335,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	for(int i = 0; i < taille_tc; i++){
 
 		ei_point_t* voisins = get_voisins(point_array, indice, point_array_size);
+		
 
 
 	}
