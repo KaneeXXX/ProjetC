@@ -282,7 +282,7 @@ ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_arr
 }
 
 void print_lc(lc_t liste_chaine) {
-	//A CHANGER: printf("y_max=%i, x_ymin=%i 1/m=%f \n", liste_chaine.y_max, liste_chaine.x_ymin, liste_chaine.un_sur_m);
+	printf("y_max=%i, x_ymin=%i \n", liste_chaine.y_max, liste_chaine.x_ymin);
 }
 
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
@@ -361,7 +361,9 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			tab_tc[current_point.y - y_min] = current_v_g;
 			current_v_g->y_max = current_voisin_gauche.y;
 			current_v_g->x_ymin = current_point.x;
-			// A CHANGER: current_v_g->un_sur_m = un_sur_pente(current_point, current_voisin_gauche);
+			current_v_g->abs_dx = abs(current_voisin_gauche.x-current_point.x);
+			current_v_g->abs_dy = abs(current_voisin_gauche.y-current_point.y);
+			current_v_g->E = 0;
 			current_v_g->next = NULL;
 			has_voisin_gauche = true;
 
@@ -370,7 +372,9 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
 			current_v_d->y_max = current_voisin_droite.y;
 			current_v_d->x_ymin = current_point.x;
-			//A CHANGER: current_v_d->un_sur_m = un_sur_pente(current_point, current_voisin_droite);
+			current_v_d->abs_dx = abs(current_voisin_droite.x-current_point.x);
+			current_v_d->abs_dy = abs(current_voisin_droite.y-current_point.y);
+			current_v_d->E = 0;
 			current_v_d->next = NULL;
 			if (has_voisin_gauche == true) {
 				tab_tc[current_point.y - y_min]->next = current_v_d;
