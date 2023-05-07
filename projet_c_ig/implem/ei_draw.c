@@ -269,6 +269,23 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 	return res;
 }
 
+//petit function pour print_TC
+void print_chain(int indice_in_TC, lc_t** tab_TC) {
+	//tab_TC est un tableau de pointeur vers des struct lc_t
+	if(tab_TC[indice_in_TC] == NULL){ //pas de coté, c'est NULL dans cette ligne
+		return;
+	}
+	//sinon
+	lc_t cell = *(tab_TC[indice_in_TC]);
+	do {
+		printf("")
+	} while(cell.next != NULL);
+
+
+
+
+}
+
 //JE réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
@@ -339,6 +356,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 				tab_TC[current_point.y - y_min] = current_v_d;
 			}
 		}
+		print_chain(current_point.y - y_min, tab_TC);
 		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (à faire ? jsp -> voir sujet)
 	}
 	//End of building of TC.
