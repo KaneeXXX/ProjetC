@@ -257,7 +257,7 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 	//trouver une solution pour mettre genre min = plus infini
 	int min = 4000;
 
-	for (int i = 0; i < point_array_size -1; i++){
+	for (size_t i = 0; i < point_array_size -1; i++){
 		if (point_array[i].y > max){
 			max = point_array[i].y;
 		}
@@ -272,18 +272,11 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 //petit function pour print_TC
 void print_chain(int indice_in_TC, lc_t** tab_TC) {
 	//tab_TC est un tableau de pointeur vers des struct lc_t
-	if(tab_TC[indice_in_TC] == NULL){ //pas de coté, c'est NULL dans cette ligne
-		return;
-	}
-	//sinon
 	lc_t cell = *(tab_TC[indice_in_TC]);
 	do {
-		printf("")
-	} while(cell.next != NULL);
-
-
-
-
+		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+		cell = *(cell.next);
+	} while (cell.next != NULL);
 }
 
 //JE réutilise getVoisins et min_max simplifiée
@@ -294,7 +287,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//I) Creation pointeur vers cette liste.
 	pt_and_index * copy_point_array = calloc(point_array_size, sizeof(pt_and_index));
 	//II) Fill the list
-	for (int i = 0; i < point_array_size; i++) {
+	for (size_t i = 0; i < point_array_size; i++) {
 		pt_and_index temp;
 		temp.index= i;
 		temp.pt=point_array[i];
@@ -303,16 +296,16 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//III) sort the list par y des points croissant
 	qsort(copy_point_array, point_array_size, sizeof(pt_and_index), compareFunction);
 
-	//IV) Création de TC et init des valeurs clé (ymin, ymax...) that we need.
+	//IV) Création de TC et init des valeurs clé (ymin, ...) that we need.
 	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size);
 	int y_min = critical_pts.y_min;
-	int y_max = critical_pts.y_max;
+	//y_max pas besoin ici
 	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
 	int taille_tc = (critical_pts.y_max - critical_pts.y_min + 1);
 	lc_t** tab_TC = calloc(taille_tc, sizeof(lc_t*));
 
 	//V) On itére sur les structures pt_and_index (rangé par y croissant)
-	for (int i = 0; i < point_array_size; i++) {
+	for (size_t i = 0; i < point_array_size; i++) {
 		//get the current pt_and_index structure
 		pt_and_index current_pt_and_indexe_structure = copy_point_array[i];
 		//get the point
@@ -328,7 +321,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		ei_point_t voisin_droite = current_voisins[1];
 
 		bool has_voisin_gauche = false;
-		if (voisin_gauche.y > current_point.y){
+		if (voisin_gauche.y > current_point.y) {
 			//create cell for this border of the polygone and complete
 			lc_t* current_v_g = calloc(1, sizeof(lc_t));
 			tab_TC[current_point.y - y_min] = current_v_g;
@@ -341,7 +334,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			has_voisin_gauche = true;
 
 		}
-		if (voisin_droite.y > current_point.y ){
+		if (voisin_droite.y > current_point.y) {
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
 			current_v_d->y_max = voisin_droite.y;
 			current_v_d->x_ymin = current_point.x;
@@ -359,6 +352,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		print_chain(current_point.y - y_min, tab_TC);
 		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (à faire ? jsp -> voir sujet)
 	}
+	free(copy_point_array);
 	//End of building of TC.
 
 
