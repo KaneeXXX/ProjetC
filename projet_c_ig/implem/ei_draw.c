@@ -13,6 +13,9 @@
 #include "hw_interface.h"
 #include "ei_draw.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 //NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
 //hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
 
@@ -211,10 +214,10 @@ typedef struct {
 
 int compareFunction(const void * ptr_struct1, const void * ptr_struct2)
 {
-	//bug ?
-	int first_y = * (const int *) (ptr_struct1 -> pt).y; //y of first pt_and_indice structure
-	int second_y = * (const int *) (ptr_struct2 -> pt).y;  //y of second pt_and_indice structure
-	return first_y - second_y;
+	/*Exemple https://www.bien-programmer.fr/qsort.htm */
+	pt_and_index const *ptr1 = ptr_struct1;
+	pt_and_index const *ptr2 = ptr_struct2;
+	return (ptr1->pt).y - (ptr2->pt).y;
 }
 
 ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_array_size){
@@ -336,9 +339,11 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 				tab_TC[current_point.y - y_min] = current_v_d;
 			}
 		}
+		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (à faire ? jsp -> voir sujet)
 	}
 	//End of building of TC.
-	
+
+
 }
 
 //typedef struct {
