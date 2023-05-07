@@ -201,7 +201,7 @@ struct lc_t {
 	int 				E;
 	int 				abs_dx;
 	int 				abs_dy;
-	 				lc_t *next; // next
+	lc_t 				*next; // next
 };
 
 typedef struct {
@@ -209,24 +209,136 @@ typedef struct {
     	ei_point_t 			pt;
 } pt_and_index;
 
-int compareFunction(const void * ptr1, const void * ptr2)
+int compareFunction(const void * ptr_struct1, const void * ptr_struct2)
 {
-	int firstInt = * (const int *) ptr1; //J'ARRIVE PAS A SELECTIONNER pt_and_index_courant.pt.y
-	int secondInt = * (const int *) ptr2;
-	return firstInt - secondInt;
+	//bug ?
+	int first_y = * (const int *) (ptr_struct1 -> pt).y; //y of first pt_and_indice structure
+	int second_y = * (const int *) (ptr_struct2 -> pt).y;  //y of second pt_and_indice structure
+	return first_y - second_y;
 }
 
+ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_array_size){
+	ei_point_t voisin_gauche = {0,0};
+	ei_point_t voisin_droite = {0,0};
+	if (indice != 0 && indice != point_array_size -1){
+		voisin_gauche = point_array[(int)(indice -1)];
+		voisin_droite = point_array[(int)(indice +1)];
+	}
+	if (indice == 0){
+		voisin_gauche = point_array[(int)(point_array_size-1)];
+		voisin_droite = point_array[1];
+	}
+	if (indice == point_array_size -1){
+		voisin_gauche = point_array[(int)(indice -1)];
+		voisin_droite = point_array[0];
+	}
+
+	ei_point_t* res = calloc(2, sizeof(ei_point_t));
+	res[0] = voisin_gauche;
+	res[1] = voisin_droite;
+
+	return res;
+}
+
+typedef struct {
+	int 				y_min;
+	int 				y_max;
+} minmax_t;
+
+minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
+	// Récupère les ordonnées minimale et maximale des points du tableau
+	// en entrée ainsi que les points ayant ces ordonnées extrêmes
+        // On retourne, par ailleurs, les indices dans le tableau de ces
+        // points...
+	int max = 0;
+	//trouver une solution pour mettre genre min = plus infini
+	int min = 4000;
+
+	for (int i = 0; i < point_array_size -1; i++){
+		if (point_array[i].y > max){
+			max = point_array[i].y;
+		}
+		if (point_array[i].y <= min){
+			min = point_array[i].y;
+		}
+	}
+	minmax_t res = {min, max};
+	return res;
+}
+
+//JE réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
-	//Remplissage d'une copie étant une liste telle que tab[i]=[{i, point_array[i]}
+	//Remplissage d'une copie étant une liste(tableau) telle que copy_point_array[i]=[{i, point_array[i]}
+	//"L'ordre" des points reste ici unchanged.
+	//I) Creation pointeur vers cette liste.
 	pt_and_index * copy_point_array = calloc(point_array_size, sizeof(pt_and_index));
-	for (size_t i=0; i<point_array_size; i++) {
+	//II) Fill the list
+	for (int i = 0; i < point_array_size; i++) {
 		pt_and_index temp;
 		temp.index= i;
 		temp.pt=point_array[i];
 		copy_point_array[i]=temp;
 	}
-	qsort(copy_point_array, point_array_size, sizeof(pt_and_index), compareFunction); //Sort de la copie sur les points.y croissants
+	//III) sort the list par y des points croissant
+	qsort(copy_point_array, point_array_size, sizeof(pt_and_index), compareFunction);
+
+	//IV) Création de TC et init des valeurs clé (ymin, ymax...) that we need.
+	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size);
+	int y_min = critical_pts.y_min;
+	int y_max = critical_pts.y_max;
+	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
+	int taille_tc = (critical_pts.y_max - critical_pts.y_min + 1);
+	lc_t** tab_TC = calloc(taille_tc, sizeof(lc_t*));
+
+	//V) On itére sur les structures pt_and_index (rangé par y croissant)
+	for (int i = 0; i < point_array_size; i++) {
+		//get the current pt_and_index structure
+		pt_and_index current_pt_and_indexe_structure = copy_point_array[i];
+		//get the point
+		ei_point_t current_point = current_pt_and_indexe_structure.pt;
+		//get the indexe in point_array
+		int index_in_point_array = current_pt_and_indexe_structure.index;
+
+		//nous allons maintenant générer la liste chainée associée à current_point
+
+		//1) On récupère ces voisins (au nombre de 2)
+		ei_point_t* current_voisins = get_voisins(point_array, index_in_point_array, point_array_size);
+		ei_point_t voisin_gauche = current_voisins[0];
+		ei_point_t voisin_droite = current_voisins[1];
+
+		bool has_voisin_gauche = false;
+		if (voisin_gauche.y > current_point.y){
+			//create cell for this border of the polygone and complete
+			lc_t* current_v_g = calloc(1, sizeof(lc_t));
+			tab_TC[current_point.y - y_min] = current_v_g;
+			current_v_g->y_max = voisin_gauche.y;
+			current_v_g->x_ymin = current_point.x;
+			current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
+			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);
+			current_v_g->E = 0;
+			current_v_g->next = NULL;
+			has_voisin_gauche = true;
+
+		}
+		if (voisin_droite.y > current_point.y ){
+			lc_t* current_v_d = calloc(1, sizeof(lc_t));
+			current_v_d->y_max = voisin_droite.y;
+			current_v_d->x_ymin = current_point.x;
+			current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
+			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);
+			current_v_d->E = 0;
+			current_v_d->next = NULL;
+			//coplete the chains if 2 sides to consider.
+			if (has_voisin_gauche == true) {
+				tab_TC[current_point.y - y_min]->next = current_v_d;
+			} else {
+				tab_TC[current_point.y - y_min] = current_v_d;
+			}
+		}
+	}
+	//End of building of TC.
+	
 }
 
 //typedef struct {
