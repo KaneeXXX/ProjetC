@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 //NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
 //hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
@@ -285,8 +286,8 @@ void print_chain(int indice_in_TC, lc_t** tab_TC) {
 }
 
 //return True is TC empty
-bool isTC_empty(lc_t** tab_TC, int taille_tc){
-	for(int i = 0; i < taille_tc; i++) {
+bool isTC_empty(lc_t** tab_TC, int size_tc){
+	for(int i = 0; i < size_tc; i++) {
 		if(tab_TC[i] != NULL) {
 			return false;
 		}
@@ -308,21 +309,62 @@ void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 }
 
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
-void delete_side_TCA(lc_t** TCA, int scanline_num) {
+int delete_side_TCA(lc_t** TCA, int scanline_num) {
 	if (*TCA == NULL) {
-		return;
+		return 0;
 	}
+	int size_TCA = 0; //Going to be increased while going through the loop.
 	lc_t* ptr_previous = *TCA;
 	lc_t* ptr_current_side = *TCA; //init à première cellule
 	while (ptr_current_side != NULL) {
 		if(ptr_current_side -> y_max == scanline_num){
 			ptr_previous = ptr_current_side -> next;
-			free(ptr_current_side);
+			free(ptr_current_side); //On supprime ici une cellule type lc_t
 			ptr_current_side = ptr_previous; //On raccroche
 			continue;
 		}
 		ptr_previous = ptr_current_side;
 		ptr_current_side = ptr_current_side -> next; //On avance dans chain
+
+		size_TCA++;
+	}
+	return size_TCA;
+}
+
+int compare_xymin_Function(const void * ptr_struct1, const void * ptr_struct2)
+{
+	/*Exemple https://www.bien-programmer.fr/qsort.htm */
+	lc_t const *ptr1 = ptr_struct1;
+	lc_t const *ptr2 = ptr_struct2;
+	return (ptr1->x_ymin) - (ptr2->x_ymin);
+}
+
+enum draw_state {IN, OUT};
+
+//Colorier un scanline du polygone
+void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color) {
+	lc_t* ptr_current_cell = TCA;
+	enum draw_state state = IN; //Entrée d'intervalle
+
+	double x_to_color1 = 0.0; //On init deux abscisses qui seront changé par la suite, ce sont le début et la fin d'un segment à colorier.
+	double x_to_color2 = 0.0;
+
+	//Parcours de TCA
+	for(int i = 0; i < size_TCA; i++) {
+		//Les x_ymin de chaque cellule de TCA represente les intersections avec la scanline, pas forcement entiers
+		double x_ymin = ptr_current_cell -> x_ymin;
+		if(state == IN){
+			//On arrondi x_ymin à l'entier supérieur
+			x_to_color1 = ceil(x_ymin);
+			state = OUT;
+		} else { //State = OUT, on est en sortie d'intervalle
+			//On arrondi x_ymin à l'entier inférieur
+			x_to_color2 = floor(x_ymin);
+			ei_point_t p1 = {x_to_color1, y};
+			ei_point_t p2 = {x_to_color2, y};
+			draw_line(surface, p1, p2, color);
+			state = IN;
+		}
 	}
 }
 
@@ -340,7 +382,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		temp.pt=point_array[i];
 		copy_point_array[i]=temp;
 	}
-	//III) sort the list par y des points croissant
+	//III) sort the list par y des points croissants
 	qsort(copy_point_array, point_array_size, sizeof(pt_and_index), compareFunction);
 
 	//IV) Création de TC et init des valeurs clé (ymin, ...) that we need.
@@ -417,22 +459,20 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		tab_TC[scanline_num] = NULL;
 
 		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
-		delete_side_TCA(TCA, scanline_num);
+		int size_TCA = delete_side_TCA(TCA, scanline_num); //On a besoin taille pour qsort
 
-		//trier TCA par abscisse croissant des intersection de côté avec la scanline
-		qsort();
+		//trier TCA par abscisse croissant des intersection de côté avec la scanline (trier par x_ymin croissant)
+		qsort(*TCA, size_TCA, sizeof(lc_t), compare_xymin_Function);
 
 		//Modifier les pixels de l’image sur la scanline, dans les intervalles intérieurs au polygone
-		
+		draw_scanline(*TCA, size_TCA, scanline_num, surface, color);
 
 		//incrémenter y.
 		scanline_num++;
 
-		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline
+		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline (les x_ymin)
 
 	}
-
-
 }
 
 //typedef struct {
