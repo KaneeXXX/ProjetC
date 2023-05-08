@@ -273,6 +273,10 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 //petit function pour print_TC
 void print_chain(int indice_in_TC, lc_t** tab_TC) {
 	//tab_TC est un tableau de pointeur vers des struct lc_t
+	if(tab_TC[indice_in_TC] == NULL) { //Cas pour F et D par exemple, ils n'ont pas de voisin "sous eux".
+		printf("\n");
+		return;
+	}
 	lc_t cell = *(tab_TC[indice_in_TC]);
 	printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
 	if (cell.next != NULL) {
@@ -282,7 +286,6 @@ void print_chain(int indice_in_TC, lc_t** tab_TC) {
 	} else {
 		printf("\n");
 	}
-
 }
 
 //return True is TC empty
@@ -295,8 +298,12 @@ bool isTC_empty(lc_t** tab_TC, int size_tc){
 	return true;
 }
 
-//ajouter à TCA des cotés à la suite du chainage
+/*//ajouter à TCA des cotés à la suite du chainage
 void add_to_TCA(lc_t** TCA, lc_t* chaine) {
+	if(*TCA == NULL){
+		*TCA = chaine;
+		return;
+	}
 	lc_t* current_side = *TCA;//ptr vers 1er element element de TCA
 	if(current_side == NULL){ //TCA pointeur vers NULL (vide)
 		*TCA = chaine; //TCA pointe alors vers chaine
@@ -306,6 +313,49 @@ void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 		current_side = current_side -> next; //On move dans la chaine
 	}
 	current_side -> next = chaine; //On raccroche chaine à la fin de TCA.
+}*/
+//ajouter à TCA des cotés à la suite du chainage
+void add_to_TCA(lc_t** TCA, lc_t* chaine) {
+	if(*TCA == NULL){ //On ajoute la ou les deux cellules de chaine de facon ordonnée (croissance selon x_ymin)
+		lc_t* ptrfirst_cell_in_chain = chaine;
+		if (ptrfirst_cell_in_chain -> next != NULL) { //s'il existe une deuxième cellule au chainage "chaine"
+			lc_t* ptrsecond_cell_in_chain = ptrfirst_cell_in_chain -> next;
+			if(ptrfirst_cell_in_chain -> x_ymin <= ptrsecond_cell_in_chain -> x_ymin)  { //si dans dbon ordre
+				*TCA = chaine; //rien a faire
+			} else { // inverser les deux cellules
+				ptrsecond_cell_in_chain -> next = ptrfirst_cell_in_chain;
+				lc_t* tmp = ptrsecond_cell_in_chain; //tmp
+				ptrfirst_cell_in_chain ->next = NULL;
+				*TCA = tmp;
+			}
+
+		} else { // s'il n'existe pas de deuxième cellule au chainage "chaine"
+			*TCA = chaine;
+
+		}
+		return;
+	}
+	//Cas si TCA contient dejà des cellules, on doit ajouter les cellules de chainées pour garder ordrer trié selon x_ymin
+	//pour chaque élement (2 au plus) de "chaine" on le place au bon endroit dans TCA (déjà trié).
+	lc_t* ptrfirst_cell_in_chain = chaine;
+
+	for(int i = 0; i < 2; i++) { //faire 2 fois car deux cellules, au plus, in "chaine"
+		lc_t *ptr_previous = *TCA;
+		lc_t *ptr_current_cell_TCA = *TCA; //init à première cellule
+		while (ptr_current_cell_TCA != NULL) {
+			if (ptr_current_cell_TCA->x_ymin > ptrfirst_cell_in_chain->x_ymin) {
+				ptr_previous = ptrfirst_cell_in_chain;
+				ptrfirst_cell_in_chain->next = ptr_current_cell_TCA;
+				return;
+			}
+			ptr_previous = ptr_current_cell_TCA;
+			ptr_current_cell_TCA = ptr_current_cell_TCA->next; //On avance dans chain
+		}
+		if(ptrfirst_cell_in_chain ->next == NULL) { //s'il n'y a PAS de deuxième cellule
+			return;
+		} //sinon
+		ptrfirst_cell_in_chain = ptrfirst_cell_in_chain -> next; //On passe à la 2e cell de "chaine"
+	}
 }
 
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
@@ -331,19 +381,11 @@ int delete_side_TCA(lc_t** TCA, int scanline_num) {
 	return size_TCA;
 }
 
-int compare_xymin_Function(const void * ptr_struct1, const void * ptr_struct2)
-{
-	/*Exemple https://www.bien-programmer.fr/qsort.htm */
-	lc_t const *ptr1 = ptr_struct1;
-	lc_t const *ptr2 = ptr_struct2;
-	return (ptr1->x_ymin) - (ptr2->x_ymin);
-}
-
 enum draw_state {IN, OUT};
 
 //Colorier un scanline du polygone
-void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color) {
-	lc_t* ptr_current_cell = TCA;
+void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color) {
+	lc_t* ptr_current_cell = *TCA;
 	enum draw_state state = IN; //Entrée d'intervalle
 
 	double x_to_color1 = 0.0; //On init deux abscisses qui seront changé par la suite, ce sont le début et la fin d'un segment à colorier.
@@ -377,7 +419,7 @@ void update_x_ymin_sides(lc_t* TCA) {
 		int dx = current_cell ->abs_dx;
 		int dy = current_cell ->abs_dy;
 
-		current_cell -> x_ymin = old_x_ymin + dx/dy;
+		current_cell -> x_ymin = (dy == 0) ? old_x_ymin : old_x_ymin + dx/dy;
 
 		current_cell = current_cell ->next;
 	}
@@ -459,40 +501,48 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		print_chain(current_point.y - y_min, tab_TC);
 		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (d'après le sujet pas besoin)
 	}
+
 	//On libère la mémoire associé à cette liste intermédiaire.
 	free(copy_point_array);
 	//End of building of TC.
+	printf("fin TC\n");
 
-	//init TCA à NULL, TCA pointeur vers cellule type lc_t
-	lc_t** TCA = NULL;
+	//déclarer TCA pointeur
+	lc_t** TCA = malloc(sizeof(lc_t));
+	*TCA = NULL; //TCA pointe vers NULL au début
 	//Init le numero de scan line à la premiere scanline qui intersecte le polygone
 	int scanline_num = y_min;
 
-	//Tant TC et TCA non vide
-	while((isTC_empty(tab_TC, taille_tc)==false) && (*TCA != NULL)){
+	//Tant TC et TCA non vide, c'est à dire tant que l'un des deux n'est pas vide
+	while((isTC_empty(tab_TC, taille_tc)==false) || (*TCA != NULL)){
+		//jusque la tout marche
+
 		//deplacer les coté de TC(scanline_num) dans TCA -> "les delete de TC"
 		//On les rajouter dans TCA
-		lc_t* current_list_chaine = tab_TC[scanline_num];
+		lc_t* current_list_chaine = tab_TC[scanline_num - y_min];
 		add_to_TCA(TCA, current_list_chaine);
 		//On remplace le pointeur par NULL dans TC à la scanline "scanline_num"
-		tab_TC[scanline_num] = NULL;
+		tab_TC[scanline_num - y_min] = NULL;
 
 		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
 		int size_TCA = delete_side_TCA(TCA, scanline_num); //On a besoin taille pour qsort
 
 		//trier TCA par abscisse croissant des intersection de côté avec la scanline (trier par x_ymin croissant)
-		qsort(*TCA, size_TCA, sizeof(lc_t), compare_xymin_Function);
+		//Ne pas utiliser qsort -> qsort marche sur les tableaux pas sur les listes chainées
+		//pas de trie car on fait rentrer les cell dans TCA dans le bon ordre.
 
 		//Modifier les pixels de l’image sur la scanline, dans les intervalles intérieurs au polygone
-		draw_scanline(*TCA, size_TCA, scanline_num, surface, color);
+		draw_scanline(TCA, size_TCA, scanline_num, surface, color);
 
 		//incrémenter y.
 		scanline_num++;
 
 		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline (les x_ymin)
 		//On calcul les nouveaux x_ymin dans TCA
-		update_x_ymin_sides(*TCA);
+		update_x_ymin_sides(TCA);
 	}
+	free(TCA);
+	free(tab_TC);
 }
 
 //typedef struct {
