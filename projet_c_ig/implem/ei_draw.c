@@ -368,6 +368,10 @@ void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color
 	}
 }
 
+void update_x_ymin_sides(lc_t* TCA, int size_TCA) {
+	lc_t*
+}
+
 //JE réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
@@ -471,7 +475,8 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		scanline_num++;
 
 		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline (les x_ymin)
-
+		//On calcul les nouveaux x_ymin dans TCA
+		update_x_ymin_sides(*TCA, size_TCA);
 	}
 }
 
