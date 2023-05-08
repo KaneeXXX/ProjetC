@@ -273,10 +273,15 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 void print_chain(int indice_in_TC, lc_t** tab_TC) {
 	//tab_TC est un tableau de pointeur vers des struct lc_t
 	lc_t cell = *(tab_TC[indice_in_TC]);
-	do {
-		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+	printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+	if (cell.next != NULL) {
+		printf("- > ");
 		cell = *(cell.next);
-	} while (cell.next != NULL);
+		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+	} else {
+		printf("\n");
+	}
+
 }
 
 //JE réutilise getVoisins et min_max simplifiée
@@ -332,7 +337,6 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			current_v_g->E = 0;
 			current_v_g->next = NULL;
 			has_voisin_gauche = true;
-
 		}
 		if (voisin_droite.y > current_point.y) {
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
