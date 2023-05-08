@@ -126,7 +126,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		}
 		dx=abs(dx);
 		dy=abs(dy);
-		if (abs(dx) > abs(dy)) {
+		if (abs(dx) > abs(dy)) { // |dx| > |dy|
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -137,7 +137,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 					E -= dx;
 				}
 			}
-		} else {
+		} else { // |dx| < |dy|
 			while (y0 < y1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -156,7 +156,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 			swap(&y0, &y1);
 		}
 		dy = abs(dy); //dy<0 in this case
-		if (abs(dx) > abs(dy)) {
+		if (abs(dx) > abs(dy)) { // |dx| > |dy|
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -167,7 +167,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 					E -= abs(dx);
 				}
 			}
-		} else {
+		} else { // |dx| < |dy|
 			while (y0 > y1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
 				draw_pixel(pixel, surface, color);
@@ -365,11 +365,22 @@ void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color
 			draw_line(surface, p1, p2, color);
 			state = IN;
 		}
+		ptr_current_cell = ptr_current_cell -> next; //On avance dans TCA
 	}
 }
 
-void update_x_ymin_sides(lc_t* TCA, int size_TCA) {
-	lc_t*
+void update_x_ymin_sides(lc_t* TCA) {
+	lc_t* current_cell = TCA;
+	while (current_cell != NULL){
+		//update x_ymin
+		double old_x_ymin = current_cell ->x_ymin;
+		int dx = current_cell ->abs_dx;
+		int dy = current_cell ->abs_dy;
+
+
+
+		current_cell = current_cell ->next;
+	}
 }
 
 //JE réutilise getVoisins et min_max simplifiée
@@ -476,7 +487,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 
 		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline (les x_ymin)
 		//On calcul les nouveaux x_ymin dans TCA
-		update_x_ymin_sides(*TCA, size_TCA);
+		update_x_ymin_sides(*TCA);
 	}
 }
 
