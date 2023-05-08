@@ -419,8 +419,17 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
 		delete_side_TCA(TCA, scanline_num);
 
-		//ier TCA par abscisse croissant des intersection de côté avec la scanline
-		qsort( );
+		//trier TCA par abscisse croissant des intersection de côté avec la scanline
+		qsort();
+
+		//Modifier les pixels de l’image sur la scanline, dans les intervalles intérieurs au polygone
+		
+
+		//incrémenter y.
+		scanline_num++;
+
+		//Mettre à jour les abscisses d’intersections des côtés de TCA avec la nouvelle scanline
+
 	}
 
 
