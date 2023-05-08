@@ -284,6 +284,28 @@ void print_chain(int indice_in_TC, lc_t** tab_TC) {
 
 }
 
+//return True is TC empty
+bool isTC_empty(lc_t** tab_TC, int taille_tc){
+	for(int i = 0; i < taille_tc; i++) {
+		if(tab_TC[i] != NULL) {
+			return false;
+		}
+	}
+	return true;
+}
+
+//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
+void delete_side_TCA(lc_t* TCA, int scanline_num) {
+	if (TCA == NULL) {
+		return;
+	}
+	lc_t current_side = *TCA; //init à première cellule
+	while (current_side != NULL) {
+		
+	}
+
+}
+
 //JE réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
@@ -354,10 +376,23 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 		print_chain(current_point.y - y_min, tab_TC);
-		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (à faire ? jsp -> voir sujet)
+		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (d'après le sujet pas besoin)
 	}
+	//On libère la mémoire associé à cette liste intermédiaire.
 	free(copy_point_array);
 	//End of building of TC.
+
+	//init TCA à NULL, TCA pointeur vers cellule type lc_t
+	lc_t* TCA = NULL;
+	//Init le numero de scan line à la premiere scanline qui intersecte le polygone
+	int scanline_num = y_min;
+
+	//Tant TC et TCA non vide
+	while((isTC_empty(tab_TC, taille_tc)==false) && (TCA != NULL)){
+
+		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
+		delete_side_TCA(TCA, scanline_num);
+	}
 
 
 }
