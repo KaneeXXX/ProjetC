@@ -308,15 +308,22 @@ void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 }
 
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
-void delete_side_TCA(lc_t* TCA, int scanline_num) {
-	if (TCA == NULL) {
+void delete_side_TCA(lc_t** TCA, int scanline_num) {
+	if (*TCA == NULL) {
 		return;
 	}
-	lc_t current_side = *TCA; //init à première cellule
-	while (current_side != NULL) {
-
+	lc_t* ptr_previous = *TCA;
+	lc_t* ptr_current_side = *TCA; //init à première cellule
+	while (ptr_current_side != NULL) {
+		if(ptr_current_side -> y_max == scanline_num){
+			ptr_previous = ptr_current_side -> next;
+			free(ptr_current_side);
+			ptr_current_side = ptr_previous; //On raccroche
+			continue;
+		}
+		ptr_previous = ptr_current_side;
+		ptr_current_side = ptr_current_side -> next; //On avance dans chain
 	}
-
 }
 
 //JE réutilise getVoisins et min_max simplifiée
@@ -406,9 +413,14 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		//On les rajouter dans TCA
 		lc_t* current_list_chaine = tab_TC[scanline_num];
 		add_to_TCA(TCA, current_list_chaine);
+		//On remplace le pointeur par NULL dans TC à la scanline "scanline_num"
+		tab_TC[scanline_num] = NULL;
 
 		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
 		delete_side_TCA(TCA, scanline_num);
+
+		//ier TCA par abscisse croissant des intersection de côté avec la scanline
+		qsort( );
 	}
 
 
