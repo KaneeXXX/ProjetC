@@ -377,7 +377,7 @@ void update_x_ymin_sides(lc_t* TCA) {
 		int dx = current_cell ->abs_dx;
 		int dy = current_cell ->abs_dy;
 
-
+		current_cell -> x_ymin = old_x_ymin + dx/dy;
 
 		current_cell = current_cell ->next;
 	}
@@ -431,8 +431,10 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			tab_TC[current_point.y - y_min] = current_v_g;
 			current_v_g->y_max = voisin_gauche.y;
 			current_v_g->x_ymin = current_point.x;
-			current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
-			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);
+			/*current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
+			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);*/
+			current_v_g->abs_dx = voisin_gauche.x-current_point.x;
+			current_v_g->abs_dy = voisin_gauche.y-current_point.y;
 			current_v_g->E = 0;
 			current_v_g->next = NULL;
 			has_voisin_gauche = true;
@@ -441,8 +443,10 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
 			current_v_d->y_max = voisin_droite.y;
 			current_v_d->x_ymin = current_point.x;
-			current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
-			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);
+			/*current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
+			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);*/
+			current_v_d->abs_dx = voisin_droite.x-current_point.x;
+			current_v_d->abs_dy = voisin_droite.y-current_point.y;
 			current_v_d->E = 0;
 			current_v_d->next = NULL;
 			//coplete the chains if 2 sides to consider.
