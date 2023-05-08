@@ -294,6 +294,19 @@ bool isTC_empty(lc_t** tab_TC, int taille_tc){
 	return true;
 }
 
+//ajouter à TCA des cotés à la suite du chainage
+void add_to_TCA(lc_t** TCA, lc_t* chaine) {
+	lc_t* current_side = *TCA;//ptr vers 1er element element de TCA
+	if(current_side == NULL){ //TCA pointeur vers NULL (vide)
+		*TCA = chaine; //TCA pointe alors vers chaine
+		return;
+	}
+	while(current_side -> next != NULL) {
+		current_side = current_side -> next; //On move dans la chaine
+	}
+	current_side -> next = chaine; //On raccroche chaine à la fin de TCA.
+}
+
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
 void delete_side_TCA(lc_t* TCA, int scanline_num) {
 	if (TCA == NULL) {
@@ -301,7 +314,7 @@ void delete_side_TCA(lc_t* TCA, int scanline_num) {
 	}
 	lc_t current_side = *TCA; //init à première cellule
 	while (current_side != NULL) {
-		
+
 	}
 
 }
@@ -383,12 +396,16 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//End of building of TC.
 
 	//init TCA à NULL, TCA pointeur vers cellule type lc_t
-	lc_t* TCA = NULL;
+	lc_t** TCA = NULL;
 	//Init le numero de scan line à la premiere scanline qui intersecte le polygone
 	int scanline_num = y_min;
 
 	//Tant TC et TCA non vide
-	while((isTC_empty(tab_TC, taille_tc)==false) && (TCA != NULL)){
+	while((isTC_empty(tab_TC, taille_tc)==false) && (*TCA != NULL)){
+		//deplacer les coté de TC(scanline_num) dans TCA -> "les delete de TC"
+		//On les rajouter dans TCA
+		lc_t* current_list_chaine = tab_TC[scanline_num];
+		add_to_TCA(TCA, current_list_chaine);
 
 		//supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = y (scanline_num)
 		delete_side_TCA(TCA, scanline_num);
