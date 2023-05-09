@@ -411,8 +411,8 @@ void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_colo
 	}
 }
 
-void update_x_ymin_sides(lc_t* TCA) {
-	lc_t* current_cell = TCA;
+void update_x_ymin_sides(lc_t** TCA) {
+	lc_t* current_cell = *TCA;
 	while (current_cell != NULL){
 		//update x_ymin
 		double old_x_ymin = current_cell ->x_ymin;
