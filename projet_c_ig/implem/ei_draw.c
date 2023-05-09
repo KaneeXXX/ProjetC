@@ -224,6 +224,7 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 		}
 	}
 }
+enum direction {LEFT, RIGHT};
 
 typedef struct lc_t lc_t;
 
@@ -233,6 +234,7 @@ struct lc_t {
 	int 				E;
 	int 				abs_dx;
 	int 				abs_dy;
+	enum direction 			dir;
 	lc_t 				*next; // next
 };
 
@@ -284,7 +286,7 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
         // points...
 	int max = 0;
 	//trouver une solution pour mettre genre min = plus infini
-	int min = 4000;
+	int min = INFINITY;
 
 	for (size_t i = 0; i < point_array_size -1; i++){
 		if (point_array[i].y > max){
@@ -326,22 +328,6 @@ bool isTC_empty(lc_t** tab_TC, int size_tc){
 	return true;
 }
 
-/*//ajouter à TCA des cotés à la suite du chainage
-void add_to_TCA(lc_t** TCA, lc_t* chaine) {
-	if(*TCA == NULL){
-		*TCA = chaine;
-		return;
-	}
-	lc_t* current_side = *TCA;//ptr vers 1er element element de TCA
-	if(current_side == NULL){ //TCA pointeur vers NULL (vide)
-		*TCA = chaine; //TCA pointe alors vers chaine
-		return;
-	}
-	while(current_side -> next != NULL) {
-		current_side = current_side -> next; //On move dans la chaine
-	}
-	current_side -> next = chaine; //On raccroche chaine à la fin de TCA.
-}*/
 //ajouter à TCA des cotés à la suite du chainage
 void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 	if(*TCA == NULL){ //On ajoute la ou les deux cellules de chaine de facon ordonnée (croissance selon x_ymin)
@@ -363,27 +349,43 @@ void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 		}
 		return;
 	}
+	if(chaine == NULL){
+		return;
+	}
+
 	//Cas si TCA contient dejà des cellules, on doit ajouter les cellules de chainées pour garder ordrer trié selon x_ymin
 	//pour chaque élement (2 au plus) de "chaine" on le place au bon endroit dans TCA (déjà trié).
 	lc_t* ptrfirst_cell_in_chain = chaine;
+	lc_t* ptrseconde_cell_in_chain = chaine ->next; //POssiblement NULL
 
 	for(int i = 0; i < 2; i++) { //faire 2 fois car deux cellules, au plus, in "chaine"
 		lc_t *ptr_previous = *TCA;
 		lc_t *ptr_current_cell_TCA = *TCA; //init à première cellule
-		while (ptr_current_cell_TCA != NULL) {
-			if (ptr_current_cell_TCA->x_ymin > ptrfirst_cell_in_chain->x_ymin) {
-				ptr_previous = ptrfirst_cell_in_chain;
-				ptrfirst_cell_in_chain->next = ptr_current_cell_TCA;
-				return;
+		bool entete = true;
+		bool placed=false;
+		while (ptr_current_cell_TCA != NULL && placed==false) {
+
+			if (ptr_current_cell_TCA->x_ymin >= ptrfirst_cell_in_chain->x_ymin) {
+				if(entete) {
+					*TCA = ptrfirst_cell_in_chain;
+					ptrfirst_cell_in_chain -> next = ptr_current_cell_TCA;
+
+				} else {
+					ptr_previous -> next = ptrfirst_cell_in_chain;
+					ptrfirst_cell_in_chain->next = ptr_current_cell_TCA;
+					placed=true;
+				}
 			}
 			ptr_previous = ptr_current_cell_TCA;
 			ptr_current_cell_TCA = ptr_current_cell_TCA->next; //On avance dans chain
+			entete = false;
 		}
-		if(ptrfirst_cell_in_chain ->next == NULL) { //s'il n'y a PAS de deuxième cellule
+		if(ptrseconde_cell_in_chain == NULL) { //s'il n'y a PAS de deuxième cellule
 			return;
 		} //sinon
-		ptrfirst_cell_in_chain = ptrfirst_cell_in_chain -> next; //On passe à la 2e cell de "chaine"
+		ptrfirst_cell_in_chain = ptrseconde_cell_in_chain; //On passe à la 2e cell de "chaine"
 	}
+
 }
 
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
@@ -394,17 +396,31 @@ int delete_side_TCA(lc_t** TCA, int scanline_num) {
 	int size_TCA = 0; //Going to be increased while going through the loop.
 	lc_t* ptr_previous = *TCA;
 	lc_t* ptr_current_side = *TCA; //init à première cellule
+	bool entete = true;
 	while (ptr_current_side != NULL) {
 		if(ptr_current_side -> y_max == scanline_num){
-			ptr_previous = ptr_current_side -> next;
-			free(ptr_current_side); //On supprime ici une cellule type lc_t
-			ptr_current_side = ptr_previous; //On raccroche
-			continue;
+			if(entete){
+				*TCA = ptr_current_side ->  next;
+				lc_t* to_free = ptr_current_side;
+				ptr_current_side = ptr_current_side -> next;
+				free(to_free);
+
+				continue;
+			} else {
+				//ptr_previous = ptr_current_side -> next;
+				//free(ptr_current_side); //On supprime ici une cellule type lc_t
+				//ptr_current_side = ptr_previous; //On raccroche
+				ptr_previous->next = ptr_current_side->next;
+				free(ptr_current_side);
+				size_TCA--;
+				continue;
+			}
 		}
 		ptr_previous = ptr_current_side;
 		ptr_current_side = ptr_current_side -> next; //On avance dans chain
 
 		size_TCA++;
+		entete = false;
 	}
 	return size_TCA;
 }
@@ -441,15 +457,31 @@ void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_colo
 
 void update_x_ymin_sides(lc_t** TCA) {
 	lc_t* current_cell = *TCA;
-	while (current_cell != NULL){
+	while (current_cell != NULL) {
 		//update x_ymin
-		double old_x_ymin = current_cell ->x_ymin;
-		int dx = current_cell ->abs_dx;
-		int dy = current_cell ->abs_dy;
+		enum direction dir = current_cell->dir;
+		int abs_dx = current_cell->abs_dx;
+		int abs_dy = current_cell->abs_dy;
 
-		current_cell -> x_ymin = (dy == 0) ? old_x_ymin : old_x_ymin + dx/dy;
+		if (abs_dx == 0) {
+			current_cell = current_cell->next;
+			continue;
+		}
 
-		current_cell = current_cell ->next;
+		if (dir == RIGHT) {
+			current_cell->E += abs_dx;
+			while (2 * (current_cell->E) > abs_dy) {
+				(current_cell->x_ymin) += 1;
+				current_cell->E -= abs_dy;
+			}
+		} else {
+			current_cell->E += abs_dx;
+			while (2 * (current_cell->E) > abs_dy) {
+				(current_cell->x_ymin) -= 1;
+				current_cell->E -= abs_dy;
+			}
+		}
+		current_cell = current_cell->next;
 	}
 }
 
@@ -501,11 +533,10 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			tab_TC[current_point.y - y_min] = current_v_g;
 			current_v_g->y_max = voisin_gauche.y;
 			current_v_g->x_ymin = current_point.x;
-			/*current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
-			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);*/
-			current_v_g->abs_dx = voisin_gauche.x-current_point.x;
-			current_v_g->abs_dy = voisin_gauche.y-current_point.y;
+			current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
+			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);
 			current_v_g->E = 0;
+			current_v_g->dir = (voisin_gauche.x > current_point.x) ? RIGHT : LEFT;
 			current_v_g->next = NULL;
 			has_voisin_gauche = true;
 		}
@@ -513,13 +544,12 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
 			current_v_d->y_max = voisin_droite.y;
 			current_v_d->x_ymin = current_point.x;
-			/*current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
-			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);*/
-			current_v_d->abs_dx = voisin_droite.x-current_point.x;
-			current_v_d->abs_dy = voisin_droite.y-current_point.y;
+			current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
+			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);
 			current_v_d->E = 0;
+			current_v_d->dir = (voisin_droite.x > current_point.x) ? RIGHT : LEFT;
 			current_v_d->next = NULL;
-			//coplete the chains if 2 sides to consider.
+			//complete the chains if 2 sides to consider.
 			if (has_voisin_gauche == true) {
 				tab_TC[current_point.y - y_min]->next = current_v_d;
 			} else {
@@ -572,220 +602,3 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	free(TCA);
 	free(tab_TC);
 }
-
-//typedef struct {
-//	int 				y_min;
-//	int 				y_max;
-//	ei_point_t 			p_min;
-//	int 				index_p_min;
-//	ei_point_t 			p_max;
-//	int 				index_p_max;
-//} minmax_t;
-//
-////regarde si i est dans le tableau d'entier tab
-//bool is_in_tab(size_t nb, int* tab){
-//	int len=0;
-//	for (int i = 0; tab[i]!=NULL; i++) {
-//		len++;
-//	}
-//	for (int i =1; i<= len; i++){
-//		if (nb==tab[i]){
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-//
-//
-//
-//minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size, int* tab){
-//	// Récupère les ordonnées minimale et maximale des points du tableau
-//	// en entrée ainsi que les points ayant ces ordonnées extrêmes
-//        // On retourne, par ailleurs, les indices dans le tableau de ces
-//        // points...
-//
-//	int max = 0;
-//	//trouver une solution pour mettre genre min = plus infini
-//	int min = 4000;
-//        ei_point_t p_min = {0, 0};
-//        int index_p_min = 0;
-//        int index_p_max = 0;
-//        ei_point_t p_max = {0, 0};
-//	for (size_t i = 0; i < point_array_size -1; i++){
-//		if (is_in_tab(i, tab)){
-//			//On sort de la boucle for parce qu'on ne veut pas traiter
-//			// ces points là...
-//			continue;
-//		}
-//
-//		if (point_array[i].y > max){
-//			max = point_array[i].y;
-//			p_max = point_array[i];
-//			index_p_max = i;
-//		}
-//		if (point_array[i].y <= min){
-//			min = point_array[i].y;
-//			p_min = point_array[i];
-//			index_p_min = i;
-//
-//		}
-//	}
-//	minmax_t res = {min, max, p_min, index_p_min, p_max, index_p_max};
-//	return res;
-//}
-//
-//
-//
-//ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_array_size){
-//	ei_point_t voisin_gauche = {0,0};
-//	ei_point_t voisin_droite = {0,0};
-//	if (indice != 0 && indice != point_array_size -1){
-//		voisin_gauche = point_array[(int)(indice -1)];
-//		voisin_droite = point_array[(int)(indice +1)];
-//	}
-//	if (indice == 0){
-//		voisin_gauche = point_array[(int)(point_array_size-1)];
-//		voisin_droite = point_array[1];
-//	}
-//	if (indice == point_array_size -1){
-//		voisin_gauche = point_array[(int)(indice -1)];
-//		voisin_droite = point_array[0];
-//	}
-//
-//	ei_point_t* res = calloc(2, sizeof(ei_point_t));
-//	res[0] = voisin_gauche;
-//	res[1] = voisin_droite;
-//
-//	return res;
-//}
-//
-//void print_lc(lc_t liste_chaine) {
-//	printf("y_max=%i, x_ymin=%i \n", liste_chaine.y_max, liste_chaine.x_ymin);
-//}
-//
-//void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper) {
-//
-//// On crée TC
-//
-//
-//	// Ce tableau contient l'indice dans point_array des points déjà traités...
-//	// A l'indice 0 de ce tableau, il y a le nombre de points déjà traitées...
-//	int* points_to_ignore_indice = calloc(point_array_size + 1, sizeof(int));
-//
-//	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
-//	points_to_ignore_indice[0]++;
-//	points_to_ignore_indice[1] = critical_pts.index_p_min;
-//        int va = points_to_ignore_indice[1];
-//
-//	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
-//
-//	int taille_tc = (critical_pts.y_max - critical_pts.y_min + 1);
-//	lc_t** tab_tc = calloc(taille_tc, sizeof(lc_t*));
-//
-//	//Le point B sur le graphique et son indice dans le tableau point_array..
-//	ei_point_t point_plus_haut = critical_pts.p_min;
-//	int indice = critical_pts.index_p_min;
-//	int y_min = critical_pts.y_min;
-//
-//
-//	// On parcourt le tableau tab_tc qu'on remplit par des listes chaînées...
-//	// i = 0 correspond à la scanline y = ymin... i= taille_tc -1 correspond à la
-//	// scanline y = ymax...
-//	// Pour un numéro de scanline y donné, sa position i dans le tableau tab_tc sera
-//	// i = y - ymin
-//
-//	// On remplit tab_tc à l'indice 0. (Point B)...
-//	ei_point_t* voisins = get_voisins(point_array, indice, point_array_size);
-//	ei_point_t voisin_gauche = voisins[0];
-//	ei_point_t voisin_droite = voisins[1];
-//
-//	// On réserve de la mémoire poour les voisins de B
-//	lc_t* v_g = calloc(1, sizeof(lc_t));
-//	lc_t* v_d = calloc(1, sizeof(lc_t));
-//	tab_tc[0] = v_g;
-//
-//	// On complète v_g
-//	v_g->y_max = voisin_gauche.y;
-//	v_g->x_ymin = point_plus_haut.x;
-//	v_g->abs_dx = abs(voisin_gauche.x-point_plus_haut.x);
-//	v_g->abs_dy = abs(voisin_gauche.y-point_plus_haut.y);
-//	v_g->E = 0;
-//	v_g->next = v_d;
-//
-//	// On complète v_d
-//	v_d->y_max = voisin_droite.y;
-//	v_d->x_ymin = point_plus_haut.x;
-//	v_d->abs_dx = abs(voisin_droite.x-point_plus_haut.x);
-//	v_d->abs_dy = abs(voisin_droite.y-point_plus_haut.y);
-//	v_d->E = 0;
-//	v_d->next = NULL;
-//
-//	//  Point B déjà traitÉ...
-//	// On initialise current à A...
-//	minmax_t current_critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
-//	ei_point_t current_point = current_critical_pts.p_min;
-//	int current_indice = current_critical_pts.index_p_min;
-//	// On actualise le tableau points_to_ignore_indice
-//	points_to_ignore_indice[points_to_ignore_indice[0]+1]= current_critical_pts.index_p_min;
-//	int va2 = points_to_ignore_indice[points_to_ignore_indice[0]+1];
-//
-//	points_to_ignore_indice[0]++;
-//
-//	print_lc(*tab_tc[0]);
-//	while( points_to_ignore_indice[0] < point_array_size){ /* On s'arrête quand on a traité tous les points*/
-//		ei_point_t* current_voisins = get_voisins(point_array, (size_t)(current_indice), point_array_size);
-//		ei_point_t current_voisin_gauche = current_voisins[0];
-//		ei_point_t current_voisin_droite = current_voisins[1];
-//
-//		bool has_voisin_gauche = false;
-//		if (current_voisin_gauche.y > current_point.y ){
-//			lc_t* current_v_g = calloc(1, sizeof(lc_t));
-//			tab_tc[current_point.y - y_min] = current_v_g;
-//			current_v_g->y_max = current_voisin_gauche.y;
-//			current_v_g->x_ymin = current_point.x;
-//			current_v_g->abs_dx = abs(current_voisin_gauche.x-current_point.x);
-//			current_v_g->abs_dy = abs(current_voisin_gauche.y-current_point.y);
-//			current_v_g->E = 0;
-//			current_v_g->next = NULL;
-//			has_voisin_gauche = true;
-//
-//		}
-//		if (current_voisin_droite.y > current_point.y ){
-//			lc_t* current_v_d = calloc(1, sizeof(lc_t));
-//			current_v_d->y_max = current_voisin_droite.y;
-//			current_v_d->x_ymin = current_point.x;
-//			current_v_d->abs_dx = abs(current_voisin_droite.x-current_point.x);
-//			current_v_d->abs_dy = abs(current_voisin_droite.y-current_point.y);
-//			current_v_d->E = 0;
-//			current_v_d->next = NULL;
-//			if (has_voisin_gauche == true) {
-//				tab_tc[current_point.y - y_min]->next = current_v_d;
-//			} else {
-//				tab_tc[current_point.y - y_min] = current_v_d;
-//			}
-//		}
-//		//On cherche le nouveau à traiter...Le point à l'ordonnée la plus petite, A et B exclus.
-//		int a = points_to_ignore_indice[0];
-//		int b = points_to_ignore_indice[1];
-//		int c = points_to_ignore_indice[points_to_ignore_indice[0] + 1]; // c et c censé entre idem
-//		int d = points_to_ignore_indice[2];
-//		current_critical_pts = min_max_sur_y(point_array, point_array_size, points_to_ignore_indice);
-//		current_point = current_critical_pts.p_min;
-//		current_indice = current_critical_pts.index_p_min;
-//
-//		//On actualise le tableau points_to_ignore_indice
-//		points_to_ignore_indice[points_to_ignore_indice[0]+1]= current_critical_pts.index_p_min;
-//		points_to_ignore_indice[0]++;
-//		print_lc(*tab_tc[current_point.y - y_min]);
-//	}
-////
-////
-////	int scanline = y_min;
-////	struct lc* TCA = calloc(1, sizeof(struct lc));
-//
-//	return;
-//
-//}
-
-
-
