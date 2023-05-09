@@ -20,6 +20,33 @@
 //NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
 //hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
 
+
+
+bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
+
+
+
+	// On récupère les informations de la surface
+	ei_size_t size = hw_surface_get_size(surface);
+	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
+
+	// On récupère les informations du clipper
+	int largeur = clipper->size.width;
+	int hauteur = clipper->size.height;
+	int origine_x0 = clipper->top_left.x;
+	int origine_y0 = clipper->top_left.y;
+
+	//On récupère les informations du point
+	int point_x = (addr - surface_buffer)/size.width;
+	int point_y = (addr - surface_buffer)%size.width;
+
+	// Vérifications que le pixel est bien dans le rectangle
+
+	bool verif_abs = (point_x >= origine_x0) && (point_x <= largeur);
+	bool verif_ord = (point_y >= origine_y0) && (point_y <= hauteur);
+	return verif_abs && verif_ord;
+}
+
 void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* clipper)
 {
 	//Returns a pointer pointing at the address of the pixel at coordinates (0, 0) of the surface.
@@ -57,20 +84,21 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 	}
 }
 
-void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color)
+void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const ei_rect_t* clipper)
 {
 	//Get order of colors in pixel because it's not always the same
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-	uint32_t pixel_value;
-	uint8_t* channel_ptr = (uint8_t*) &pixel_value; //ptr to pixel_value
-	channel_ptr[ir] = color.red;
-	channel_ptr[ig] = color.green;
-	channel_ptr[ib] = color.blue;
-	channel_ptr[ia] = color.alpha;
-	*addr = pixel_value;
-}
+	if (is_pixel_drawable(addr, surface, clipper )){
+		uint32_t pixel_value;
+		uint8_t* channel_ptr = (uint8_t*) &pixel_value; //ptr to pixel_value
+		channel_ptr[ir] = color.red;
+		channel_ptr[ig] = color.green;
+		channel_ptr[ib] = color.blue;
+		channel_ptr[ia] = color.alpha;
+		*addr = pixel_value;
+	}
 
 void swap(int *a, int *b)
 {
