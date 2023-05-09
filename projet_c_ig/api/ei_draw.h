@@ -119,6 +119,6 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 bool			alpha);
 
 
-void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie);
+ei_point_t* arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin);
 
 #endif

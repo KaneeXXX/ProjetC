@@ -45,7 +45,11 @@ int main(int argc, char* argv[])
 
 	ei_size_t size={100, 100};
 	ei_rect_t rectangle = {point_array[3], size};
-	draw_button(main_window, rectangle, 10, ei_relief_raised);
+	ei_point_t centre={0, 0};
+	int rayon=100;
+	float ad=0.;
+	float aa=90.;
+	ei_point_t* arc(main_window, centre, rayon, ad, aa);
 
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
