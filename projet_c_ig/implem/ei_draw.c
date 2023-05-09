@@ -258,7 +258,7 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
         // points...
 	int max = 0;
 	//trouver une solution pour mettre genre min = plus infini
-	int min = 4000;
+	int min = INFINITY;
 
 	for (size_t i = 0; i < point_array_size -1; i++){
 		if (point_array[i].y > max){
