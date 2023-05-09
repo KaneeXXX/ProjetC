@@ -119,6 +119,6 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 bool			alpha);
 
 
-
+void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie);
 
 #endif

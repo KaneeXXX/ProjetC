@@ -42,6 +42,11 @@ int main(int argc, char* argv[])
 	size_t length=6;
 	ei_color_t color = {0, 255, 255, 0};
 	ei_draw_polygon (main_window, point_array, length, color, NULL);
+
+	ei_size_t size={100, 100};
+	ei_rect_t rectangle = {point_array[3], size};
+	draw_button(main_window, rectangle, 10, ei_relief_raised);
+
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
