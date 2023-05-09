@@ -335,27 +335,43 @@ void add_to_TCA(lc_t** TCA, lc_t* chaine) {
 		}
 		return;
 	}
+	if(chaine == NULL){
+		return;
+	}
+
 	//Cas si TCA contient dejà des cellules, on doit ajouter les cellules de chainées pour garder ordrer trié selon x_ymin
 	//pour chaque élement (2 au plus) de "chaine" on le place au bon endroit dans TCA (déjà trié).
 	lc_t* ptrfirst_cell_in_chain = chaine;
+	lc_t* ptrseconde_cell_in_chain = chaine ->next; //POssiblement NULL
 
 	for(int i = 0; i < 2; i++) { //faire 2 fois car deux cellules, au plus, in "chaine"
 		lc_t *ptr_previous = *TCA;
 		lc_t *ptr_current_cell_TCA = *TCA; //init à première cellule
-		while (ptr_current_cell_TCA != NULL) {
-			if (ptr_current_cell_TCA->x_ymin > ptrfirst_cell_in_chain->x_ymin) {
-				ptr_previous = ptrfirst_cell_in_chain;
-				ptrfirst_cell_in_chain->next = ptr_current_cell_TCA;
-				return;
+		bool entete = true;
+		bool placed=false;
+		while (ptr_current_cell_TCA != NULL && placed==false) {
+
+			if (ptr_current_cell_TCA->x_ymin >= ptrfirst_cell_in_chain->x_ymin) {
+				if(entete) {
+					*TCA = ptrfirst_cell_in_chain;
+					ptrfirst_cell_in_chain -> next = ptr_current_cell_TCA;
+
+				} else {
+					ptr_previous -> next = ptrfirst_cell_in_chain;
+					ptrfirst_cell_in_chain->next = ptr_current_cell_TCA;
+					placed=true;
+				}
 			}
 			ptr_previous = ptr_current_cell_TCA;
 			ptr_current_cell_TCA = ptr_current_cell_TCA->next; //On avance dans chain
+			entete = false;
 		}
-		if(ptrfirst_cell_in_chain ->next == NULL) { //s'il n'y a PAS de deuxième cellule
+		if(ptrseconde_cell_in_chain == NULL) { //s'il n'y a PAS de deuxième cellule
 			return;
 		} //sinon
-		ptrfirst_cell_in_chain = ptrfirst_cell_in_chain -> next; //On passe à la 2e cell de "chaine"
+		ptrfirst_cell_in_chain = ptrseconde_cell_in_chain; //On passe à la 2e cell de "chaine"
 	}
+
 }
 
 //supprimer de TCA les cotés tel que ymax (contenu dans les cellules de TCA) = scanline_num
@@ -366,17 +382,31 @@ int delete_side_TCA(lc_t** TCA, int scanline_num) {
 	int size_TCA = 0; //Going to be increased while going through the loop.
 	lc_t* ptr_previous = *TCA;
 	lc_t* ptr_current_side = *TCA; //init à première cellule
+	bool entete = true;
 	while (ptr_current_side != NULL) {
 		if(ptr_current_side -> y_max == scanline_num){
-			ptr_previous = ptr_current_side -> next;
-			free(ptr_current_side); //On supprime ici une cellule type lc_t
-			ptr_current_side = ptr_previous; //On raccroche
-			continue;
+			if(entete){
+				*TCA = ptr_current_side ->  next;
+				lc_t* to_free = ptr_current_side;
+				ptr_current_side = ptr_current_side -> next;
+				free(to_free);
+
+				continue;
+			} else {
+				//ptr_previous = ptr_current_side -> next;
+				//free(ptr_current_side); //On supprime ici une cellule type lc_t
+				//ptr_current_side = ptr_previous; //On raccroche
+				ptr_previous->next = ptr_current_side->next;
+				free(ptr_current_side);
+				size_TCA--;
+				continue;
+			}
 		}
 		ptr_previous = ptr_current_side;
 		ptr_current_side = ptr_current_side -> next; //On avance dans chain
 
 		size_TCA++;
+		entete = false;
 	}
 	return size_TCA;
 }
