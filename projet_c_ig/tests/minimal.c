@@ -44,6 +44,12 @@ int main(int argc, char* argv[])
 //	ei_color_t color = {0, 255, 255, 0};
 //	ei_draw_polygon (main_window, point_array, length, color, NULL);
 
+	//TESTS DRAW_POLYGON
+//	ei_point_t  point_array_test[7] = {{20, 30}, {90, 10}, {150, 10}, {130, 50}, {120, 100}, {70, 70}, {20, 90}};
+//	size_t length=7;
+//	ei_color_t color = {0, 255, 255, 0};
+//	ei_draw_polygon (main_window, point_array_test, length, color, NULL);
+
 	//TEST DE ARC
 	ei_size_t size={100, 100};
 	ei_rect_t rectangle = {point_array[3], size};
@@ -54,8 +60,9 @@ int main(int argc, char* argv[])
 	//tab_and_length test = arc(main_window, centre, rayon, ad, aa);
 
 	//TEST DE ROUNDED_FRAME
-	ei_rect_t rectangle_frame = {{0, 0}, {500, 500}};
-	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon, ei_relief_none);
+	int rayon_=10;
+	ei_rect_t rectangle_frame = {{300, 300}, {100, 50}};
+	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon_, ei_relief_none);
 	//TEST DE DRAW_BUTTON
 
 	// unlock, update screen.
