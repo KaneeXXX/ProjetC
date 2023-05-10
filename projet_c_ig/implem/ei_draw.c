@@ -708,6 +708,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	}
 	free(TCA);
 	free(tab_TC);
+	//zaeaz
 }
 
 typedef struct {
