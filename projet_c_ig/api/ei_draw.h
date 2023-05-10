@@ -118,13 +118,6 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
 
-//typedef struct { //A SUPPRIMER
-//    ei_point_t* 				tab; //index of the point in the *original* array
-//    int 			length;
-//} tab_and_length;
-//
-//tab_and_length arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin); //A SUPPRIMER
-
 ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie);
 
 #endif

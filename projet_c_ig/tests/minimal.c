@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 		*point = pixel_value;
 	}
 
-	/*//TEST DE ARC
+	//TEST DE ARC
 	ei_size_t size={100, 100};
 	ei_rect_t rectangle = {point_array[3], size};
 	ei_point_t centre={100, 100};
@@ -78,8 +78,9 @@ int main(int argc, char* argv[])
 	int rayon_=10;
 	ei_rect_t rectangle_frame = {{300, 300}, {100, 50}};
 	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon_, ei_relief_none);
+
 	//TEST DE DRAW_BUTTON
-*/
+
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);

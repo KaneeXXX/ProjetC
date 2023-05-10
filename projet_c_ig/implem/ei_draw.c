@@ -91,7 +91,7 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const e
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-       if (clipper == NULL) || (is_pixel_drawable(addr, surface, clipper))
+       if ((clipper == NULL) || (is_pixel_drawable(addr, surface, clipper)))
        {
 		uint32_t pixel_value;
 		uint8_t *channel_ptr = (uint8_t *) &pixel_value; //ptr to pixel_value
@@ -769,6 +769,23 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
 	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
+//	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
+//	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
+//	float angle_arbitraire=0.;
+//	int lol=100;
+//	ei_point_t centre={(int)(rectangle.size.width), (int)(rectangle.size.height)};
+//	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
+//	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
+//	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
+//	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
+//
+//	//DEBUG: TRACE UN CERCLE
+//	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
+//	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
+//	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
+//	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
+
+
 	//Return an array of the 4 arcs
 	int length_arc=arc1.length; //supposing the lengths of all arcs are equal
 	int length_arr=4*length_arc;
@@ -794,7 +811,7 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	}
 
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_draw_polygon(surface, arr, (size_t)length_arr, grey, NULL);
 	return arr;
 }
 
@@ -816,4 +833,24 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 //	ei_color_t color = { 0x80, 0x80, 0x80, 0xff };
 //	point_array[0]=point_array[1]; //Bricolage
 //	ei_draw_polygon (surface, point_array, point_array[0].x, color, NULL);
+//}
+
+//ei_font_t hw_text_font_create		(ei_const_string_t	filename,
+//					      ei_fontstyle_t		style,
+//					      int			size);
+//
+//void hw_text_font_free(ei_font_t font);
+//
+//ei_surface_t hw_text_create_surface	(ei_const_string_t	text,
+//					    const ei_font_t	font,
+//					    ei_color_t		color);
+//
+//void	ei_draw_text(ei_surface_t	surface,
+//		    const ei_point_t*	where,
+//		    ei_const_string_t	text,
+//		    ei_font_t		font,
+//		    ei_color_t		color,
+//		    const ei_rect_t*	clipper)
+//{
+//
 //}
