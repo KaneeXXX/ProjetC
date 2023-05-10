@@ -606,80 +606,89 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	free(tab_TC);
 }
 
-typedef struct { //A DECOMMENTER APRES L'AVOIR SUPPRIME DANS EI_DRAW.H
+typedef struct {
     ei_point_t* 				tab; //index of the point in the *original* array
-    int 			length;
+    int 					length;
 } tab_and_length;
 
-tab_and_length arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin) //surface à enlever, c'était pour le debug
+/*Returns array of points forming an arc*/
+tab_and_length arc(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
-	float arbitrary_value = 1.;
-	int nb_de_points=(angle_fin-angle_debut)/(int)arbitrary_value+1;
-	angle_debut = (angle_debut * PI) / 180.; //conversion en radians
-	angle_fin = (angle_fin * PI) / 180.;
-	//A partir du point_zero, je vais avancer d'angle_debut, on va tomber sur point_debut
-	float x_debut = centre.x + rayon*cos(angle_debut);
-	float y_debut = centre.y + rayon*sin(angle_debut);
-	ei_point_t point_debut={(int)(x_debut), (int)(y_debut)};
-	float angle_courant=angle_debut;
-	ei_point_t* tab=calloc((nb_de_points+1), sizeof(ei_point_t));
-	ei_point_t nb_points = {nb_de_points, nb_de_points};
-	tab[0] = point_debut;
-	int i=1;
-	//Maintenant, j'incrémente l'angle d'une valeur arbitraire et j'ajoute le point à cet angle
-	while (angle_courant<=angle_fin) {
-		ei_point_t new_point = {centre.x + (int)(rayon*cos(angle_courant)), centre.y + (int)(rayon*sin(angle_courant))};
-		tab[i]=new_point;
-		angle_courant+=arbitrary_value*PI/180;
-		i++;
+	float step_deg = 1.;
+
+	int nb_of_points=(ending_angle-starting_angle)/(int)step_deg+1;
+	starting_angle = starting_angle * PI / 180.; //conversion to rads
+	ending_angle = ending_angle * PI / 180.;
+	float step_rad = step_deg * PI/180;
+
+	//Build the first point
+	int x0 = center.x + (int)radius*cos(starting_angle);
+	int y0 = center.y + (int)radius*sin(starting_angle);
+	ei_point_t first_point={x0, y0};
+
+	//Add it to the array
+	ei_point_t* arr=calloc((nb_of_points+1), sizeof(ei_point_t));
+	arr[0] = first_point;
+
+	//Add the other points to the array
+	float current_angle=starting_angle; //can't become the i of the for loop because is float
+	for (int i=1; current_angle<=ending_angle; i++) {
+		ei_point_t new_point = {center.x + (int)(radius*cos(current_angle)), center.y + (int)(radius*sin(current_angle))};
+		arr[i]=new_point;
+		current_angle+=step_rad;
 	}
-	//DEBUG
-//	ei_color_t color={255, 0, 255, 0};
-//	ei_draw_polyline (surface, tab, (size_t)nb_de_points, color, NULL);
 
-	tab_and_length tab_length = {tab, nb_de_points};
-	return tab_length;
-
+	tab_and_length arr_and_length = {arr, nb_of_points};
+	return arr_and_length;
 }
 
-ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)
+/*Returns array of points forming a rounded frame*/
+ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_relief_t partie)
 {
-	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
-	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
-	float angle_arbitraire=0.;
-	ei_point_t centre={(int)(rectangle.size.width/2), (int)(rectangle.size.height/2)};
-	tab_and_length arc1=arc(surface, centre, rayon, angle_arbitraire+270., angle_arbitraire+360.);
-	tab_and_length arc2=arc(surface, centre, rayon, angle_arbitraire, angle_arbitraire+90.);
-	tab_and_length arc3=arc(surface, centre, rayon, angle_arbitraire+90., angle_arbitraire+180.);
-	tab_and_length arc4=arc(surface, centre, rayon, angle_arbitraire+180., angle_arbitraire+270.);
+	int button_width = rectangle.size.width;
+	int button_height = rectangle.size.height;
+	int smallest_dimension = (button_width<button_height)? button_width : button_height;
+	float angle_origin=0.; //<=>0 of the trigonometric circle (at the extreme right of the circle)
 
-	//DEBUG: TRACE UN CERCLE
-//	ei_draw_polyline(surface, arc1.tab, arc1.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc2.tab, arc2.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc3.tab, arc3.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc4.tab, arc4.length, color_arbitraire, NULL);
+	//Get the 4 centers of the 4 round edges
+	ei_point_t center_top_right={(int)(button_width-radius), (int)(button_height-radius)};
+	ei_point_t center_bottom_right={(int)(button_width-radius), (int)(radius)};
+	ei_point_t center_bottom_left={(int)(radius), (int)(button_height-radius)};
+	ei_point_t center_top_left={(int)(radius), (int)(radius)};
 
-	int nb_points_arc1=arc1.length;
-	int nb_points_arc2=arc2.length;
-	int nb_points_arc3=arc3.length;
-	int nb_points_arc4=arc4.length;
-	int nb_de_points=nb_points_arc1+nb_points_arc2+nb_points_arc3+nb_points_arc4;
-	ei_point_t* tab=calloc(nb_de_points, sizeof(ei_point_t));
-	for (int i=0; i<nb_points_arc1; i++) {
-		tab[i]=arc1.tab[i];
+	//Build the 4 arcs of the rectangle
+	tab_and_length arc1=arc(center_bottom_right, radius, angle_origin+270., angle_origin+360.);
+	tab_and_length arc2=arc(center_top_right, radius, angle_origin, angle_origin+90.);
+	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
+	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
+
+	//Return an array of the 4 arcs
+	int length_arc=arc1.length; //supposing the lengths of all arcs are equal
+	int length_arr=4*length_arc;
+	ei_point_t* arr=calloc(length_arr, sizeof(ei_point_t));
+
+	for (int i=0; i<length_arc; i++) { //add arc1 to tab
+		arr[i]=arc1.tab[i];
 	}
-	for (int i=nb_points_arc1; i<nb_points_arc1+nb_points_arc2; i++) {
-		tab[i]=arc2.tab[i-nb_points_arc1];
+
+	int two_times_length_arc=2*length_arc;
+	for (int i=length_arc; i<two_times_length_arc; i++) { //add arc2 to tab
+		arr[i]=arc2.tab[i-length_arc];
 	}
-	for (int i=nb_points_arc1+nb_points_arc2; i<nb_points_arc1+nb_points_arc2+nb_points_arc3; i++) {
-		tab[i]=arc3.tab[i-nb_points_arc1-nb_points_arc2];
+
+	int three_times_length_arc=3*length_arc;
+	for (int i=two_times_length_arc; i<three_times_length_arc; i++) { //add arc3 to tab
+		arr[i]=arc3.tab[i-two_times_length_arc];
 	}
-	for (int i=nb_points_arc1+nb_points_arc2+nb_points_arc3; i<nb_points_arc1+nb_points_arc2+nb_points_arc3+nb_points_arc4; i++) {
-		tab[i]=arc4.tab[i-nb_points_arc1-nb_points_arc2-nb_points_arc3];
+
+	int four_times_length_arc=4*length_arc;
+	for (int i=three_times_length_arc; i<four_times_length_arc; i++) { //add arc4 to tab
+		arr[i]=arc4.tab[i-three_times_length_arc];
 	}
-	ei_color_t color={255, 0, 255, 0};
-	ei_draw_polygon(surface, tab, (size_t)nb_de_points, color, NULL);
-	return tab;
+
+	ei_color_t grey = { 128, 128, 128, 255 };
+	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
+	return arr;
 }
 
 //void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)

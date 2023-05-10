@@ -80,8 +80,9 @@ include_directories(${HEADER_DIRS})
 # target ei (libei)
 
 set(LIB_EI_SOURCES
-     ${SRC_DIR}/ei_draw.c
+     ${SRC_DIR}/ei_draw.c ${SRC_DIR}/ei_application.c ${SRC_DIR}/ei_widget.c
 )
+
 
 add_library(ei STATIC			${LIB_EI_SOURCES})
 
