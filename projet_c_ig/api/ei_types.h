@@ -34,8 +34,6 @@ typedef const char*			ei_const_string_t;
  */
 typedef void*				ei_user_param_t;
 
-
-
 /********** Drawing. **********/
 
 /**
