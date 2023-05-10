@@ -90,15 +90,17 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const e
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-	if (is_pixel_drawable(addr, surface, clipper )){
+       if (is_pixel_drawable(addr, surface, clipper ))
+       {
 		uint32_t pixel_value;
-		uint8_t* channel_ptr = (uint8_t*) &pixel_value; //ptr to pixel_value
+		uint8_t *channel_ptr = (uint8_t *) &pixel_value; //ptr to pixel_value
 		channel_ptr[ir] = color.red;
 		channel_ptr[ig] = color.green;
 		channel_ptr[ib] = color.blue;
 		channel_ptr[ia] = color.alpha;
 		*addr = pixel_value;
 	}
+}
 
 void swap(int *a, int *b)
 {
@@ -107,7 +109,7 @@ void swap(int *a, int *b)
 	*b=temp;
 }
 
-void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t color)
+void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t color, const ei_rect_t* clipper)
 {
 	uint32_t *surface_buffer = (uint32_t *) hw_surface_get_buffer(surface);
 	ei_size_t size = hw_surface_get_size(surface);
@@ -122,7 +124,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 
 	if ((x0 == x1) && (y0 == y1)) { //pt1==pt2 (draw point)
 		u_int32_t *pixel = surface_buffer + width * y0 + x0;
-		draw_pixel(pixel, surface, color);
+		draw_pixel(pixel, surface, color, clipper);
 		return;
 	}
 	else if (x0 == x1) { //vertical
@@ -132,7 +134,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		}
 		while (y0 < y1) {
 			u_int32_t *pixel = surface_buffer + width * y0 + x0;
-			draw_pixel(pixel, surface, color);
+			draw_pixel(pixel, surface, color, clipper);
 			y0++;
 		}
 	}
@@ -143,7 +145,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		}
 		while (x0 < x1) {
 			u_int32_t *pixel = surface_buffer + width * y0 + x0;
-			draw_pixel(pixel, surface, color);
+			draw_pixel(pixel, surface, color, clipper );
 			x0++;
 		}
 	}
@@ -157,7 +159,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		if (abs(dx) > abs(dy)) { // |dx| > |dy|
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
-				draw_pixel(pixel, surface, color);
+				draw_pixel(pixel, surface, color, clipper);
 				x0 += 1;
 				E += dy;
 				if (2 * E > dx) {
@@ -168,7 +170,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		} else { // |dx| < |dy|
 			while (y0 < y1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
-				draw_pixel(pixel, surface, color);
+				draw_pixel(pixel, surface, color, clipper);
 				y0 += 1;
 				E += dx;
 				if (2 * E > dy) {
@@ -187,7 +189,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		if (abs(dx) > abs(dy)) { // |dx| > |dy|
 			while (x0 < x1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
-				draw_pixel(pixel, surface, color);
+				draw_pixel(pixel, surface, color, clipper);
 				x0 += 1;
 				E += dy;
 				if (2 * E > dx) {
@@ -198,7 +200,7 @@ void draw_line(ei_surface_t surface, ei_point_t pt1, ei_point_t pt2, ei_color_t 
 		} else { // |dx| < |dy|
 			while (y0 > y1) {
 				u_int32_t *pixel = surface_buffer + width * y0 + x0;
-				draw_pixel(pixel, surface, color);
+				draw_pixel(pixel, surface, color, clipper);
 				y0 -= 1;
 				E += abs(dx);
 				if (2 * E > abs(dy)) {
@@ -216,11 +218,11 @@ void ei_draw_polyline(ei_surface_t surface, ei_point_t* point_array, size_t poin
 		return;
 	}
 	else if (point_array_size == 1) { //draw a point
-		draw_line(surface, point_array[0], point_array[0], color);
+		draw_line(surface, point_array[0], point_array[0], color, clipper);
 	}
 	else {
 		for (uint32_t i = 0; i <= point_array_size - 2; i++) {
-			draw_line(surface, point_array[i], point_array[i+1], color);
+			draw_line(surface, point_array[i], point_array[i+1], color, clipper);
 		}
 	}
 }
@@ -428,7 +430,7 @@ int delete_side_TCA(lc_t** TCA, int scanline_num) {
 enum draw_state {IN, OUT};
 
 //Colorier un scanline du polygone
-void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color) {
+void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color, const ei_rect_t *clipper) {
 	lc_t* ptr_current_cell = *TCA;
 	enum draw_state state = IN; //Entrée d'intervalle
 
@@ -448,7 +450,7 @@ void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_colo
 			x_to_color2 = floor(x_ymin);
 			ei_point_t p1 = {x_to_color1, y};
 			ei_point_t p2 = {x_to_color2, y};
-			draw_line(surface, p1, p2, color);
+			draw_line(surface, p1, p2, color, clipper);
 			state = IN;
 		}
 		ptr_current_cell = ptr_current_cell -> next; //On avance dans TCA
@@ -590,7 +592,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		//pas de trie car on fait rentrer les cell dans TCA dans le bon ordre.
 
 		//Modifier les pixels de l’image sur la scanline, dans les intervalles intérieurs au polygone
-		draw_scanline(TCA, size_TCA, scanline_num, surface, color);
+		draw_scanline(TCA, size_TCA, scanline_num, surface, color, clipper);
 
 		//incrémenter y.
 		scanline_num++;
