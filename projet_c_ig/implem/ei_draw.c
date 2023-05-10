@@ -617,18 +617,20 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 {
 	int button_width = rectangle.size.width;
 	int button_height = rectangle.size.height;
+	int offset_width = rectangle.top_left.x;
+	int offset_height = rectangle.top_left.y;
 	int smallest_dimension = (button_width<button_height)? button_width : button_height;
 	float angle_origin=0.; //<=>0 of the trigonometric circle (at the extreme right of the circle)
 
 	//Get the 4 centers of the 4 round edges
-	ei_point_t center_top_right={(int)(button_width-radius), (int)(button_height-radius)};
-	ei_point_t center_bottom_right={(int)(button_width-radius), (int)(radius)};
-	ei_point_t center_bottom_left={(int)(radius), (int)(button_height-radius)};
-	ei_point_t center_top_left={(int)(radius), (int)(radius)};
+	ei_point_t center_top_right={offset_width+(int)(button_width-radius), offset_height+(int)(radius)};
+	ei_point_t center_bottom_right={offset_width+(int)(button_width-radius), offset_height+(int)(button_height-radius)};
+	ei_point_t center_bottom_left={offset_width+(int)(radius), offset_height+(int)(button_height-radius)};
+	ei_point_t center_top_left={offset_width+(int)(radius), offset_height+(int)(radius)};
 
 	//Build the 4 arcs of the rectangle
-	tab_and_length arc1=arc(center_bottom_right, radius, angle_origin+270., angle_origin+360.);
-	tab_and_length arc2=arc(center_top_right, radius, angle_origin, angle_origin+90.);
+	tab_and_length arc1=arc(center_top_right, radius, angle_origin+270., angle_origin+360.);
+	tab_and_length arc2=arc(center_bottom_right, radius, angle_origin, angle_origin+90.);
 	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
 	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
