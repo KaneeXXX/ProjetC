@@ -5,6 +5,8 @@
 #include "ei_event.h"
 #include "hw_interface.h"
 #include "ei_widget_configure.h"
+#include "ei_widget.h"
+#include "ei_placer.h"
 
 
 /*

@@ -44,6 +44,12 @@ int main(int argc, char* argv[])
 	ei_color_t color = {0, 255, 255, 0};
 	ei_draw_polygon (main_window, point_array, length, color, NULL);
 
+	/*//DRAW RECT
+	ei_point_t  point_array[] = {{200, 200}, {100,200}, {100, 100}, {200, 100}};
+	size_t length=4;
+	ei_color_t color = {0, 255, 255, 0};
+	ei_draw_polyline(main_window, point_array, length, color, NULL);*/
+
 	ei_color_t noir = {0, 0, 0, 0xff};
 	pixel_ptr = (uint32_t*)hw_surface_get_buffer(main_window);
 	for(int i=0; i < length; i++) {
