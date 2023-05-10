@@ -91,7 +91,7 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const e
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-       if (is_pixel_drawable(addr, surface, clipper ))
+       if (clipper == NULL) || (is_pixel_drawable(addr, surface, clipper))
        {
 		uint32_t pixel_value;
 		uint8_t *channel_ptr = (uint8_t *) &pixel_value; //ptr to pixel_value
@@ -651,14 +651,14 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	float angle_origin=0.; //<=>0 of the trigonometric circle (at the extreme right of the circle)
 
 	//Get the 4 centers of the 4 round edges
-	ei_point_t center_top_right={(int)(button_width-radius), (int)(button_height-radius)};
-	ei_point_t center_bottom_right={(int)(button_width-radius), (int)(radius)};
+	ei_point_t center_top_right={(int)(button_width-radius), (int)(radius)};
+	ei_point_t center_bottom_right={(int)(button_width-radius), (int)(button_height- radius)};
 	ei_point_t center_bottom_left={(int)(radius), (int)(button_height-radius)};
 	ei_point_t center_top_left={(int)(radius), (int)(radius)};
 
 	//Build the 4 arcs of the rectangle
-	tab_and_length arc1=arc(center_bottom_right, radius, angle_origin+270., angle_origin+360.);
-	tab_and_length arc2=arc(center_top_right, radius, angle_origin, angle_origin+90.);
+	tab_and_length arc1=arc(center_top_right, radius, angle_origin+270., angle_origin+360.);
+	tab_and_length arc2=arc(center_bottom_right, radius, angle_origin, angle_origin+90.);
 	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
 	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
@@ -687,10 +687,21 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	}
 
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_rect_t clipper = {{0,0}, {640, 480}};
+	ei_rect_t * clipper_ptr = &clipper;
+	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, clipper_ptr);
 	return arr;
 }
 
+
+int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
+
+
+	ei_size_t sizedest = hw_surface_get_size(destination);
+	ei_size_t sizesrc  = hw_surface_get_size(source);
+
+
+}
 //void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)
 //{
 //	//Principe: on met une rounded_frame, puis on en remet une par-dessus tel que la distance entre une bordure de cette rounded_frame et une bordure de
