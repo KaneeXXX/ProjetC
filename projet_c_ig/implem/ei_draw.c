@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#define PI 3.141592654
 
 //NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
 //hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
@@ -604,3 +605,76 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	free(TCA);
 	free(tab_TC);
 }
+
+ei_point_t* arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin) //surface à enlever, c'était pour le debug
+{
+	//Retourne un tableau de points formant un arc. TAB[0].x=NB DE POINTS
+//	angle_debut = (angle_debut * PI) / 180.; //conversion en radians
+//	angle_fin = (angle_fin * PI) / 180.;
+
+	ei_point_t point_zero={centre.x+rayon, centre.y};
+	//A partir du point_zero, je vais avancer d'angle_debut, on va tomber sur point_debut
+	float x_debut = point_zero.x;
+	float y_debut = point_zero.y;
+	ei_point_t point_debut={floor(x_debut), floor(y_debut)};
+	float arbitrary_value = 1.0;
+	float angle_courant=angle_debut+arbitrary_value;
+	int nb_de_points=(int)((angle_fin-angle_debut)/arbitrary_value);
+	ei_point_t* tab=malloc((nb_de_points+1)*sizeof(ei_point_t));
+	ei_point_t nb_points = {nb_de_points, nb_de_points};
+	tab[0] = nb_points;
+	//Maintenant, j'incrémente l'angle d'une valeur arbitraire et j'ajoute le point à cet angle
+	for (int i=1; i<=nb_de_points; i++) {
+		ei_point_t new_point = {centre.x + (int)floor(rayon*cos(angle_courant)), centre.y + (int)floor(rayon*sin(angle_courant))};
+		tab[i]=new_point;
+		angle_courant+=arbitrary_value;
+	}
+	//DEBUG
+	ei_color_t color={255, 0, 255, 0};
+	ei_draw_polygon (surface, tab, tab[0].x, color, NULL);
+
+	return tab;
+
+}
+
+//ei_point_t* rounded_frame(ei_rect_t rectangle, int rayon, ei_relief_t partie)
+//{
+//	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
+//	float angle_arbitraire=0.;
+//	ei_point_t centre_arbitraire={(int)(rectangle.size.width/2), (int)(rectangle.size.height/2)};
+//	ei_point_t* arc1=arc(centre_arbitraire, rayon, angle_arbitraire+270., angle_arbitraire+360.);
+//	ei_point_t* arc2=arc(centre_arbitraire, rayon, angle_arbitraire, angle_arbitraire+90.);
+//	ei_point_t* arc3=arc(centre_arbitraire, rayon, angle_arbitraire+90., angle_arbitraire+180.);
+//	ei_point_t* arc4=arc(centre_arbitraire, rayon, angle_arbitraire+180., angle_arbitraire+270.);
+//	ei_point_t* tab=malloc(sizeof(arc1)+sizeof(arc2)+sizeof(arc3)+sizeof(arc4));
+//	int nb_points_arc1=arc1[0].x;
+//	int nb_points_arc2=arc2[0].x;
+//	int nb_points_arc3=arc3[0].x;
+//	int nb_points_arc4=arc4[0].x;
+//	ei_point_t nb_points = {nb_points_arc1+nb_points_arc2+nb_points_arc3+nb_points_arc4, nb_points_arc1+nb_points_arc2+nb_points_arc3+nb_points_arc4};
+//	tab[0] = nb_points;
+//	for (int i=2; i<= nb_points_arc1; i++) {
+//		tab[i-1]=arc1[i];
+//	}
+//	for (int i=2+nb_points_arc1; i<= nb_points_arc1+nb_points_arc2; i++) {
+//		tab[i-1]=arc2[i];
+//	}
+//	for (int i=2+nb_points_arc1+nb_points_arc2; i<= nb_points_arc1+nb_points_arc2+nb_points_arc3; i++) {
+//		tab[i-1]=arc3[i];
+//	}
+//	for (int i=2+nb_points_arc1+nb_points_arc2+nb_points_arc3; i<= nb_points_arc1+nb_points_arc2+nb_points_arc3+nb_points_arc4; i++) {
+//		tab[i-1]=arc4[i];
+//	}
+//	return tab;
+//}
+//
+//void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)
+//{
+//	//Principe: on met une rounded_frame, puis on en remet une par-dessus tel que la distance entre une bordure de cette rounded_frame et une bordure de
+//	//la 1e rounded_frame soit de 5%
+//	int rayon_arbitraire=10;
+//	ei_point_t*  point_array= rounded_frame(rectangle, rayon_arbitraire, ei_relief_raised);
+//	ei_color_t color = { 0x80, 0x80, 0x80, 0xff };
+//	point_array[0]=point_array[1]; //Bricolage
+//	ei_draw_polygon (surface, point_array, point_array[0].x, color, NULL);
+//}

@@ -119,6 +119,6 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 bool			alpha);
 
 
-
+ei_point_t* arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin);
 
 #endif

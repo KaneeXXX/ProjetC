@@ -39,9 +39,18 @@ int main(int argc, char* argv[])
 		*pixel_ptr++ = *((uint32_t*)red);
 
 	ei_point_t  point_array[6] = {{20, 30}, {90, 10}, {130, 50}, {120, 100}, {70, 70}, {20, 90}};
-	size_t length=6;
-	ei_color_t color = {0, 255, 255, 0};
-	ei_draw_polygon (main_window, point_array, length, color, NULL);
+//	size_t length=6;
+//	ei_color_t color = {0, 255, 255, 0};
+//	ei_draw_polygon (main_window, point_array, length, color, NULL);
+
+	ei_size_t size={100, 100};
+	ei_rect_t rectangle = {point_array[3], size};
+	ei_point_t centre={100, 100};
+	int rayon=100;
+	float ad=0.;
+	float aa=90.;
+	ei_point_t* test = arc(main_window, centre, rayon, ad, aa);
+
 	// unlock, update screen.
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
