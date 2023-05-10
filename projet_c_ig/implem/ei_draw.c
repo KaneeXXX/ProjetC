@@ -608,32 +608,32 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 
 ei_point_t* arc(ei_surface_t surface, ei_point_t centre, int rayon, float angle_debut, float angle_fin) //surface à enlever, c'était pour le debug
 {
+	float arbitrary_value = 1.;
+	int nb_de_points=(angle_fin-angle_debut)/(int)arbitrary_value+1;
 	//Retourne un tableau de points formant un arc. TAB[0].x=NB DE POINTS
-//	angle_debut = (angle_debut * PI) / 180.; //conversion en radians
-//	angle_fin = (angle_fin * PI) / 180.;
-
-	ei_point_t point_zero={centre.x+rayon, centre.y};
+	angle_debut = (angle_debut * PI) / 180.; //conversion en radians
+	angle_fin = (angle_fin * PI) / 180.;
 	//A partir du point_zero, je vais avancer d'angle_debut, on va tomber sur point_debut
-	float x_debut = point_zero.x;
-	float y_debut = point_zero.y;
-	ei_point_t point_debut={floor(x_debut), floor(y_debut)};
-	float arbitrary_value = 1.0;
-	float angle_courant=angle_debut+arbitrary_value;
-	int nb_de_points=(int)((angle_fin-angle_debut)/arbitrary_value);
-	ei_point_t* tab=malloc((nb_de_points+1)*sizeof(ei_point_t));
+	float x_debut = centre.x + rayon*cos(angle_debut);
+	float y_debut = centre.y + rayon*sin(angle_debut);
+	ei_point_t point_debut={(int)(x_debut), (int)(y_debut)};
+	float angle_courant=angle_debut;
+	ei_point_t* tab=calloc((nb_de_points+1), sizeof(ei_point_t));
 	ei_point_t nb_points = {nb_de_points, nb_de_points};
-	tab[0] = nb_points;
+	tab[0] = point_debut;
+	int i=1;
 	//Maintenant, j'incrémente l'angle d'une valeur arbitraire et j'ajoute le point à cet angle
-	for (int i=1; i<=nb_de_points; i++) {
-		ei_point_t new_point = {centre.x + (int)floor(rayon*cos(angle_courant)), centre.y + (int)floor(rayon*sin(angle_courant))};
+	while (angle_courant<=angle_fin) {
+		ei_point_t new_point = {centre.x + (int)(rayon*cos(angle_courant)), centre.y + (int)(rayon*sin(angle_courant))};
 		tab[i]=new_point;
-		angle_courant+=arbitrary_value;
+		angle_courant+=arbitrary_value*PI/180;
+		i++;
 	}
 	//DEBUG
 	ei_color_t color={255, 0, 255, 0};
-	ei_draw_polygon (surface, tab, tab[0].x, color, NULL);
+	ei_draw_polyline (surface, tab, (size_t)nb_de_points, color, NULL);
 
-	return tab;
+	return tab, nb_de_points;
 
 }
 
