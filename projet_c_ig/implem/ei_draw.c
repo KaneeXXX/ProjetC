@@ -277,18 +277,17 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 void print_chain(int indice_in_TC, lc_t** tab_TC) {
 	//tab_TC est un tableau de pointeur vers des struct lc_t
 	if(tab_TC[indice_in_TC] == NULL) { //Cas pour F et D par exemple, ils n'ont pas de voisin "sous eux".
-		printf("\n");
+		printf("indice_TC= %i | NULL\n", indice_in_TC);
 		return;
 	}
 	lc_t cell = *(tab_TC[indice_in_TC]);
 	printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
-	if (cell.next != NULL) {
+	while (cell.next != NULL) {
 		printf("- > ");
 		cell = *(cell.next);
 		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", indice_in_TC, cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
-	} else {
-		printf("\n");
 	}
+	printf("\n");
 }
 
 //return True is TC empty
@@ -441,6 +440,11 @@ void update_x_ymin_sides(lc_t** TCA) {
 			continue;
 		}
 
+		if(abs_dy == 0){
+			// ?
+			continue;
+		}
+
 		if (dir == RIGHT) {
 			current_cell->E += abs_dx;
 			while (2 * (current_cell->E) > abs_dy) {
@@ -458,10 +462,19 @@ void update_x_ymin_sides(lc_t** TCA) {
 	}
 }
 
+void add_to_chain(lc_t* prem_cell, lc_t* cell_to_add){
+
+	lc_t* current = prem_cell;
+	while(current -> next != NULL){
+		current = current -> next;
+	}
+	current -> next = cell_to_add;
+}
+
 //Je réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
-	//Remplissage d'une copie étant une liste(tableau) telle que copy_point_array[i]=[{i, point_array[i]}
+	/*//Remplissage d'une copie étant une liste(tableau) telle que copy_point_array[i]=[{i, point_array[i]}
 	//"L'ordre" des points reste ici unchanged.
 	//I) Creation pointeur vers cette liste.
 	pt_and_index * copy_point_array = calloc(point_array_size, sizeof(pt_and_index));
@@ -483,6 +496,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	int taille_tc = (critical_pts.y_max - critical_pts.y_min + 1);
 	lc_t** tab_TC = calloc(taille_tc, sizeof(lc_t*));
 
+	int previous_scanline = 0;
 	//V) On itére sur les structures pt_and_index (rangé par y croissant)
 	for (size_t i = 0; i < point_array_size; i++) {
 		//get the current pt_and_index structure
@@ -499,11 +513,15 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		ei_point_t voisin_gauche = current_voisins[0];
 		ei_point_t voisin_droite = current_voisins[1];
 
+		bool is_same_scanline_than_previous = false;
+		if(current_point.y == previous_scanline){ //Point sur même scanline qui point traité precedement
+			is_same_scanline_than_previous = true;
+		}
+
 		bool has_voisin_gauche = false;
-		if (voisin_gauche.y > current_point.y) {
+		if (voisin_gauche.y >= current_point.y) {
 			//create cell for this border of the polygone and complete
 			lc_t* current_v_g = calloc(1, sizeof(lc_t));
-			tab_TC[current_point.y - y_min] = current_v_g;
 			current_v_g->y_max = voisin_gauche.y;
 			current_v_g->x_ymin = current_point.x;
 			current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
@@ -511,9 +529,15 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			current_v_g->E = 0;
 			current_v_g->dir = (voisin_gauche.x > current_point.x) ? RIGHT : LEFT;
 			current_v_g->next = NULL;
+			if(is_same_scanline_than_previous == false) {
+				tab_TC[current_point.y - y_min] = current_v_g;
+			} else {
+				add_to_chain(tab_TC[previous_scanline - y_min], current_v_g);
+			}
 			has_voisin_gauche = true;
+
 		}
-		if (voisin_droite.y > current_point.y) {
+		if (voisin_droite.y >= current_point.y) {
 			lc_t* current_v_d = calloc(1, sizeof(lc_t));
 			current_v_d->y_max = voisin_droite.y;
 			current_v_d->x_ymin = current_point.x;
@@ -522,21 +546,101 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			current_v_d->E = 0;
 			current_v_d->dir = (voisin_droite.x > current_point.x) ? RIGHT : LEFT;
 			current_v_d->next = NULL;
-			//complete the chains if 2 sides to consider.
-			if (has_voisin_gauche == true) {
-				tab_TC[current_point.y - y_min]->next = current_v_d;
+
+			if(is_same_scanline_than_previous == false) {
+				//complete the chains if 2 sides to consider
+				if (has_voisin_gauche == true) {
+					tab_TC[current_point.y - y_min]->next = current_v_d;
+				} else {
+					tab_TC[current_point.y - y_min] = current_v_d;
+				}
 			} else {
-				tab_TC[current_point.y - y_min] = current_v_d;
+				add_to_chain(tab_TC[previous_scanline - y_min], current_v_d);
 			}
 		}
-		print_chain(current_point.y - y_min, tab_TC);
+		if(is_same_scanline_than_previous == false) {
+			print_chain(current_point.y - y_min, tab_TC);
+		} else {
+			print_chain(previous_scanline - y_min, tab_TC);
+		}
 		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (d'après le sujet pas besoin)
+
+		previous_scanline = current_point.y;
 	}
 
 	//On libère la mémoire associé à cette liste intermédiaire.
 	free(copy_point_array);
-	//End of building of TC.
+	//End of building of TC.*/
+
+	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size);
+	int y_min = critical_pts.y_min;
+	int size_tc = (critical_pts.y_max - critical_pts.y_min + 1);
+	lc_t** tab_TC = calloc(size_tc, sizeof(lc_t*));
+	ei_point_t p1;
+	ei_point_t p2;
+
+	for(size_t i = 0; i < point_array_size; i++) {
+		if(i == point_array_size - 1) { //Dernier point
+			 p1 = point_array[i];
+			 p2 = point_array[0];
+		} else {
+			//Récupère deux point du segment
+			p1 = point_array[i];
+			p2 = point_array[i + 1];
+		}
+		if(p1.y == p2.y){
+			//On fait rien
+		} else {
+			int ymax, x_ymin, x_up, y_up, x_down, y_down, num_scanline;
+
+			if(p1.y > p2.y) {
+				x_up = p2.x;
+				y_up = p2.y;
+				x_down = p1.x;
+				y_down = p1.y;
+
+				ymax = p1.y;
+				x_ymin = p2.x;
+
+				num_scanline = p2.y;
+
+			} else { //p1.y < p2.y
+				x_up = p1.x;
+				y_up = p1.y;
+				x_down = p2.x;
+				y_down = p2.y;
+
+				ymax = p2.y;
+				x_ymin = p1.x;
+
+				num_scanline = p1.y;
+			}
+
+			lc_t* side = calloc(1, sizeof(lc_t));
+
+			side -> y_max = ymax;
+			side -> x_ymin = x_ymin;
+			side -> abs_dx = abs(p1.x - p2.x);
+			side -> abs_dy = abs(p1.y - p2.y);
+			side -> E = 0;
+			side->dir = (x_up > x_down) ? LEFT : RIGHT;
+			side -> next = NULL;
+
+			int indice_in_TC = y_up - y_min;
+
+			if(tab_TC[indice_in_TC] == NULL){
+				tab_TC[indice_in_TC] = side;
+			} else {
+				add_to_chain(tab_TC[indice_in_TC], side);
+			}
+		}
+	}
+	for(int i = 0; i< size_tc; i++){
+		print_chain(i, tab_TC);
+	}
+
 	printf("fin TC\n");
+
 
 	//déclarer TCA pointeur
 	lc_t** TCA = malloc(sizeof(lc_t));
@@ -545,7 +649,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	int scanline_num = y_min;
 
 	//Tant TC et TCA non vide, c'est à dire tant que l'un des deux n'est pas vide
-	while((isTC_empty(tab_TC, taille_tc)==false) || (*TCA != NULL)){
+	while((isTC_empty(tab_TC, size_tc)==false) || (*TCA != NULL)){
 		//jusque la tout marche
 
 		//deplacer les coté de TC(scanline_num) dans TCA -> "les delete de TC"
