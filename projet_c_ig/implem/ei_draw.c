@@ -672,32 +672,27 @@ typedef struct {
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
-	float step_deg = 1.;
-
-	int nb_of_points=(ending_angle-starting_angle)/(int)step_deg+1;
-	starting_angle = starting_angle * PI / 180.; //conversion to rads
-	ending_angle = ending_angle * PI / 180.;
-	float step_rad = step_deg * PI/180;
-
-	//Build the first point
-	int x0 = center.x + (int)radius*cos(starting_angle);
-	int y0 = center.y + (int)radius*sin(starting_angle);
-	ei_point_t first_point={x0, y0};
-
-	//Add it to the array
-	ei_point_t* arr=calloc((nb_of_points+1), sizeof(ei_point_t));
-	arr[0] = first_point;
+	int nb_of_points=ending_angle-starting_angle;
+	ei_point_t* arr=calloc(nb_of_points+1, sizeof(ei_point_t));
 
 	//Add the other points to the array
-	float current_angle=starting_angle; //can't become the i of the for loop because is float
-	for (int i=1; current_angle<=ending_angle; i++) {
-		ei_point_t new_point = {center.x + (int)(radius*cos(current_angle)), center.y + (int)(radius*sin(current_angle))};
+	float current_angle=starting_angle;
+	for (int i=0; i<nb_of_points; i++) {
+		ei_point_t new_point = {center.x + (int)(radius*cos(current_angle*PI/180)), center.y + (int)(radius*sin(current_angle*PI/180))};
 		arr[i]=new_point;
-		current_angle+=step_rad;
+		current_angle++;
 	}
 
 	tab_and_length arr_and_length = {arr, nb_of_points};
 	return arr_and_length;
+}
+
+void print_l_p(ei_point_t* points_list, int length)
+{
+	//REMOVE AT THE END
+	for (int i=0; i<length; i++) {
+		printf("(x=%i, y=%i) | ", points_list[i].x, points_list[i].y);
+	}
 }
 
 /*Returns array of points forming a rounded frame*/
@@ -721,21 +716,21 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
 	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
-//	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
-//	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
-//	float angle_arbitraire=0.;
-//	int lol=100;
-//	ei_point_t centre={(int)(rectangle.size.width), (int)(rectangle.size.height)};
-//	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
-//	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
-//	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
-//	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
-//
-//	//DEBUG: TRACE UN CERCLE
-//	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
+	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
+	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
+	float angle_arbitraire=0.;
+	int lol=50;
+	ei_point_t centre={(int)(rectangle.size.width+100), (int)(rectangle.size.height+100)};
+	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
+	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
+	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
+	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
+
+	//DEBUG: TRACE UN CERCLE
+	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
 
 
 	//Return an array of the 4 arcs
@@ -743,25 +738,39 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	int length_arr=4*length_arc;
 	ei_point_t* arr=calloc(length_arr, sizeof(ei_point_t));
 	for (int i=0; i<length_arc; i++) { //add arc1 to tab
-		arr[i]=arc1.tab[i];
+		arr[i]=arc11.tab[i];
 	}
 
 	int two_times_length_arc=2*length_arc;
 	for (int i=length_arc; i<two_times_length_arc; i++) { //add arc2 to tab
-		arr[i]=arc2.tab[i-length_arc];
+		arr[i]=arc22.tab[i-length_arc];
 	}
 
 	int three_times_length_arc=3*length_arc;
 	for (int i=two_times_length_arc; i<three_times_length_arc; i++) { //add arc3 to tab
-		arr[i]=arc3.tab[i-two_times_length_arc];
+		arr[i]=arc33.tab[i-two_times_length_arc];
 	}
 
 	int four_times_length_arc=4*length_arc;
 	for (int i=three_times_length_arc; i<four_times_length_arc; i++) { //add arc4 to tab
-		arr[i]=arc4.tab[i-three_times_length_arc];
+		arr[i]=arc44.tab[i-three_times_length_arc];
 	}
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_draw_polygon(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_color_t purple = { 0, 0, 0, 255 };
+	ei_draw_polyline(surface, arc1.tab, arc1.length, purple, NULL);
+	ei_draw_polyline(surface, arc2.tab, arc2.length, purple, NULL);
+	ei_draw_polyline(surface, arc3.tab, arc3.length, purple, NULL);
+	ei_draw_polyline(surface, arc4.tab, arc4.length, purple, NULL);
+	print_l_p(arc1.tab, length_arc);
+	printf("\n");
+	print_l_p(arc2.tab, length_arc);
+	printf("\n");
+	print_l_p(arc3.tab, length_arc);
+	printf("\n");
+	print_l_p(arc4.tab, length_arc);
+	printf("\n");
+	print_l_p(arr, length_arr);
 	return arr;
 }
 
