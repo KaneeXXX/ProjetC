@@ -19,6 +19,10 @@
 
 #define PI 3.141592654
 
+static const ei_color_t gris_clair = {128, 128, 128, 0xff};
+static const ei_color_t gris_fonce = {192, 192 ,192, 0xff};
+static const ei_color_t gris_tresclair = {200, 200 ,200, 0xff};
+
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
 
 
@@ -660,7 +664,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 }
 
 typedef struct {
-    ei_point_t* 				tab; //index of the point in the *original* array
+    ei_point_t* 				tab;
     int 					length;
 } tab_and_length;
 
@@ -875,16 +879,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 }
 
-//void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)
-//{
-//	//Principe: on met une rounded_frame, puis on en remet une par-dessus tel que la distance entre une bordure de cette rounded_frame et une bordure de
-//	//la 1e rounded_frame soit de 5%
-//	int rayon_arbitraire=10;
-//	ei_point_t*  point_array= rounded_frame(rectangle, rayon_arbitraire, ei_relief_raised);
-//	ei_color_t color = { 0x80, 0x80, 0x80, 0xff };
-//	point_array[0]=point_array[1]; //Bricolage
-//	ei_draw_polygon (surface, point_array, point_array[0].x, color, NULL);
-//}
+
 
 //ei_font_t hw_text_font_create		(ei_const_string_t	filename,
 //					      ei_fontstyle_t		style,
@@ -917,4 +912,137 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	if (copy_done==1) { //copy_done==0 => success, copy_done==1 => fail
 		printf("Copy has failed.\n");
 	}
+}
+
+
+tab_and_length arc2(ei_point_t centre, int radius, int angle_start, int angle_end) {
+	int d_theta = radius;
+
+	double radian_start_angle = (angle_start * PI) / 180;  //ALways angle_start <= angle_end
+	double radian_end_angle = (angle_end * PI) / 180;
+
+	int nb_of_points= (int) (abs(angle_end - angle_start)/d_theta + 1);
+	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
+
+	double current_theta = radian_start_angle;
+	int num_point_in_list = 0;
+
+	while(current_theta <= radian_end_angle) {
+		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
+		array[num_point_in_list] = p;
+		current_theta = current_theta + ((d_theta * PI) / 180);
+		num_point_in_list++;
+	}
+	tab_and_length tab = {array, num_point_in_list};
+	return tab;
+}
+
+tab_and_length concatenate_list(ei_point_t* list1, ei_point_t* list2, ei_point_t* list3, ei_point_t* list4, int lenght1, int lenght2, int lenght3, int lenght4) {
+	int total_lenght = lenght1 + lenght2 + lenght3 + lenght4;
+	ei_point_t * list_points = calloc(total_lenght, sizeof(ei_point_t));
+
+	for(int i = 0; i < lenght1; i++) {
+		list_points[i] = list1[i];
+	}
+	for(int i = 0; i < lenght2; i++) {
+		list_points[lenght1 + i] = list2[i];
+	}
+	for(int i = 0; i < lenght3; i++) {
+		list_points[lenght1 + lenght2 + i] = list3[i];
+	}
+	for(int i = 0; i < lenght4; i++) {
+		list_points[lenght1 + lenght2 + lenght3 + i] = list4[i];
+	}
+	tab_and_length tab = {list_points, total_lenght};
+	return tab;
+}
+
+void round_frame2(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_color_t color, ei_relief_t relief) {
+
+	if(relief == ei_relief_none) {
+		ei_point_t top_left_point = rectangle.top_left; //Point top left of rectangle
+		int height = rectangle.size.height;
+		int width = rectangle.size.width;
+
+		ei_point_t centre1 = {top_left_point.x + radius, top_left_point.y + radius};
+		tab_and_length t1 = arc2(centre1, radius, 180, 270);
+		ei_point_t *list1 = t1.tab;
+		int lenght1 = t1.length;
+
+		ei_point_t centre2 = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
+		tab_and_length t2 = arc2(centre2, radius, 270, 380);
+		ei_point_t *list2 = t2.tab;
+		int lenght2 = t2.length;
+
+		ei_point_t centre3 = {top_left_point.x + (width - radius), top_left_point.y + (height - radius)};
+		tab_and_length t3 = arc2(centre3, radius, 0, 90);
+		ei_point_t *list3 = t3.tab;
+		int lenght3 = t3.length;
+
+		ei_point_t centre4 = {top_left_point.x + radius, top_left_point.y + (height - radius)};
+		tab_and_length t4 = arc2(centre4, radius, 90, 180);
+		ei_point_t *list4 = t4.tab;
+		int lenght4 = t4.length;
+
+		tab_and_length conc = concatenate_list(list1, list2, list3, list4, lenght1, lenght2, lenght3, lenght4);
+		ei_point_t *point_array = conc.tab;
+		int point_array_size = conc.length;
+
+		ei_draw_polygon(surface, point_array, point_array_size, color, NULL);
+	} else {
+
+		ei_color_t color_up;
+		if(relief == ei_relief_raised) {
+			color_up = gris_clair;
+		} else {
+			color_up = gris_fonce; //Gris foncé
+		}
+		ei_point_t top_left_point = rectangle.top_left; //Point top left of rectangle
+		int height = rectangle.size.height;
+		int width = rectangle.size.width;
+
+		ei_point_t centre1 = {top_left_point.x + radius, top_left_point.y + radius};
+		tab_and_length t1 = arc2(centre1, radius, 180, 270);
+		ei_point_t *list1 = t1.tab;
+		int lenght1 = t1.length;
+
+		ei_point_t centre2 = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
+		tab_and_length t2 = arc2(centre2, radius, 270, 315);
+		ei_point_t *list2 = t2.tab;
+		int lenght2 = t2.length;
+
+		//+2 point intérieur
+		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
+		int h = ceil(height / 2);
+		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
+		list_2points[0] = p1;
+		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + h};
+		list_2points[1] = p2;
+		tab_and_length tab = {list_2points, 2};
+
+		ei_point_t centre4 = {top_left_point.x + radius, top_left_point.y + (height - radius)};
+		tab_and_length t4 = arc2(centre4, radius, 135, 180);
+		ei_point_t *list4 = t4.tab;
+		int lenght4 = t4.length;
+
+		tab_and_length conc = concatenate_list(list1, list2, tab.tab, list4, lenght1, lenght2, 2, lenght4);
+		ei_point_t *point_array = conc.tab;
+		int point_array_size = conc.length;
+
+		ei_draw_polygon(surface, point_array, point_array_size, color_up, NULL);
+	}
+}
+
+void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief)
+{
+	round_frame2(surface, rectangle, rayon, gris_tresclair, ei_relief_none);
+	round_frame2(surface, rectangle, rayon, ei_default_background_color, relief);
+	int width = rectangle.size.width;
+	int height = rectangle.size.height;
+	int dist = ceil(0.025* width);
+	ei_point_t p_inside = {rectangle.top_left.x + dist, rectangle.top_left.y + dist};
+	ei_size_t size_inside = {width - 2 * dist, height - 2 * dist};
+	ei_rect_t inside_rec = {p_inside, size_inside};
+	ei_color_t color_inside = { 160, 160, 160, 0xff}; //Gris moyen clair
+	round_frame2(surface, inside_rec, rayon, color_inside, ei_relief_none);
 }

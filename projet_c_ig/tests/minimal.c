@@ -4,6 +4,7 @@
 #include "ei_event.h"
 #include "ei_utils.h"
 #include "hw_interface.h"
+#include "ei_types.h"
 
 int main(int argc, char* argv[])
 {
@@ -39,10 +40,10 @@ int main(int argc, char* argv[])
 		*pixel_ptr++ = *((uint32_t*)red);
 
 	//FIGURE DU SUJET POUR DRAW_POLYGON
-	ei_point_t  point_array[] = {{20, 30}, {90, 10},{140, 10},{130, 50}, {120, 100}, {70, 70}, {20, 90}};
+	ei_point_t  point_array[] = {{20, 30}, {90, 10},{140, 10},{140, 50}, {120, 100}, {70, 70}, {20, 90}};
 	size_t length=7;
 	ei_color_t color = {0, 255, 255, 0};
-	ei_draw_polygon (main_window, point_array, length, color, NULL);
+	//ei_draw_polygon (main_window, point_array, length, color, NULL);
 
 	/*//DRAW RECT
 	ei_point_t  point_array[] = {{200, 200}, {100,200}, {100, 100}, {200, 100}};
@@ -56,12 +57,6 @@ int main(int argc, char* argv[])
 		u_int32_t *point = pixel_ptr + main_window_size.width * point_array[i].y + point_array[i].x;
 		//Get order of colors in pixel because it's not always the same
 
-	//TESTS DRAW_POLYGON
-//	ei_point_t  point_array_test[7] = {{20, 30}, {90, 10}, {150, 10}, {130, 50}, {120, 100}, {70, 70}, {20, 90}};
-//	size_t length=7;
-//	ei_color_t color = {0, 255, 255, 0};
-//	ei_draw_polygon (main_window, point_array_test, length, color, NULL);
-
 		uint32_t pixel_value;
 		uint8_t* channel_ptr = (uint8_t*) &pixel_value; //ptr to pixel_value
 		channel_ptr[ir] = noir.red;
@@ -71,9 +66,16 @@ int main(int argc, char* argv[])
 		*point = pixel_value;
 	}
 
-	//TEST DE ARC
+	/*//TEST ARC TRIGO
+	ei_point_t center = {10,10};
+	int rayon=10;
+	arc(center, rayon, 0, 90);
+	printf("------------------------");
+	arc(center, rayon, 90, 180);*/
+
+	/*//TEST DE ARC
 	ei_size_t size={100, 100};
-	ei_rect_t rectangle = {point_array[3], size};
+	//ei_rect_t rectangle = {point_array[3], size};
 	ei_point_t centre={100, 100};
 	int rayon=100;
 	float ad=0.;
@@ -85,7 +87,12 @@ int main(int argc, char* argv[])
 	ei_rect_t rectangle_frame = {{300, 300}, {100, 50}};
 	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon_, ei_relief_none);
 
-	//TEST DE DRAW_BUTTON
+	//TEST DE DRAW_BUTTON*/
+	ei_size_t size={200, 100};
+	ei_point_t topleft = {100, 100};
+	ei_rect_t rectangle = {topleft, size};
+	//round_frame2(main_window, rectangle, 14, ei_default_background_color);
+	draw_button(main_window, rectangle, 13, ei_relief_raised);
 
 	//TEST DE DRAW_TEXT
 	ei_point_t where = {50, 50};

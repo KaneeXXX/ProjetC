@@ -118,6 +118,9 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
 
-ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie);
+
+void round_frame2(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_color_t color, ei_relief_t relief);
+
+void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
 
 #endif
