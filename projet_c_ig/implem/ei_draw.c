@@ -21,7 +21,7 @@
 
 static const ei_color_t gris_clair = {128, 128, 128, 0xff};
 static const ei_color_t gris_fonce = {192, 192 ,192, 0xff};
-static const ei_color_t gris_tresclair = {100, 100 ,100, 0xff};
+static const ei_color_t gris_tresclair = {200, 200 ,200, 0xff};
 
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
 
