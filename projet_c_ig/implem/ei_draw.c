@@ -18,11 +18,6 @@
 #include <math.h>
 #define PI 3.141592654
 
-//NO CLIPPING for the moment (ei_fill, ei_draw_polyline and ei_draw_polygon)
-//hw_surface_update_rects(surface, NULL) (NULL -> update all the screen)
-
-
-
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
 
 
@@ -242,42 +237,6 @@ struct lc_t {
 };
 
 typedef struct {
-    	int 				index; //index of the point in the *original* array
-    	ei_point_t 			pt;
-} pt_and_index;
-
-int compareFunction(const void * ptr_struct1, const void * ptr_struct2)
-{
-	/*Exemple https://www.bien-programmer.fr/qsort.htm */
-	pt_and_index const *ptr1 = ptr_struct1;
-	pt_and_index const *ptr2 = ptr_struct2;
-	return (ptr1->pt).y - (ptr2->pt).y;
-}
-
-ei_point_t* get_voisins(ei_point_t* point_array, size_t indice, size_t point_array_size){
-	ei_point_t voisin_gauche = {0,0};
-	ei_point_t voisin_droite = {0,0};
-	if (indice != 0 && indice != point_array_size -1){
-		voisin_gauche = point_array[(int)(indice -1)];
-		voisin_droite = point_array[(int)(indice +1)];
-	}
-	if (indice == 0){
-		voisin_gauche = point_array[(int)(point_array_size-1)];
-		voisin_droite = point_array[1];
-	}
-	if (indice == point_array_size -1){
-		voisin_gauche = point_array[(int)(indice -1)];
-		voisin_droite = point_array[0];
-	}
-
-	ei_point_t* res = calloc(2, sizeof(ei_point_t));
-	res[0] = voisin_gauche;
-	res[1] = voisin_droite;
-
-	return res;
-}
-
-typedef struct {
 	int 				y_min;
 	int 				y_max;
 } minmax_t;
@@ -287,11 +246,11 @@ minmax_t min_max_sur_y(ei_point_t* point_array, size_t point_array_size){
 	// en entrée ainsi que les points ayant ces ordonnées extrêmes
         // On retourne, par ailleurs, les indices dans le tableau de ces
         // points...
-	int max = 0;
+	int max = point_array[0].x;
 	//trouver une solution pour mettre genre min = plus infini
-	int min = INFINITY;
+	int min = point_array[0].y;
 
-	for (size_t i = 0; i < point_array_size -1; i++){
+	for (size_t i = 1; i < point_array_size -1; i++){
 		if (point_array[i].y > max){
 			max = point_array[i].y;
 		}
@@ -621,29 +580,23 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		if(p1.y == p2.y){
 			//On fait rien
 		} else {
-			int ymax, x_ymin, x_up, y_up, x_down, y_down, num_scanline;
+			int ymax, x_ymin, x_up, y_up, x_down;
 
 			if(p1.y > p2.y) {
 				x_up = p2.x;
 				y_up = p2.y;
 				x_down = p1.x;
-				y_down = p1.y;
 
 				ymax = p1.y;
 				x_ymin = p2.x;
-
-				num_scanline = p2.y;
 
 			} else { //p1.y < p2.y
 				x_up = p1.x;
 				y_up = p1.y;
 				x_down = p2.x;
-				y_down = p2.y;
 
 				ymax = p2.y;
 				x_ymin = p1.x;
-
-				num_scanline = p1.y;
 			}
 
 			lc_t* side = calloc(1, sizeof(lc_t));
@@ -754,7 +707,6 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	int button_height = rectangle.size.height;
 	int offset_width = rectangle.top_left.x;
 	int offset_height = rectangle.top_left.y;
-	int smallest_dimension = (button_width<button_height)? button_width : button_height;
 	float angle_origin=0.; //<=>0 of the trigonometric circle (at the extreme right of the circle)
 
 	//Get the 4 centers of the 4 round edges
@@ -790,7 +742,6 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	int length_arc=arc1.length; //supposing the lengths of all arcs are equal
 	int length_arr=4*length_arc;
 	ei_point_t* arr=calloc(length_arr, sizeof(ei_point_t));
-
 	for (int i=0; i<length_arc; i++) { //add arc1 to tab
 		arr[i]=arc1.tab[i];
 	}
@@ -809,21 +760,27 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	for (int i=three_times_length_arc; i<four_times_length_arc; i++) { //add arc4 to tab
 		arr[i]=arc4.tab[i-three_times_length_arc];
 	}
-
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polygon(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
 	return arr;
 }
 
-
 int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
-
+	if (dst_rect==NULL) { //according to function documentation
+		ei_rect_t dst_rect = hw_surface_get_rect(destination);
+	}
+	if (src_rect==NULL) { //according to function documentation
+		ei_rect_t src_rect = hw_surface_get_rect(source);
+	}
 
 	ei_size_t sizedest = hw_surface_get_size(destination);
 	ei_size_t sizesrc  = hw_surface_get_size(source);
 
+	int status=0;
 
+	return status;
 }
+
 //void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t partie)
 //{
 //	//Principe: on met une rounded_frame, puis on en remet une par-dessus tel que la distance entre une bordure de cette rounded_frame et une bordure de
@@ -840,17 +797,32 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 //					      int			size);
 //
 //void hw_text_font_free(ei_font_t font);
-//
-//ei_surface_t hw_text_create_surface	(ei_const_string_t	text,
-//					    const ei_font_t	font,
-//					    ei_color_t		color);
-//
-//void	ei_draw_text(ei_surface_t	surface,
-//		    const ei_point_t*	where,
-//		    ei_const_string_t	text,
-//		    ei_font_t		font,
-//		    ei_color_t		color,
-//		    const ei_rect_t*	clipper)
-//{
-//
-//}
+
+void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string_t text, ei_font_t font, ei_color_t color, const ei_rect_t* clipper)
+{
+	/*
+	 * Theory: create surface of text, take its associated rectangle, take the rectangle associated
+	 * with the original surface starting at the where point, paste the text rectangle to that rectangle.
+	 */
+	if (text==NULL) { //according to function documentation
+		printf("Text is NULL.\n");
+	}
+	ei_surface_t surface_of_text = hw_text_create_surface(text, font, color);
+
+	//Check if clipping is possible
+	ei_size_t surface_size = hw_surface_get_size(surface);
+	ei_size_t surface_of_text_size = hw_surface_get_size(surface_of_text);
+	if ((clipper!=NULL)&&(surface_size.width!=surface_of_text_size.width)&&(surface_size.height!=surface_of_text_size.height)) {
+		printf("Clipping not possible because surface sizes are different.\n");
+	}
+
+	ei_rect_t src_rec = hw_surface_get_rect(surface_of_text);
+	ei_point_t* origin = surface;
+	hw_surface_set_origin(surface, *where);
+	ei_rect_t dst_rec = hw_surface_get_rect(surface);
+	hw_surface_set_origin(surface, *origin);
+	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, &src_rec, false);
+	if (copy_done==0) { //copy_done==1 => success, copy_done==0 => fail
+		printf("Copy has failed.\n");
+	}
+}
