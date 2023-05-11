@@ -916,7 +916,7 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	ei_rect_t dst_rec = {*where, size_rect};
 	printf("%i \n", dst_rec.size.width);
 	printf("%i \n", dst_rec.size.width);
-	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, &src_rec, false);
+	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, NULL, false);
 	if (copy_done==1) { //copy_done==0 => success, copy_done==1 => fail
 		printf("Copy has failed.\n");
 	}
