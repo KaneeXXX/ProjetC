@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 	ei_color_t color = {0, 255, 255, 0};
 	ei_draw_polyline(main_window, point_array, length, color, NULL);*/
 
-	ei_color_t noir = {0, 0, 0, 0xff};
+	ei_color_t noir = {0, 0, 255, 0xff};
 	pixel_ptr = (uint32_t*)hw_surface_get_buffer(main_window);
 	for(int i=0; i < length; i++) {
 		u_int32_t *point = pixel_ptr + main_window_size.width * point_array[i].y + point_array[i].x;
@@ -81,11 +81,16 @@ int main(int argc, char* argv[])
 	//tab_and_length test = arc(main_window, centre, rayon, ad, aa);
 
 	//TEST DE ROUNDED_FRAME
-	int rayon_=10;
+	int rayon_=100;
 	ei_rect_t rectangle_frame = {{300, 300}, {100, 50}};
 	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon_, ei_relief_none);
 
 	//TEST DE DRAW_BUTTON
+
+	//TEST DE DRAW_TEXT
+	ei_point_t where = {20, 20};
+	ei_const_string_t text = "bonjour";
+	ei_draw_text(main_window, &where, text, ei_default_font, noir, NULL);
 
 	// unlock, update screen.
 	hw_surface_unlock(main_window);

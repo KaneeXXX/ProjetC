@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
 #define PI 3.141592654
 
 static const ei_color_t gris_clair = {128, 128, 128, 0xff};
@@ -37,8 +38,8 @@ bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* c
 	int origine_y0 = clipper->top_left.y;
 
 	//On récupère les informations du point
-	int point_x = (addr - surface_buffer)/size.width;
-	int point_y = (addr - surface_buffer)%size.width;
+	int point_y = (addr - surface_buffer)/size.width;
+	int point_x = (addr - surface_buffer)%size.width;
 
 	// Vérifications que le pixel est bien dans le rectangle
 
@@ -90,7 +91,7 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const e
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
 
-       if ((clipper == NULL) || (is_pixel_drawable(addr, surface, clipper)))
+       if ((clipper == NULL)||(is_pixel_drawable(addr, surface, clipper)))
        {
 		uint32_t pixel_value;
 		uint8_t *channel_ptr = (uint8_t *) &pixel_value; //ptr to pixel_value
@@ -622,12 +623,6 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 	}
-	for(int i = 0; i< size_tc; i++){
-		print_chain(i, tab_TC);
-	}
-
-	printf("fin TC\n");
-
 
 	//déclarer TCA pointeur
 	lc_t** TCA = malloc(sizeof(lc_t));
@@ -676,32 +671,27 @@ typedef struct {
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
-	float step_deg = 1.;
-
-	int nb_of_points=(ending_angle-starting_angle)/(int)step_deg+1;
-	starting_angle = starting_angle * PI / 180.; //conversion to rads
-	ending_angle = ending_angle * PI / 180.;
-	float step_rad = step_deg * PI/180;
-
-	//Build the first point
-	int x0 = center.x + (int)radius*cos(starting_angle);
-	int y0 = center.y + (int)radius*sin(starting_angle);
-	ei_point_t first_point={x0, y0};
-
-	//Add it to the array
-	ei_point_t* arr=calloc((nb_of_points+1), sizeof(ei_point_t));
-	arr[0] = first_point;
+	int nb_of_points=(ending_angle-starting_angle)+1;
+	ei_point_t* arr=calloc(nb_of_points, sizeof(ei_point_t));
 
 	//Add the other points to the array
-	float current_angle=starting_angle; //can't become the i of the for loop because is float
-	for (int i=1; current_angle<=ending_angle; i++) {
-		ei_point_t new_point = {center.x + (int)(radius*cos(current_angle)), center.y + (int)(radius*sin(current_angle))};
+	float current_angle=starting_angle;
+	for (int i=0; i<nb_of_points; i++) {
+		ei_point_t new_point = {center.x + (radius*cos(current_angle*PI/180)), center.y + (radius*sin(current_angle*PI/180))};
 		arr[i]=new_point;
-		current_angle+=step_rad;
+		current_angle++;
 	}
 
 	tab_and_length arr_and_length = {arr, nb_of_points};
 	return arr_and_length;
+}
+
+void print_l_p(ei_point_t* points_list, int length)
+{
+	//REMOVE AT THE END
+	for (int i=0; i<length; i++) {
+		printf("(x=%i, y=%i) | ", points_list[i].x, points_list[i].y);
+	}
 }
 
 /*Returns array of points forming a rounded frame*/
@@ -725,21 +715,21 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
 	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
-//	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
-//	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
-//	float angle_arbitraire=0.;
-//	int lol=100;
-//	ei_point_t centre={(int)(rectangle.size.width), (int)(rectangle.size.height)};
-//	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
-//	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
-//	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
-//	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
-//
-//	//DEBUG: TRACE UN CERCLE
-//	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
-//	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
+	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
+	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
+	float angle_arbitraire=0.;
+	int lol=110;
+	ei_point_t centre={(int)(rectangle.size.width+100), (int)(rectangle.size.height+100)};
+	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
+	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
+	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
+	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
+
+	//DEBUG: TRACE UN CERCLE
+	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
+	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
 
 
 	//Return an array of the 4 arcs
@@ -747,42 +737,146 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	int length_arr=4*length_arc;
 	ei_point_t* arr=calloc(length_arr, sizeof(ei_point_t));
 	for (int i=0; i<length_arc; i++) { //add arc1 to tab
-		arr[i]=arc1.tab[i];
+		arr[i]=arc11.tab[i];
 	}
 
 	int two_times_length_arc=2*length_arc;
 	for (int i=length_arc; i<two_times_length_arc; i++) { //add arc2 to tab
-		arr[i]=arc2.tab[i-length_arc];
+		arr[i]=arc22.tab[i-length_arc];
 	}
 
 	int three_times_length_arc=3*length_arc;
 	for (int i=two_times_length_arc; i<three_times_length_arc; i++) { //add arc3 to tab
-		arr[i]=arc3.tab[i-two_times_length_arc];
+		arr[i]=arc33.tab[i-two_times_length_arc];
 	}
 
 	int four_times_length_arc=4*length_arc;
 	for (int i=three_times_length_arc; i<four_times_length_arc; i++) { //add arc4 to tab
-		arr[i]=arc4.tab[i-three_times_length_arc];
+		arr[i]=arc44.tab[i-three_times_length_arc];
 	}
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polyline(surface, arr, (size_t)length_arr, grey, NULL);
+	ei_draw_polygon(surface, arr, (size_t)4*length_arc, grey, NULL);
+	ei_color_t black = { 0, 0, 0, 255 };
+	ei_draw_polyline(surface, arc1.tab, arc1.length, black, NULL);
+	ei_draw_polyline(surface, arc2.tab, arc2.length, black, NULL);
+	ei_draw_polyline(surface, arc3.tab, arc3.length, black, NULL);
+	ei_draw_polyline(surface, arc4.tab, arc4.length, black, NULL);
+//	print_l_p(arc11.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc22.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc33.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc44.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arr, length_arr);
 	return arr;
 }
 
-int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
+
+int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
+
+	hw_surface_lock(source);
 	if (dst_rect==NULL) { //according to function documentation
-		ei_rect_t dst_rect = hw_surface_get_rect(destination);
+		ei_size_t sizedest = hw_surface_get_size(destination);
+		uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
+		if (src_rect==NULL) { //according to function documentation
+			ei_size_t sizesrc  = hw_surface_get_size(source);
+			uint32_t* addr_src = (uint32_t*) hw_surface_get_buffer(source);
+			if (sizedest.width*sizedest.height != sizesrc.width*sizesrc.height){
+				hw_surface_unlock(source);
+				return 1;
+			} else {
+				uint32_t * final_adrr = addr_src + sizesrc.width*sizesrc.height + sizesrc.width;
+                                uint32_t * current_pixel = addr_src;
+				while(current_pixel <= final_adrr){
+					*addr_dest = *current_pixel;
+					current_pixel++;
+					addr_dest++;
+				}
+				hw_surface_unlock(source);
+				return 0;//
+			}
+
+		}else {
+			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
+			ei_size_t sizesrc  = hw_surface_get_size(source);
+			uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
+			if(src_rect->size.width*src_rect->size.height != sizedest.width*sizedest.height){
+				hw_surface_unlock(source);
+				return 1;
+			} else {
+				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
+				uint32_t * final_addr = addr_src + sizesrc.width*bottom_right_src_rect.y + bottom_right_src_rect.x;
+				uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
+				while(addr_top_left_src_rect <= final_addr){
+					if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)){
+						*addr_dest = *addr_top_left_src_rect;
+					}
+				        addr_top_left_src_rect++;
+					addr_dest++;
+				}
+				hw_surface_unlock(source);
+				return 0;
+			}
+	       }
+
+	}else {
+		uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
+		ei_size_t sizedest = hw_surface_get_size(destination);
+		uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
+		if (src_rect==NULL) { //according to function documentation
+			ei_size_t sizesrc  = hw_surface_get_size(source);
+			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
+			if (sizesrc.width*sizesrc.height != dst_rect->size.width*dst_rect->size.height){
+				hw_surface_unlock(source);
+				return 1;
+			}else {
+				uint32_t * final_adrr = addr_src + sizesrc.width*sizesrc.height + sizesrc.width;
+
+				while(addr_src <= final_adrr){
+					if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)){
+						*addr_top_left_dest_rect = *addr_src;
+					}
+					addr_src++;
+					addr_top_left_dest_rect++;
+				}
+				hw_surface_unlock(source);
+				return 0;
+
+			}
+		} else {
+			if (dst_rect->size.width*dst_rect->size.height != src_rect->size.width*src_rect->size.height){
+				hw_surface_unlock(source);
+				return 1;
+			}else {
+				uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
+				ei_size_t sizedest = hw_surface_get_size(destination);
+				uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
+				uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
+				ei_size_t sizesrc  = hw_surface_get_size(source);
+				uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
+				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
+				uint32_t * final_addr = addr_src + sizesrc.width*bottom_right_src_rect.y + bottom_right_src_rect.x;
+				while(addr_top_left_src_rect <= final_addr){
+					bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source, src_rect);
+					bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect);
+					if (verif_one&&verif_two){
+						*addr_top_left_dest_rect = *addr_top_left_src_rect;
+					}
+					addr_top_left_src_rect++;
+					addr_top_left_dest_rect++;
+				}
+				hw_surface_unlock(source);
+				return 0;
+
+			}
+
+		}
+
 	}
-	if (src_rect==NULL) { //according to function documentation
-		ei_rect_t src_rect = hw_surface_get_rect(source);
-	}
 
-	ei_size_t sizedest = hw_surface_get_size(destination);
-	ei_size_t sizesrc  = hw_surface_get_size(source);
 
-	int status=0;
-
-	return status;
 }
 
 
@@ -812,12 +906,13 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 
 	ei_rect_t src_rec = hw_surface_get_rect(surface_of_text);
-	ei_point_t* origin = surface;
-	hw_surface_set_origin(surface, *where);
-	ei_rect_t dst_rec = hw_surface_get_rect(surface);
-	hw_surface_set_origin(surface, *origin);
-	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, &src_rec, false);
-	if (copy_done==0) { //copy_done==1 => success, copy_done==0 => fail
+	printf("%i \n", src_rec.size.width*src_rec.size.height);
+	ei_size_t size_rect = {src_rec.size.width, src_rec.size.height};
+	ei_rect_t dst_rec = {*where, size_rect};
+	printf("%i \n", dst_rec.size.width);
+	printf("%i \n", dst_rec.size.width);
+	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, NULL, false);
+	if (copy_done==1) { //copy_done==0 => success, copy_done==1 => fail
 		printf("Copy has failed.\n");
 	}
 }
