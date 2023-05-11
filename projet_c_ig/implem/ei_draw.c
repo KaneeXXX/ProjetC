@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
 #define PI 3.141592654
 
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
@@ -618,11 +619,6 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 	}
-	for(int i = 0; i< size_tc; i++){
-		print_chain(i, tab_TC);
-	}
-
-	printf("fin TC\n");
 
 	//déclarer TCA pointeur
 	lc_t** TCA = malloc(sizeof(lc_t));
@@ -671,13 +667,13 @@ typedef struct {
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
-	int nb_of_points=ending_angle-starting_angle;
-	ei_point_t* arr=calloc(nb_of_points+1, sizeof(ei_point_t));
+	int nb_of_points=(ending_angle-starting_angle)+1;
+	ei_point_t* arr=calloc(nb_of_points, sizeof(ei_point_t));
 
 	//Add the other points to the array
 	float current_angle=starting_angle;
 	for (int i=0; i<nb_of_points; i++) {
-		ei_point_t new_point = {center.x + (int)(radius*cos(current_angle*PI/180)), center.y + (int)(radius*sin(current_angle*PI/180))};
+		ei_point_t new_point = {center.x + (radius*cos(current_angle*PI/180)), center.y + (radius*sin(current_angle*PI/180))};
 		arr[i]=new_point;
 		current_angle++;
 	}
@@ -718,7 +714,7 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
 	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
 	float angle_arbitraire=0.;
-	int lol=50;
+	int lol=110;
 	ei_point_t centre={(int)(rectangle.size.width+100), (int)(rectangle.size.height+100)};
 	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
 	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
@@ -755,37 +751,35 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 		arr[i]=arc44.tab[i-three_times_length_arc];
 	}
 	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polygon(surface, arr, (size_t)length_arr, grey, NULL);
-	ei_color_t purple = { 0, 0, 0, 255 };
-	ei_draw_polyline(surface, arc1.tab, arc1.length, purple, NULL);
-	ei_draw_polyline(surface, arc2.tab, arc2.length, purple, NULL);
-	ei_draw_polyline(surface, arc3.tab, arc3.length, purple, NULL);
-	ei_draw_polyline(surface, arc4.tab, arc4.length, purple, NULL);
-	print_l_p(arc1.tab, length_arc);
-	printf("\n");
-	print_l_p(arc2.tab, length_arc);
-	printf("\n");
-	print_l_p(arc3.tab, length_arc);
-	printf("\n");
-	print_l_p(arc4.tab, length_arc);
-	printf("\n");
-	print_l_p(arr, length_arr);
+	ei_draw_polygon(surface, arr, (size_t)4*length_arc, grey, NULL);
+	ei_color_t black = { 0, 0, 0, 255 };
+	ei_draw_polyline(surface, arc1.tab, arc1.length, black, NULL);
+	ei_draw_polyline(surface, arc2.tab, arc2.length, black, NULL);
+	ei_draw_polyline(surface, arc3.tab, arc3.length, black, NULL);
+	ei_draw_polyline(surface, arc4.tab, arc4.length, black, NULL);
+//	print_l_p(arc11.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc22.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc33.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arc44.tab, length_arc);
+//	printf("\n");
+//	print_l_p(arr, length_arr);
 	return arr;
 }
 
 
-int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
+int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
 
-	hw_surface_lock(destination);
 	hw_surface_lock(source);
 	if (dst_rect==NULL) { //according to function documentation
 		ei_size_t sizedest = hw_surface_get_size(destination);
-		uint32_t* addr_dest = hw_surface_get_buffer(destination);
+		uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
 		if (src_rect==NULL) { //according to function documentation
 			ei_size_t sizesrc  = hw_surface_get_size(source);
-			uint32_t * addr_src = hw_surface_get_buffer(source);
+			uint32_t* addr_src = (uint32_t*) hw_surface_get_buffer(source);
 			if (sizedest.width*sizedest.height != sizesrc.width*sizesrc.height){
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 1;
 			} else {
@@ -796,23 +790,21 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 					current_pixel++;
 					addr_dest++;
 				}
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
-				return 0;
+				return 0;//
 			}
 
 		}else {
-			uint32_t * addr_src = hw_surface_get_buffer(source);
+			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
 			ei_size_t sizesrc  = hw_surface_get_size(source);
 			uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
 			if(src_rect->size.width*src_rect->size.height != sizedest.width*sizedest.height){
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 1;
 			} else {
 				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
 				uint32_t * final_addr = addr_src + sizesrc.width*bottom_right_src_rect.y + bottom_right_src_rect.x;
-				uint32_t* addr_dest = hw_surface_get_buffer(destination);
+				uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
 				while(addr_top_left_src_rect <= final_addr){
 					if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)){
 						*addr_dest = *addr_top_left_src_rect;
@@ -820,21 +812,19 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 				        addr_top_left_src_rect++;
 					addr_dest++;
 				}
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 0;
 			}
 	       }
 
 	}else {
-		uint32_t * addr_dest = hw_surface_get_buffer(destination);
+		uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
 		ei_size_t sizedest = hw_surface_get_size(destination);
 		uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
 		if (src_rect==NULL) { //according to function documentation
 			ei_size_t sizesrc  = hw_surface_get_size(source);
-			uint32_t * addr_src = hw_surface_get_buffer(source);
+			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
 			if (sizesrc.width*sizesrc.height != dst_rect->size.width*dst_rect->size.height){
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 1;
 			}else {
@@ -847,21 +837,19 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 					addr_src++;
 					addr_top_left_dest_rect++;
 				}
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 0;
 
 			}
 		} else {
 			if (dst_rect->size.width*dst_rect->size.height != src_rect->size.width*src_rect->size.height){
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 1;
 			}else {
-				uint32_t * addr_dest = hw_surface_get_buffer(destination);
+				uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
 				ei_size_t sizedest = hw_surface_get_size(destination);
 				uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
-				uint32_t * addr_src = hw_surface_get_buffer(source);
+				uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
 				ei_size_t sizesrc  = hw_surface_get_size(source);
 				uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
 				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
@@ -875,7 +863,6 @@ int  ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_sur
 					addr_top_left_src_rect++;
 					addr_top_left_dest_rect++;
 				}
-				hw_surface_unlock(destination);
 				hw_surface_unlock(source);
 				return 0;
 
@@ -924,12 +911,13 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 
 	ei_rect_t src_rec = hw_surface_get_rect(surface_of_text);
-	ei_point_t* origin = surface;
-	hw_surface_set_origin(surface, *where);
-	ei_rect_t dst_rec = hw_surface_get_rect(surface);
-	hw_surface_set_origin(surface, *origin);
+	printf("%i \n", src_rec.size.width*src_rec.size.height);
+	ei_size_t size_rect = {src_rec.size.width, src_rec.size.height};
+	ei_rect_t dst_rec = {*where, size_rect};
+	printf("%i \n", dst_rec.size.width);
+	printf("%i \n", dst_rec.size.width);
 	int copy_done = ei_copy_surface(surface, &dst_rec, surface_of_text, &src_rec, false);
-	if (copy_done==0) { //copy_done==1 => success, copy_done==0 => fail
+	if (copy_done==1) { //copy_done==0 => success, copy_done==1 => fail
 		printf("Copy has failed.\n");
 	}
 }
