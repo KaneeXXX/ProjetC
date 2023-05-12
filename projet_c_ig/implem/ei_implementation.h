@@ -11,6 +11,7 @@
 #include "hw_interface.h"
 #include "ei_types.h"
 #include "ei_widget.h"
+#include "ei_draw.h"
 
 /*Chained list of class*/
 ei_widgetclass_t * list_class = NULL;
@@ -133,6 +134,7 @@ typedef struct ei_impl_frame_t {
 
 bool alreadyRegistered(char* class_name);
 
-void draw_bouton(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
+
+void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
 
 #endif

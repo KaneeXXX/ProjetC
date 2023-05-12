@@ -118,6 +118,6 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
 
-
+void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
 
 #endif

@@ -22,11 +22,11 @@ void release_button(ei_impl_button_t* bouton)
 	free(bouton);
 }
 
-void draw_button(ei_impl_button_t* bouton, surface){
-
-	draw_bouton(surface, bouton->widget.screen_location, bouton->radius, bouton->widget.user_data.)
-
-}
+//void draw_button(ei_impl_button_t* bouton, ei_surface_t surface){
+//
+//	draw_bouton(surface, bouton->widget.screen_location, bouton->radius, bouton->widget.user_data.);
+//
+//}
 
 void setdefaults_button(){
 
@@ -46,7 +46,7 @@ void create_widgetclass_button(){
 	strcpy(button->name, name);
 	button->allocfunc = &alloc_button;
 	button-> releasefunc = &release_button;
-	button->drawfunc = &draw_button;
+	//button->drawfunc = &draw_button;
 	button->setdefaultsfunc = &setdefaults_button;
 	button->geomnotifyfunc = &geomnotify_button;
 	button->handlefunc = &handle_button;
