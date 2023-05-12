@@ -9,19 +9,13 @@
 */
 
 #include <stdint.h>
-#include "ei_types.h"
-#include "hw_interface.h"
-#include "ei_draw.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
+#include "ei_types.h"
+#include "hw_interface.h"
+#include "ei_draw.h"
 #define PI 3.141592654
-
-static const ei_color_t gris_clair = {128, 128, 128, 0xff};
-static const ei_color_t gris_fonce = {192, 192 ,192, 0xff};
-static const ei_color_t gris_tresclair = {200, 200 ,200, 0xff};
 
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
 
@@ -623,6 +617,11 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 	}
+	for(int i = 0; i< size_tc; i++){
+		print_chain(i, tab_TC);
+	}
+
+	printf("fin TC\n");
 
 	//déclarer TCA pointeur
 	lc_t** TCA = malloc(sizeof(lc_t));
@@ -669,7 +668,7 @@ typedef struct {
 } tab_and_length;
 
 /*Returns array of points forming an arc*/
-tab_and_length arc(ei_point_t center, int radius, float starting_angle, float ending_angle)
+tab_and_length arc_(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
 	int nb_of_points=(ending_angle-starting_angle)+1;
 	ei_point_t* arr=calloc(nb_of_points, sizeof(ei_point_t));
@@ -686,7 +685,7 @@ tab_and_length arc(ei_point_t center, int radius, float starting_angle, float en
 	return arr_and_length;
 }
 
-void print_l_p(ei_point_t* points_list, int length)
+void print_list_of_points(ei_point_t* points_list, int length)
 {
 	//REMOVE AT THE END
 	for (int i=0; i<length; i++) {
@@ -694,8 +693,28 @@ void print_l_p(ei_point_t* points_list, int length)
 	}
 }
 
+tab_and_length concatenate_four_point_lists(ei_point_t* list1, ei_point_t* list2, ei_point_t* list3, ei_point_t* list4, int lenght1, int lenght2, int lenght3, int lenght4) {
+	int total_lenght = lenght1 + lenght2 + lenght3 + lenght4;
+	ei_point_t * list_points = calloc(total_lenght, sizeof(ei_point_t));
+
+	for(int i = 0; i < lenght1; i++) {
+		list_points[i] = list1[i];
+	}
+	for(int i = 0; i < lenght2; i++) {
+		list_points[lenght1 + i] = list2[i];
+	}
+	for(int i = 0; i < lenght3; i++) {
+		list_points[lenght1 + lenght2 + i] = list3[i];
+	}
+	for(int i = 0; i < lenght4; i++) {
+		list_points[lenght1 + lenght2 + lenght3 + i] = list4[i];
+	}
+	tab_and_length tab = {list_points, total_lenght};
+	return tab;
+}
+
 /*Returns array of points forming a rounded frame*/
-ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_relief_t partie)
+ei_point_t* rounded_frame_(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_relief_t partie)
 {
 	int button_width = rectangle.size.width;
 	int button_height = rectangle.size.height;
@@ -710,165 +729,278 @@ ei_point_t* rounded_frame(ei_surface_t surface, ei_rect_t rectangle, int radius,
 	ei_point_t center_top_left={offset_width+(int)(radius), offset_height+(int)(radius)};
 
 	//Build the 4 arcs of the rectangle
-	tab_and_length arc1=arc(center_top_right, radius, angle_origin+270., angle_origin+360.);
-	tab_and_length arc2=arc(center_bottom_right, radius, angle_origin, angle_origin+90.);
-	tab_and_length arc3=arc(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
-	tab_and_length arc4=arc(center_top_left, radius, angle_origin+180., angle_origin+270.);
+	tab_and_length arc1=arc_(center_top_right, radius, angle_origin+270., angle_origin+360.);
+	tab_and_length arc2=arc_(center_bottom_right, radius, angle_origin, angle_origin+90.);
+	tab_and_length arc3=arc_(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
+	tab_and_length arc4=arc_(center_top_left, radius, angle_origin+180., angle_origin+270.);
 
-	ei_color_t color_arbitraire = { 0, 255, 0, 0 };
-	//Principe: on construit 4 arcs (qui sont des tableaux), puis on les concatène
-	float angle_arbitraire=0.;
-	int lol=110;
-	ei_point_t centre={(int)(rectangle.size.width+100), (int)(rectangle.size.height+100)};
-	tab_and_length arc11=arc(centre, lol, angle_origin+270., angle_origin+360.);
-	tab_and_length arc22=arc(centre, lol, angle_origin, angle_origin+90.);
-	tab_and_length arc33=arc(centre, lol, angle_origin+90., angle_origin+180.);
-	tab_and_length arc44=arc(centre, lol, angle_origin+180., angle_origin+270.);
-
-	//DEBUG: TRACE UN CERCLE
-	ei_draw_polyline(surface, arc11.tab, arc11.length, color_arbitraire, NULL);
-	ei_draw_polyline(surface, arc22.tab, arc22.length, color_arbitraire, NULL);
-	ei_draw_polyline(surface, arc33.tab, arc33.length, color_arbitraire, NULL);
-	ei_draw_polyline(surface, arc44.tab, arc44.length, color_arbitraire, NULL);
-
-
-	//Return an array of the 4 arcs
-	int length_arc=arc1.length; //supposing the lengths of all arcs are equal
-	int length_arr=4*length_arc;
-	ei_point_t* arr=calloc(length_arr, sizeof(ei_point_t));
-	for (int i=0; i<length_arc; i++) { //add arc1 to tab
-		arr[i]=arc11.tab[i];
-	}
-
-	int two_times_length_arc=2*length_arc;
-	for (int i=length_arc; i<two_times_length_arc; i++) { //add arc2 to tab
-		arr[i]=arc22.tab[i-length_arc];
-	}
-
-	int three_times_length_arc=3*length_arc;
-	for (int i=two_times_length_arc; i<three_times_length_arc; i++) { //add arc3 to tab
-		arr[i]=arc33.tab[i-two_times_length_arc];
-	}
-
-	int four_times_length_arc=4*length_arc;
-	for (int i=three_times_length_arc; i<four_times_length_arc; i++) { //add arc4 to tab
-		arr[i]=arc44.tab[i-three_times_length_arc];
-	}
-	ei_color_t grey = { 128, 128, 128, 255 };
-	ei_draw_polygon(surface, arr, (size_t)4*length_arc, grey, NULL);
-	ei_color_t black = { 0, 0, 0, 255 };
-	ei_draw_polyline(surface, arc1.tab, arc1.length, black, NULL);
-	ei_draw_polyline(surface, arc2.tab, arc2.length, black, NULL);
-	ei_draw_polyline(surface, arc3.tab, arc3.length, black, NULL);
-	ei_draw_polyline(surface, arc4.tab, arc4.length, black, NULL);
-//	print_l_p(arc11.tab, length_arc);
-//	printf("\n");
-//	print_l_p(arc22.tab, length_arc);
-//	printf("\n");
-//	print_l_p(arc33.tab, length_arc);
-//	printf("\n");
-//	print_l_p(arc44.tab, length_arc);
-//	printf("\n");
-//	print_l_p(arr, length_arr);
-	return arr;
+	tab_and_length arr = concatenate_four_point_lists(arc1.tab, arc2.tab, arc3.tab, arc4.tab, arc1.length, arc2.length, arc3.length, arc4.length);
+	return arr.tab;
 }
-
 
 int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
 
-	hw_surface_lock(source);
-	if (dst_rect==NULL) { //according to function documentation
-		ei_size_t sizedest = hw_surface_get_size(destination);
-		uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
-		if (src_rect==NULL) { //according to function documentation
-			ei_size_t sizesrc  = hw_surface_get_size(source);
-			uint32_t* addr_src = (uint32_t*) hw_surface_get_buffer(source);
-			if (sizedest.width*sizedest.height != sizesrc.width*sizesrc.height){
-				hw_surface_unlock(source);
-				return 1;
-			} else {
-				uint32_t * final_adrr = addr_src + sizesrc.width*sizesrc.height + sizesrc.width;
-                                uint32_t * current_pixel = addr_src;
-				while(current_pixel <= final_adrr){
-					*addr_dest = *current_pixel;
-					current_pixel++;
-					addr_dest++;
-				}
-				hw_surface_unlock(source);
-				return 0;//
-			}
-
-		}else {
-			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
-			ei_size_t sizesrc  = hw_surface_get_size(source);
-			uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
-			if(src_rect->size.width*src_rect->size.height != sizedest.width*sizedest.height){
-				hw_surface_unlock(source);
-				return 1;
-			} else {
-				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
-				uint32_t * final_addr = addr_src + sizesrc.width*bottom_right_src_rect.y + bottom_right_src_rect.x;
-				uint32_t* addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
-				while(addr_top_left_src_rect <= final_addr){
-					if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)){
-						*addr_dest = *addr_top_left_src_rect;
+	if (!alpha) {
+		hw_surface_lock(source);
+		if (dst_rect == NULL) { //according to function documentation
+			ei_size_t sizedest = hw_surface_get_size(destination);
+			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+			if (src_rect == NULL) { //according to function documentation
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *final_adrr =
+						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+					uint32_t *current_pixel = addr_src;
+					while (current_pixel <= final_adrr) {
+						*addr_dest = *current_pixel;
+						current_pixel++;
+						addr_dest++;
 					}
-				        addr_top_left_src_rect++;
-					addr_dest++;
+					hw_surface_unlock(source);
+					return 0;//
 				}
-				hw_surface_unlock(source);
-				return 0;
-			}
-	       }
 
-	}else {
-		uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
-		ei_size_t sizedest = hw_surface_get_size(destination);
-		uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
-		if (src_rect==NULL) { //according to function documentation
-			ei_size_t sizesrc  = hw_surface_get_size(source);
-			uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
-			if (sizesrc.width*sizesrc.height != dst_rect->size.width*dst_rect->size.height){
-				hw_surface_unlock(source);
-				return 1;
-			}else {
-				uint32_t * final_adrr = addr_src + sizesrc.width*sizesrc.height + sizesrc.width;
-
-				while(addr_src <= final_adrr){
-					if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)){
-						*addr_top_left_dest_rect = *addr_src;
+			} else {
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_top_left_src_rect =
+					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
+				if (src_rect->size.width * src_rect->size.height != sizedest.width * sizedest.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
+									    src_rect->top_left.y +
+									    src_rect->size.height};
+					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
+							       bottom_right_src_rect.x;
+					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+					while (addr_top_left_src_rect <= final_addr) {
+						if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)) {
+							*addr_dest = *addr_top_left_src_rect;
+						}
+						addr_top_left_src_rect++;
+						addr_dest++;
 					}
-					addr_src++;
-					addr_top_left_dest_rect++;
+					hw_surface_unlock(source);
+					return 0;
 				}
-				hw_surface_unlock(source);
-				return 0;
-
 			}
+
 		} else {
-			if (dst_rect->size.width*dst_rect->size.height != src_rect->size.width*src_rect->size.height){
-				hw_surface_unlock(source);
-				return 1;
-			}else {
-				uint32_t * addr_dest = (uint32_t*) hw_surface_get_buffer(destination);
-				ei_size_t sizedest = hw_surface_get_size(destination);
-				uint32_t * addr_top_left_dest_rect = addr_dest + sizedest.width*dst_rect->top_left.y + dst_rect->top_left.x;
-				uint32_t * addr_src = (uint32_t*) hw_surface_get_buffer(source);
-				ei_size_t sizesrc  = hw_surface_get_size(source);
-				uint32_t* addr_top_left_src_rect = addr_src + sizesrc.width*(src_rect->top_left.y) + src_rect->top_left.x;
-				ei_point_t bottom_right_src_rect = { src_rect->top_left.x + src_rect->size.width, src_rect->top_left.y +src_rect->size.height};
-				uint32_t * final_addr = addr_src + sizesrc.width*bottom_right_src_rect.y + bottom_right_src_rect.x;
-				while(addr_top_left_src_rect <= final_addr){
-					bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source, src_rect);
-					bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect);
-					if (verif_one&&verif_two){
-						*addr_top_left_dest_rect = *addr_top_left_src_rect;
+			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+			ei_size_t sizedest = hw_surface_get_size(destination);
+			uint32_t *addr_top_left_dest_rect =
+				addr_dest + sizedest.width * dst_rect->top_left.y + dst_rect->top_left.x;
+			if (src_rect == NULL) { //according to function documentation
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *final_adrr =
+						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+
+					while (addr_src <= final_adrr) {
+						if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)) {
+							*addr_top_left_dest_rect = *addr_src;
+						}
+						addr_src++;
+						addr_top_left_dest_rect++;
 					}
-					addr_top_left_src_rect++;
-					addr_top_left_dest_rect++;
+					hw_surface_unlock(source);
+					return 0;
+
 				}
-				hw_surface_unlock(source);
-				return 0;
+			} else {
+				if (dst_rect->size.width * dst_rect->size.height !=
+				    src_rect->size.width * src_rect->size.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+					ei_size_t sizedest = hw_surface_get_size(destination);
+					uint32_t *addr_top_left_dest_rect =
+						addr_dest + sizedest.width * dst_rect->top_left.y +
+						dst_rect->top_left.x;
+					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+					ei_size_t sizesrc = hw_surface_get_size(source);
+					uint32_t *addr_top_left_src_rect =
+						addr_src + sizesrc.width * (src_rect->top_left.y) +
+						src_rect->top_left.x;
+					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
+									    src_rect->top_left.y +
+									    src_rect->size.height};
+					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
+							       bottom_right_src_rect.x;
+					while (addr_top_left_src_rect <= final_addr) {
+						bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source,
+										   src_rect);
+						bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination,
+										   dst_rect);
+						if (verif_one && verif_two) {
+							*addr_top_left_dest_rect = *addr_top_left_src_rect;
+						}
+						addr_top_left_src_rect++;
+						addr_top_left_dest_rect++;
+					}
+					hw_surface_unlock(destination);
+					hw_surface_unlock(source);
+					return 0;
+
+				}
+
+			}
+
+		}
+	} else {
+		hw_surface_lock(source);
+		if (dst_rect == NULL) { //according to function documentation
+			ei_size_t sizedest = hw_surface_get_size(destination);
+			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+			if (src_rect == NULL) { //according to function documentation
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *final_adrr =
+						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+					uint32_t *current_pixel = addr_src;
+					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
+					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
+					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
+					while (current_pixel <= final_adrr) {
+						uint8_t *channel_ptr = (uint8_t *) current_pixel;
+						uint8_t *channel_ptr2 = (uint8_t *) addr_dest;
+						channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
+						channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
+						channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+						current_pixel++;
+						addr_dest++;
+					}
+					hw_surface_unlock(source);
+					return 0;//
+				}
+
+			} else {
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_top_left_src_rect =
+					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
+				if (src_rect->size.width * src_rect->size.height != sizedest.width * sizedest.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
+									    src_rect->top_left.y +
+									    src_rect->size.height};
+					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
+							       bottom_right_src_rect.x;
+					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
+					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
+					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
+					while (addr_top_left_src_rect <= final_addr) {
+						if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)) {
+							uint8_t *channel_ptr = (uint8_t *) addr_top_left_src_rect;
+							uint8_t *channel_ptr2 = (uint8_t *) addr_dest;
+							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
+							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
+							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+						}
+						addr_top_left_src_rect++;
+						addr_dest++;
+					}
+					hw_surface_unlock(source);
+					return 0;
+				}
+			}
+
+		} else {
+			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+			ei_size_t sizedest = hw_surface_get_size(destination);
+			uint32_t *addr_top_left_dest_rect =
+				addr_dest + sizedest.width * dst_rect->top_left.y + dst_rect->top_left.x;
+			if (src_rect == NULL) { //according to function documentation
+				ei_size_t sizesrc = hw_surface_get_size(source);
+				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *final_adrr =
+						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
+					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
+					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
+
+					while (addr_src <= final_adrr) {
+						if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)) {
+							uint8_t *channel_ptr = (uint8_t *) addr_src;
+							uint8_t *channel_ptr2 = (uint8_t *) addr_top_left_dest_rect;
+							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
+							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
+							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+						}
+						addr_src++;
+						addr_top_left_dest_rect++;
+					}
+					hw_surface_unlock(source);
+					return 0;
+
+				}
+			} else {
+				if (dst_rect->size.width * dst_rect->size.height !=
+				    src_rect->size.width * src_rect->size.height) {
+					hw_surface_unlock(source);
+					return 1;
+				} else {
+					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
+					ei_size_t sizedest = hw_surface_get_size(destination);
+					uint32_t *addr_top_left_dest_rect =
+						addr_dest + sizedest.width * dst_rect->top_left.y +
+						dst_rect->top_left.x;
+					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
+					ei_size_t sizesrc = hw_surface_get_size(source);
+					uint32_t *addr_top_left_src_rect =
+						addr_src + sizesrc.width * (src_rect->top_left.y) +
+						src_rect->top_left.x;
+					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
+									    src_rect->top_left.y +
+									    src_rect->size.height};
+					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
+							       bottom_right_src_rect.x;
+					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
+					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
+					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
+					while (addr_top_left_src_rect <= final_addr) {
+						bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source,
+										   src_rect);
+						bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination,
+										   dst_rect);
+						if (verif_one && verif_two) {
+							*addr_top_left_dest_rect = *addr_top_left_src_rect;
+							uint8_t *channel_ptr = (uint8_t *) addr_top_left_src_rect;
+							uint8_t *channel_ptr2 = (uint8_t *) addr_top_left_dest_rect;
+							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
+							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
+							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+						}
+						addr_top_left_src_rect++;
+						addr_top_left_dest_rect++;
+					}
+					hw_surface_unlock(destination);
+					hw_surface_unlock(source);
+					return 0;
+
+				}
 
 			}
 
@@ -876,16 +1008,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 	}
 
-
 }
-
-
-
-//ei_font_t hw_text_font_create		(ei_const_string_t	filename,
-//					      ei_fontstyle_t		style,
-//					      int			size);
-//
-//void hw_text_font_free(ei_font_t font);
 
 void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string_t text, ei_font_t font, ei_color_t color, const ei_rect_t* clipper)
 {
@@ -914,11 +1037,11 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 }
 
-
-tab_and_length arc2(ei_point_t centre, int radius, int angle_start, int angle_end) {
+tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end)
+{
 	int d_theta = radius;
 
-	double radian_start_angle = (angle_start * PI) / 180;  //ALways angle_start <= angle_end
+	double radian_start_angle = (angle_start * PI) / 180;  //precondition: angle_start <= angle_end
 	double radian_end_angle = (angle_end * PI) / 180;
 
 	int nb_of_points= (int) (abs(angle_end - angle_start)/d_theta + 1);
@@ -937,112 +1060,86 @@ tab_and_length arc2(ei_point_t centre, int radius, int angle_start, int angle_en
 	return tab;
 }
 
-tab_and_length concatenate_list(ei_point_t* list1, ei_point_t* list2, ei_point_t* list3, ei_point_t* list4, int lenght1, int lenght2, int lenght3, int lenght4) {
-	int total_lenght = lenght1 + lenght2 + lenght3 + lenght4;
-	ei_point_t * list_points = calloc(total_lenght, sizeof(ei_point_t));
+tab_and_length round_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
+{
+	tab_and_length conc;
+	ei_point_t top_left_point = rectangle.top_left;
+	int height = rectangle.size.height;
+	int width = rectangle.size.width;
 
-	for(int i = 0; i < lenght1; i++) {
-		list_points[i] = list1[i];
+	ei_point_t center_top_left = {top_left_point.x + radius, top_left_point.y + radius};
+	tab_and_length t1 = arc(center_top_left, radius, 180, 270);
+
+	ei_point_t center_top_right = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
+	tab_and_length t2 = arc(center_top_right, radius, 270, 380);
+
+	ei_point_t center_bottom_right = {top_left_point.x + (width - radius), top_left_point.y + (height - radius)};
+	tab_and_length t3 = arc(center_bottom_right, radius, 0, 90);
+
+	ei_point_t center_bottom_left = {top_left_point.x + radius, top_left_point.y + (height - radius)};
+	tab_and_length t4 = arc(center_bottom_left, radius, 90, 180);
+
+	if (relief == ei_relief_none) {
+		conc = concatenate_four_point_lists(t1.tab, t2.tab, t3.tab, t4.tab, t1.length, t2.length, t3.length, t4.length);
 	}
-	for(int i = 0; i < lenght2; i++) {
-		list_points[lenght1 + i] = list2[i];
-	}
-	for(int i = 0; i < lenght3; i++) {
-		list_points[lenght1 + lenght2 + i] = list3[i];
-	}
-	for(int i = 0; i < lenght4; i++) {
-		list_points[lenght1 + lenght2 + lenght3 + i] = list4[i];
-	}
-	tab_and_length tab = {list_points, total_lenght};
-	return tab;
-}
-
-void round_frame2(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_color_t color, ei_relief_t relief) {
-
-	if(relief == ei_relief_none) {
-		ei_point_t top_left_point = rectangle.top_left; //Point top left of rectangle
-		int height = rectangle.size.height;
-		int width = rectangle.size.width;
-
-		ei_point_t centre1 = {top_left_point.x + radius, top_left_point.y + radius};
-		tab_and_length t1 = arc2(centre1, radius, 180, 270);
-		ei_point_t *list1 = t1.tab;
-		int lenght1 = t1.length;
-
-		ei_point_t centre2 = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
-		tab_and_length t2 = arc2(centre2, radius, 270, 380);
-		ei_point_t *list2 = t2.tab;
-		int lenght2 = t2.length;
-
-		ei_point_t centre3 = {top_left_point.x + (width - radius), top_left_point.y + (height - radius)};
-		tab_and_length t3 = arc2(centre3, radius, 0, 90);
-		ei_point_t *list3 = t3.tab;
-		int lenght3 = t3.length;
-
-		ei_point_t centre4 = {top_left_point.x + radius, top_left_point.y + (height - radius)};
-		tab_and_length t4 = arc2(centre4, radius, 90, 180);
-		ei_point_t *list4 = t4.tab;
-		int lenght4 = t4.length;
-
-		tab_and_length conc = concatenate_list(list1, list2, list3, list4, lenght1, lenght2, lenght3, lenght4);
-		ei_point_t *point_array = conc.tab;
-		int point_array_size = conc.length;
-
-		ei_draw_polygon(surface, point_array, point_array_size, color, NULL);
-	} else {
-
-		ei_color_t color_up;
-		if(relief == ei_relief_raised) {
-			color_up = gris_clair;
-		} else {
-			color_up = gris_fonce; //Gris foncé
-		}
-		ei_point_t top_left_point = rectangle.top_left; //Point top left of rectangle
-		int height = rectangle.size.height;
-		int width = rectangle.size.width;
-
-		ei_point_t centre1 = {top_left_point.x + radius, top_left_point.y + radius};
-		tab_and_length t1 = arc2(centre1, radius, 180, 270);
-		ei_point_t *list1 = t1.tab;
-		int lenght1 = t1.length;
-
-		ei_point_t centre2 = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
-		tab_and_length t2 = arc2(centre2, radius, 270, 315);
-		ei_point_t *list2 = t2.tab;
-		int lenght2 = t2.length;
-
-		//+2 point intérieur
+	else if (relief == ei_relief_raised) {
+		//+2 points interior
 		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
 		int h = ceil(height / 2);
 		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
 		list_2points[0] = p1;
 		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + h};
 		list_2points[1] = p2;
-		tab_and_length tab = {list_2points, 2};
-
-		ei_point_t centre4 = {top_left_point.x + radius, top_left_point.y + (height - radius)};
-		tab_and_length t4 = arc2(centre4, radius, 135, 180);
-		ei_point_t *list4 = t4.tab;
-		int lenght4 = t4.length;
-
-		tab_and_length conc = concatenate_list(list1, list2, tab.tab, list4, lenght1, lenght2, 2, lenght4);
-		ei_point_t *point_array = conc.tab;
-		int point_array_size = conc.length;
-
-		ei_draw_polygon(surface, point_array, point_array_size, color_up, NULL);
+		conc = concatenate_four_point_lists(t1.tab, t2.tab, list_2points, t4.tab, t1.length, t2.length, 2, t4.length);
 	}
+	else { //ei_relief_sunken
+		//+2 points interior
+		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
+		int h = ceil(height / 2);
+		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
+		list_2points[1] = p1;
+		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + h};
+		list_2points[0] = p2;
+		conc = concatenate_four_point_lists(t4.tab, list_2points, t2.tab, t3.tab, t4.length, 2, t2.length, t3.length);
+	}
+	return conc;
 }
 
 void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief)
 {
-	round_frame2(surface, rectangle, rayon, gris_tresclair, ei_relief_none);
-	round_frame2(surface, rectangle, rayon, ei_default_background_color, relief);
+	//Create colors
+	ei_color_t color_outside_dark = { 108, 109, 112, 0xff};
+	ei_color_t color_outside_bright = { 188, 189, 192, 0xff};
+	ei_color_t color_inside = { 147, 149, 152, 0xff};
+	ei_color_t default_color_text = { 255, 255, 255, 0xff};
+	//Create edges
+	tab_and_length arr_upper = round_frame(rectangle, rayon, ei_relief_raised);
+	tab_and_length arr_lower = round_frame(rectangle, rayon, ei_relief_sunken);
+	if (relief == ei_relief_none) {
+		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_inside, NULL);
+		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_inside, NULL);
+	}
+	else if (relief == ei_relief_raised) {
+		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_bright, NULL);
+		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_dark, NULL);
+	}
+	else { //ei_relief_sunken
+		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_dark, NULL);
+		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_bright, NULL);
+	}
+	//Create centered rounded frame
 	int width = rectangle.size.width;
 	int height = rectangle.size.height;
-	int dist = ceil(0.025* width);
+	int dist = ceil(0.020 * width);
 	ei_point_t p_inside = {rectangle.top_left.x + dist, rectangle.top_left.y + dist};
 	ei_size_t size_inside = {width - 2 * dist, height - 2 * dist};
 	ei_rect_t inside_rec = {p_inside, size_inside};
-	ei_color_t color_inside = { 160, 160, 160, 0xff}; //Gris moyen clair
-	round_frame2(surface, inside_rec, rayon, color_inside, ei_relief_none);
+	tab_and_length arr_inside_rect = round_frame(inside_rec, rayon, ei_relief_none);
+	ei_draw_polygon(surface, arr_inside_rect.tab, arr_inside_rect.length, color_inside, NULL);
+	//Add the text
+//	ei_point_t where = rectangle.top_left;
+//	ei_const_string_t default_text = "Bouton";
+//	int min_size = (width < height) ? width : height;
+//	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, min_size);
+//	ei_draw_text(surface, &where, default_text, default_font, default_color_text, NULL);
 }
