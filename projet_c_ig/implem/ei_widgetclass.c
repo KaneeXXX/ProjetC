@@ -17,3 +17,7 @@ void ei_widgetclass_register (ei_widgetclass_t* widgetclass) {
 		current->next = widgetclass;
 	}
 }
+
+bool alreadyRegistered(char* class_name){
+
+}

@@ -130,4 +130,6 @@ typedef struct ei_impl_frame_t {
     ei_rect_t rectangle;
 } ei_impl_frame_t;
 
+bool alreadyRegistered(char* class_name);
+
 #endif
