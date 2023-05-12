@@ -73,17 +73,16 @@ int main(int argc, char* argv[])
 	printf("------------------------");
 	arc(center, rayon, 90, 180);*/
 
-//	//TEST DE DRAW_BUTTON*/
-//	ei_size_t size={100, 50};
-//	ei_point_t topleft = {300, 200};
-//	ei_rect_t rectangle = {topleft, size};
-//	//round_frame2(main_window, rectangle, 14, ei_default_background_color);
-//	draw_button(main_window, rectangle, 13, ei_relief_raised);
+	//TEST DE DRAW_BUTTON*/
+	ei_size_t size={150, 100};
+	ei_point_t topleft = {300, 200};
+	ei_rect_t rectangle = {topleft, size};
+	draw_button(main_window, rectangle, 16, ei_relief_raised);
 
 	//TEST DE DRAW_TEXT
 	ei_point_t where = {10, 10};
 	ei_const_string_t text = "bonjour";
-	ei_font_t super_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, 50);
+	ei_font_t super_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, 5);
 	ei_draw_text(main_window, &where, text, super_font, noir, NULL);
 
 	// unlock, update screen.

@@ -2,7 +2,7 @@
  * @file	ei_implementation.h
  *
  * @brief 	Private definitions.
- * 
+ *
  */
 
 #ifndef EI_IMPLEMENTATION_H
@@ -54,7 +54,7 @@ void ei_impl_placer_run(ei_widget_t widget);
 
 /**
  * \brief	Fields common to all types of widget. Every widget classes specializes this base
- *		class by adding its own fields. 
+ *		class by adding its own fields.
  */
 typedef struct ei_impl_widget_t {
 	ei_widgetclass_t*	wclass;		///< The class of widget of this widget. Avoids the field name "class" which is a keyword in C++.
@@ -98,7 +98,7 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
  * Def Button class
  */
 typedef struct ei_impl_button_t {
-    ei_impl_widget_t widget; //Commun to all widget
+    ei_impl_widget_t widget; //Common to all widgets
     /*Attributes*/
     int radius;
     uint64_t addr_callback_function;
