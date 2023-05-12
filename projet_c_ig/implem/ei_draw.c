@@ -749,7 +749,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			if (src_rect == NULL) { //according to function documentation
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
-				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+				if((sizedest.width != sizesrc.width) || ( sizedest.height != sizesrc.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
@@ -772,7 +772,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_top_left_src_rect =
 					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
-				if (src_rect->size.width * src_rect->size.height != sizedest.width * sizedest.height) {
+				if ((src_rect->size.width != sizedest.width) ||( src_rect->size.height != sizedest.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
@@ -804,7 +804,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			if (src_rect == NULL) { //according to function documentation
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
-				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+				if ((sizesrc.width != dst_rect->size.width) || ( sizesrc.height != dst_rect->size.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
@@ -825,8 +825,8 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 				}
 			} else {
-				if (dst_rect->size.width * dst_rect->size.height !=
-				    src_rect->size.width * src_rect->size.height) {
+				if ((dst_rect->size.width != src_rect->size.width) ||
+					(src_rect->size.height != dst_rect->size.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
