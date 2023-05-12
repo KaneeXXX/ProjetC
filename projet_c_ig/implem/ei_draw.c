@@ -462,104 +462,6 @@ void add_to_chain(lc_t* prem_cell, lc_t* cell_to_add){
 //Je réutilise getVoisins et min_max simplifiée
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
-	/*//Remplissage d'une copie étant une liste(tableau) telle que copy_point_array[i]=[{i, point_array[i]}
-	//"L'ordre" des points reste ici unchanged.
-	//I) Creation pointeur vers cette liste.
-	pt_and_index * copy_point_array = calloc(point_array_size, sizeof(pt_and_index));
-	//II) Fill the list
-	for (size_t i = 0; i < point_array_size; i++) {
-		pt_and_index temp;
-		temp.index= i;
-		temp.pt=point_array[i];
-		copy_point_array[i]=temp;
-	}
-	//III) sort the list par y des points croissants
-	qsort(copy_point_array, point_array_size, sizeof(pt_and_index), compareFunction);
-
-	//IV) Création de TC et init des valeurs clé (ymin, ...) that we need.
-	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size);
-	int y_min = critical_pts.y_min;
-	//y_max pas besoin ici
-	// tableau de pointeurs de type struct lc * initialises à NULL de taille ymax -ymin +1
-	int taille_tc = (critical_pts.y_max - critical_pts.y_min + 1);
-	lc_t** tab_TC = calloc(taille_tc, sizeof(lc_t*));
-
-	int previous_scanline = 0;
-	//V) On itére sur les structures pt_and_index (rangé par y croissant)
-	for (size_t i = 0; i < point_array_size; i++) {
-		//get the current pt_and_index structure
-		pt_and_index current_pt_and_indexe_structure = copy_point_array[i];
-		//get the point
-		ei_point_t current_point = current_pt_and_indexe_structure.pt;
-		//get the indexe in point_array
-		int index_in_point_array = current_pt_and_indexe_structure.index;
-
-		//nous allons maintenant générer la liste chainée associée à current_point
-
-		//1) On récupère ces voisins (au nombre de 2)
-		ei_point_t* current_voisins = get_voisins(point_array, index_in_point_array, point_array_size);
-		ei_point_t voisin_gauche = current_voisins[0];
-		ei_point_t voisin_droite = current_voisins[1];
-
-		bool is_same_scanline_than_previous = false;
-		if(current_point.y == previous_scanline){ //Point sur même scanline qui point traité precedement
-			is_same_scanline_than_previous = true;
-		}
-
-		bool has_voisin_gauche = false;
-		if (voisin_gauche.y >= current_point.y) {
-			//create cell for this border of the polygone and complete
-			lc_t* current_v_g = calloc(1, sizeof(lc_t));
-			current_v_g->y_max = voisin_gauche.y;
-			current_v_g->x_ymin = current_point.x;
-			current_v_g->abs_dx = abs(voisin_gauche.x-current_point.x);
-			current_v_g->abs_dy = abs(voisin_gauche.y-current_point.y);
-			current_v_g->E = 0;
-			current_v_g->dir = (voisin_gauche.x > current_point.x) ? RIGHT : LEFT;
-			current_v_g->next = NULL;
-			if(is_same_scanline_than_previous == false) {
-				tab_TC[current_point.y - y_min] = current_v_g;
-			} else {
-				add_to_chain(tab_TC[previous_scanline - y_min], current_v_g);
-			}
-			has_voisin_gauche = true;
-
-		}
-		if (voisin_droite.y >= current_point.y) {
-			lc_t* current_v_d = calloc(1, sizeof(lc_t));
-			current_v_d->y_max = voisin_droite.y;
-			current_v_d->x_ymin = current_point.x;
-			current_v_d->abs_dx = abs(voisin_droite.x-current_point.x);
-			current_v_d->abs_dy = abs(voisin_droite.y-current_point.y);
-			current_v_d->E = 0;
-			current_v_d->dir = (voisin_droite.x > current_point.x) ? RIGHT : LEFT;
-			current_v_d->next = NULL;
-
-			if(is_same_scanline_than_previous == false) {
-				//complete the chains if 2 sides to consider
-				if (has_voisin_gauche == true) {
-					tab_TC[current_point.y - y_min]->next = current_v_d;
-				} else {
-					tab_TC[current_point.y - y_min] = current_v_d;
-				}
-			} else {
-				add_to_chain(tab_TC[previous_scanline - y_min], current_v_d);
-			}
-		}
-		if(is_same_scanline_than_previous == false) {
-			print_chain(current_point.y - y_min, tab_TC);
-		} else {
-			print_chain(previous_scanline - y_min, tab_TC);
-		}
-		//Attention: Le cas ou deux points voisins on le même y n'est pas traité (d'après le sujet pas besoin)
-
-		previous_scanline = current_point.y;
-	}
-
-	//On libère la mémoire associé à cette liste intermédiaire.
-	free(copy_point_array);
-	//End of building of TC.*/
-
 	minmax_t critical_pts = min_max_sur_y(point_array, point_array_size);
 	int y_min = critical_pts.y_min;
 	int size_tc = (critical_pts.y_max - critical_pts.y_min + 1);
@@ -617,11 +519,6 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 	}
-	for(int i = 0; i< size_tc; i++){
-		print_chain(i, tab_TC);
-	}
-
-	printf("fin TC\n");
 
 	//déclarer TCA pointeur
 	lc_t** TCA = malloc(sizeof(lc_t));
@@ -668,7 +565,7 @@ typedef struct {
 } tab_and_length;
 
 /*Returns array of points forming an arc*/
-tab_and_length arc_(ei_point_t center, int radius, float starting_angle, float ending_angle)
+tab_and_length arc_old(ei_point_t center, int radius, float starting_angle, float ending_angle)
 {
 	int nb_of_points=(ending_angle-starting_angle)+1;
 	ei_point_t* arr=calloc(nb_of_points, sizeof(ei_point_t));
@@ -713,32 +610,8 @@ tab_and_length concatenate_four_point_lists(ei_point_t* list1, ei_point_t* list2
 	return tab;
 }
 
-/*Returns array of points forming a rounded frame*/
-ei_point_t* rounded_frame_(ei_surface_t surface, ei_rect_t rectangle, int radius, ei_relief_t partie)
+int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha)
 {
-	int button_width = rectangle.size.width;
-	int button_height = rectangle.size.height;
-	int offset_width = rectangle.top_left.x;
-	int offset_height = rectangle.top_left.y;
-	float angle_origin=0.; //<=>0 of the trigonometric circle (at the extreme right of the circle)
-
-	//Get the 4 centers of the 4 round edges
-	ei_point_t center_top_right={offset_width+(int)(button_width-radius), offset_height+(int)(radius)};
-	ei_point_t center_bottom_right={offset_width+(int)(button_width-radius), offset_height+(int)(button_height-radius)};
-	ei_point_t center_bottom_left={offset_width+(int)(radius), offset_height+(int)(button_height-radius)};
-	ei_point_t center_top_left={offset_width+(int)(radius), offset_height+(int)(radius)};
-
-	//Build the 4 arcs of the rectangle
-	tab_and_length arc1=arc_(center_top_right, radius, angle_origin+270., angle_origin+360.);
-	tab_and_length arc2=arc_(center_bottom_right, radius, angle_origin, angle_origin+90.);
-	tab_and_length arc3=arc_(center_bottom_left, radius, angle_origin+90., angle_origin+180.);
-	tab_and_length arc4=arc_(center_top_left, radius, angle_origin+180., angle_origin+270.);
-
-	tab_and_length arr = concatenate_four_point_lists(arc1.tab, arc2.tab, arc3.tab, arc4.tab, arc1.length, arc2.length, arc3.length, arc4.length);
-	return arr.tab;
-}
-
-int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
 
 	if (!alpha) {
 		hw_surface_lock(destination);
@@ -994,13 +867,16 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
 									    src_rect->top_left.y +
 									    src_rect->size.height};
-					ei_point_t bottom_right_dst_rect = {top_left_rect_dst.x+dst_rect->size.width, top_left_rect_dst.y+dst_rect->size.height};
+					ei_point_t bottom_right_dst_rect = {top_left_rect_dst.x + dst_rect->size.width,
+									    top_left_rect_dst.y +
+									    dst_rect->size.height};
 					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 
 					for (int xsrc = top_left_src_rect.x, xdest = top_left_rect_dst.x;
-					     xsrc <= bottom_right_src_rect.x && xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
+					     xsrc <= bottom_right_src_rect.x &&
+					     xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
 						for (int ysrc = top_left_src_rect.y, ydest = top_left_rect_dst.y;
 						     ysrc <= bottom_right_src_rect.y && ydest <=
 											bottom_right_dst_rect.y; ysrc++, ydest++) {
@@ -1009,23 +885,27 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 								addr_dest + sizedest.width * ydest + xdest;
 							uint8_t *channel_ptr_src = (uint8_t *) current_src;
 							uint8_t *channel_ptr_dst = (uint8_t *) current_dst;
-							channel_ptr_dst[ir2] = (channel_ptr_src[ia]*channel_ptr_src[ir]+(255-channel_ptr_src[ia])*channel_ptr_dst[ir2])/255;
-							channel_ptr_dst[ig2]= (channel_ptr_src[ia]*channel_ptr_src[ig]+(255-channel_ptr_src[ia])*channel_ptr_dst[ig2])/255;
-							channel_ptr_dst[ib2] = (channel_ptr_src[ia]*channel_ptr_src[ib]+(255-channel_ptr_src[ia])*channel_ptr_dst[ib2])/255;
+							channel_ptr_dst[ir2] =
+								(channel_ptr_src[ia] * channel_ptr_src[ir] +
+								 (255 - channel_ptr_src[ia]) * channel_ptr_dst[ir2]) /
+								255;
+							channel_ptr_dst[ig2] =
+								(channel_ptr_src[ia] * channel_ptr_src[ig] +
+								 (255 - channel_ptr_src[ia]) * channel_ptr_dst[ig2]) /
+								255;
+							channel_ptr_dst[ib2] =
+								(channel_ptr_src[ia] * channel_ptr_src[ib] +
+								 (255 - channel_ptr_src[ia]) * channel_ptr_dst[ib2]) /
+								255;
 						}
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;
-
 				}
-
 			}
-
 		}
-
 	}
-
 }
 
 void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string_t text, ei_font_t font, ei_color_t color, const ei_rect_t* clipper)
@@ -1058,27 +938,27 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end)
 {
 	int d_theta = radius;
-
+	double radian_step = (d_theta * PI) / 180;
 	double radian_start_angle = (angle_start * PI) / 180;  //precondition: angle_start <= angle_end
 	double radian_end_angle = (angle_end * PI) / 180;
 
-	int nb_of_points= (int) (abs(angle_end - angle_start)/d_theta + 1);
-	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
+	int nb_of_points = (int) (abs(angle_end - angle_start)/d_theta + 1);
+	ei_point_t* array = calloc((nb_of_points), sizeof(ei_point_t));
 
 	double current_theta = radian_start_angle;
 	int num_point_in_list = 0;
 
-	while(current_theta <= radian_end_angle) {
+	while (current_theta <= radian_end_angle) {
 		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
 		array[num_point_in_list] = p;
-		current_theta = current_theta + ((d_theta * PI) / 180);
+		current_theta += radian_step;
 		num_point_in_list++;
 	}
 	tab_and_length tab = {array, num_point_in_list};
 	return tab;
 }
 
-tab_and_length round_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
+tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 {
 	tab_and_length conc;
 	ei_point_t top_left_point = rectangle.top_left;
@@ -1089,7 +969,7 @@ tab_and_length round_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 	tab_and_length t1 = arc(center_top_left, radius, 180, 270);
 
 	ei_point_t center_top_right = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
-	tab_and_length t2 = arc(center_top_right, radius, 270, 380);
+	tab_and_length t2 = arc(center_top_right, radius, 270, 360);
 
 	ei_point_t center_bottom_right = {top_left_point.x + (width - radius), top_left_point.y + (height - radius)};
 	tab_and_length t3 = arc(center_bottom_right, radius, 0, 90);
@@ -1101,9 +981,13 @@ tab_and_length round_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 		conc = concatenate_four_point_lists(t1.tab, t2.tab, t3.tab, t4.tab, t1.length, t2.length, t3.length, t4.length);
 	}
 	else if (relief == ei_relief_raised) {
+		ei_point_t center_top_right = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
+		tab_and_length t2 = arc(center_top_right, radius, 270, 325);
+		ei_point_t center_bottom_left = {top_left_point.x + radius, top_left_point.y + (height - radius)};
+		tab_and_length t4 = arc(center_bottom_left, radius, 135, 180);
 		//+2 points interior
 		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
-		int h = ceil(height / 2);
+		int h = (width < height) ? width/2 : height/2;
 		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
 		list_2points[0] = p1;
 		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + h};
@@ -1111,9 +995,13 @@ tab_and_length round_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 		conc = concatenate_four_point_lists(t1.tab, t2.tab, list_2points, t4.tab, t1.length, t2.length, 2, t4.length);
 	}
 	else { //ei_relief_sunken
+		ei_point_t center_top_right = {top_left_point.x + (width - radius) + 1, top_left_point.y + radius};
+		tab_and_length t2 = arc(center_top_right, radius, 315, 360);
+		ei_point_t center_bottom_left = {top_left_point.x + radius, top_left_point.y + (height - radius)};
+		tab_and_length t4 = arc(center_bottom_left, radius, 90, 145);
 		//+2 points interior
 		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
-		int h = ceil(height / 2);
+		int h = (width < height) ? width/2 : height/2;
 		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
 		list_2points[1] = p1;
 		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + h};
@@ -1131,8 +1019,8 @@ void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief
 	ei_color_t color_inside = { 147, 149, 152, 0xff};
 	ei_color_t default_color_text = { 255, 255, 255, 0xff};
 	//Create edges
-	tab_and_length arr_upper = round_frame(rectangle, rayon, ei_relief_raised);
-	tab_and_length arr_lower = round_frame(rectangle, rayon, ei_relief_sunken);
+	tab_and_length arr_upper = rounded_frame(rectangle, rayon, ei_relief_raised);
+	tab_and_length arr_lower = rounded_frame(rectangle, rayon, ei_relief_sunken);
 	if (relief == ei_relief_none) {
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_inside, NULL);
 		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_inside, NULL);
@@ -1152,12 +1040,13 @@ void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief
 	ei_point_t p_inside = {rectangle.top_left.x + dist, rectangle.top_left.y + dist};
 	ei_size_t size_inside = {width - 2 * dist, height - 2 * dist};
 	ei_rect_t inside_rec = {p_inside, size_inside};
-	tab_and_length arr_inside_rect = round_frame(inside_rec, rayon, ei_relief_none);
+	tab_and_length arr_inside_rect = rounded_frame(inside_rec, rayon, ei_relief_none);
 	ei_draw_polygon(surface, arr_inside_rect.tab, arr_inside_rect.length, color_inside, NULL);
 	//Add the text
-//	ei_point_t where = rectangle.top_left;
-//	ei_const_string_t default_text = "Bouton";
-//	int min_size = (width < height) ? width : height;
-//	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, min_size);
-//	ei_draw_text(surface, &where, default_text, default_font, default_color_text, NULL);
+	int min_size = (width < height) ? width : height;
+	int size_text = min_size/6;
+	ei_point_t where = {rectangle.top_left.x + width/4, rectangle.top_left.y+height/4};
+	ei_const_string_t default_text = "Bouton";
+	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_bold, size_text);
+	ei_draw_text(surface, &where, default_text, default_font, default_color_text, NULL);
 }
