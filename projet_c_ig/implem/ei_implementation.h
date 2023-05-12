@@ -93,4 +93,24 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 					ei_surface_t		pick_surface,
 					ei_rect_t*		clipper);
 
+/**
+ * Def class
+ */
+typedef struct ei_impl_button_t {
+    ei_impl_widget_t widget; //Commun to all widget
+    int specific_attribute1;
+    //autre atribut
+    char specific_attribute2[80];
+} ei_impl_button_t;
+
+typedef struct ei_impl_toplevel_t {
+    ei_impl_widget_t widget;
+
+} ei_impl_toplevel_t;
+
+typedef struct ei_impl_frame_t {
+    ei_impl_widget_t widget;
+
+} ei_impl_frame_t;
+
 #endif

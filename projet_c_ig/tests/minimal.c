@@ -73,31 +73,17 @@ int main(int argc, char* argv[])
 	printf("------------------------");
 	arc(center, rayon, 90, 180);*/
 
-	/*//TEST DE ARC
-	ei_size_t size={100, 100};
-	//ei_rect_t rectangle = {point_array[3], size};
-	ei_point_t centre={100, 100};
-	int rayon=100;
-	float ad=0.;
-	float aa=90.;
-	//tab_and_length test = arc(main_window, centre, rayon, ad, aa);
-
-	//TEST DE ROUNDED_FRAME
-	int rayon_=100;
-	ei_rect_t rectangle_frame = {{300, 300}, {100, 50}};
-	ei_point_t* test=rounded_frame(main_window, rectangle_frame, rayon_, ei_relief_none);
-
-	//TEST DE DRAW_BUTTON*/
-	ei_size_t size={200, 100};
-	ei_point_t topleft = {100, 100};
-	ei_rect_t rectangle = {topleft, size};
-	//round_frame2(main_window, rectangle, 14, ei_default_background_color);
-	draw_button(main_window, rectangle, 13, ei_relief_raised);
+//	//TEST DE DRAW_BUTTON*/
+//	ei_size_t size={100, 50};
+//	ei_point_t topleft = {300, 200};
+//	ei_rect_t rectangle = {topleft, size};
+//	//round_frame2(main_window, rectangle, 14, ei_default_background_color);
+//	draw_button(main_window, rectangle, 13, ei_relief_raised);
 
 	//TEST DE DRAW_TEXT
-	ei_point_t where = {50, 50};
+	ei_point_t where = {10, 10};
 	ei_const_string_t text = "bonjour";
-	ei_font_t super_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, 150);
+	ei_font_t super_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, 50);
 	ei_draw_text(main_window, &where, text, super_font, noir, NULL);
 
 	// unlock, update screen.
