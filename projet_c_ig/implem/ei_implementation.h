@@ -12,7 +12,8 @@
 #include "ei_types.h"
 #include "ei_widget.h"
 
-
+/*Chained list of class*/
+ei_widgetclass_t * list_class = NULL;
 
 /**
  * \brief	Converts the red, green, blue and alpha components of a color into a 32 bits integer

@@ -2,10 +2,9 @@
 // Created by Rachmaninoff on 5/12/23.
 //
 #include "ei_widgetclass.h"
+#include "ei_implementation.h"
 
-/*Chained list of class*/
-ei_widgetclass_t * list_class = NULL;
-
+/*list_class dans ei_implementation.h*/
 void ei_widgetclass_register (ei_widgetclass_t* widgetclass) {
 	if(list_class == NULL){
 		*list_class = *widgetclass;
@@ -19,5 +18,14 @@ void ei_widgetclass_register (ei_widgetclass_t* widgetclass) {
 }
 
 bool alreadyRegistered(char* class_name){
-
+	if (list_class == NULL){
+		return false;
+	}
+	ei_widgetclass_t* current = list_class;
+	while(current != NULL){
+		if (current->name == class_name){
+			return true;
+		}
+	}
+	return false;
 }

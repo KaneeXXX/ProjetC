@@ -7,8 +7,7 @@
 #include "ei_placer.h"
 #include "ei_widgetclass.h"
 #include "ei_implementation.h"
-
-https://code-with-me.global.jetbrains.com/DkfkLVPAohnZqSxPRypw-A#p=CL&fp=BBC0A6AAFC8F4659218745E2686207DFFDD9DE02A12CDC18AC7E6BA88601D57C
+#include "ei_widget_attributes.h"
 
 ei_widget_t		ei_widget_create		(ei_const_string_t	class_name,
 							    ei_widget_t		parent,

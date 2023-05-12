@@ -80,7 +80,15 @@ include_directories(${HEADER_DIRS})
 # target ei (libei)
 
 set(LIB_EI_SOURCES
-     ${SRC_DIR}/ei_draw.c ${SRC_DIR}/ei_application.c ${SRC_DIR}/ei_widget.c ${SRC_DIR}/top_level_class.c ${SRC_DIR}/frame_class.c ${SRC_DIR}/button_class.c
+     ${SRC_DIR}/ei_draw.c
+	${SRC_DIR}/ei_application.c
+	${SRC_DIR}/ei_widget.c
+	${SRC_DIR}/ei_widget_attributes.c
+	${SRC_DIR}/ei_widget_configure.c
+	${SRC_DIR}/ei_widgetclass.c
+	${SRC_DIR}/toplevelclassManager.c
+	${SRC_DIR}/frameclassManager.c
+	${SRC_DIR}/buttonclassManager.c
 )
 
 
