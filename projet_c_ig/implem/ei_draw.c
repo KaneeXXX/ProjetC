@@ -741,6 +741,7 @@ ei_point_t* rounded_frame_(ei_surface_t surface, ei_rect_t rectangle, int radius
 int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surface_t source, const ei_rect_t* src_rect, bool alpha){
 
 	if (!alpha) {
+		hw_surface_lock(destination);
 		hw_surface_lock(source);
 		if (dst_rect == NULL) { //according to function documentation
 			ei_size_t sizedest = hw_surface_get_size(destination);
@@ -749,6 +750,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -760,6 +762,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						current_pixel++;
 						addr_dest++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;//
 				}
@@ -770,6 +773,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				uint32_t *addr_top_left_src_rect =
 					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
 				if (src_rect->size.width * src_rect->size.height != sizedest.width * sizedest.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -786,6 +790,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						addr_top_left_src_rect++;
 						addr_dest++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;
 				}
@@ -800,6 +805,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -813,6 +819,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						addr_src++;
 						addr_top_left_dest_rect++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;
 
@@ -820,6 +827,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			} else {
 				if (dst_rect->size.width * dst_rect->size.height !=
 				    src_rect->size.width * src_rect->size.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -859,6 +867,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 		}
 	} else {
+		hw_surface_lock(destination);
 		hw_surface_lock(source);
 		if (dst_rect == NULL) { //according to function documentation
 			ei_size_t sizedest = hw_surface_get_size(destination);
@@ -867,6 +876,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -885,6 +895,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						current_pixel++;
 						addr_dest++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;//
 				}
@@ -918,6 +929,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						addr_top_left_src_rect++;
 						addr_dest++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;
 				}
@@ -932,6 +944,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
@@ -952,6 +965,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 						addr_src++;
 						addr_top_left_dest_rect++;
 					}
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 0;
 
@@ -959,6 +973,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			} else {
 				if (dst_rect->size.width * dst_rect->size.height !=
 				    src_rect->size.width * src_rect->size.height) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
