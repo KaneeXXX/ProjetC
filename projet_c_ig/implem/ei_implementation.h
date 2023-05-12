@@ -94,23 +94,40 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 					ei_rect_t*		clipper);
 
 /**
- * Def class
+ * Def Button class
  */
 typedef struct ei_impl_button_t {
     ei_impl_widget_t widget; //Commun to all widget
-    int specific_attribute1;
-    //autre atribut
-    char specific_attribute2[80];
+    /*Attributes*/
+    int radius;
+    uint64_t addr_callback_function;
+    uint64_t memory_addr;
 } ei_impl_button_t;
 
+/**
+ * Def TopLevel class
+ */
 typedef struct ei_impl_toplevel_t {
     ei_impl_widget_t widget;
-
+    /*Attributes*/
+    char* title;
+    bool canClose;
+    ei_axis_set_t axis_set;
+    int minimalSize;
+    ei_color_t textColor;
 } ei_impl_toplevel_t;
 
+/**
+ * Def Frame class
+ */
 typedef struct ei_impl_frame_t {
     ei_impl_widget_t widget;
-
+    /*Attributes*/
+    ei_relief_t relief;
+    char* text;
+    ei_font_t font;
+    ei_anchor_t anchor;
+    ei_rect_t rectangle;
 } ei_impl_frame_t;
 
 #endif
