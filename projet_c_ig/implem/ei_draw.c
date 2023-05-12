@@ -754,24 +754,26 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_unlock(source);
 					return 1;
 				} else {
-					uint32_t *final_adrr =
-						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
-					uint32_t *current_pixel = addr_src;
-					while (current_pixel <= final_adrr) {
-						*addr_dest = *current_pixel;
-						current_pixel++;
-						addr_dest++;
+
+					for (int xsrc = 0, xdest = 0;
+					     xsrc <= sizesrc.width && xdest <= sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = 0; ysrc <= sizesrc.height && ydest <=
+													sizedest.height; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							*current_dst = *current_src;
+						}
+						hw_surface_unlock(destination);
+						hw_surface_unlock(source);
+						return 0;//
 					}
-					hw_surface_unlock(destination);
-					hw_surface_unlock(source);
-					return 0;//
 				}
 
 			} else {
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				ei_size_t sizesrc = hw_surface_get_size(source);
-				uint32_t *addr_top_left_src_rect =
-					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
+				ei_point_t top_left_rect_src = src_rect->top_left;
 				if ((src_rect->size.width != sizedest.width) ||( src_rect->size.height != sizedest.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -780,15 +782,16 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
 									    src_rect->top_left.y +
 									    src_rect->size.height};
-					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
-							       bottom_right_src_rect.x;
-					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
-					while (addr_top_left_src_rect <= final_addr) {
-						if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)) {
-							*addr_dest = *addr_top_left_src_rect;
+					for (int xsrc = top_left_rect_src.x, xdest = 0;
+					     xsrc <= bottom_right_src_rect.x && xdest <= sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = top_left_rect_src.y, ydest = 0;
+						     ysrc <= sizesrc.height && ydest <=
+									       bottom_right_src_rect.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							*current_dst = *current_src;
 						}
-						addr_top_left_src_rect++;
-						addr_dest++;
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -799,8 +802,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 		} else {
 			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
 			ei_size_t sizedest = hw_surface_get_size(destination);
-			uint32_t *addr_top_left_dest_rect =
-				addr_dest + sizedest.width * dst_rect->top_left.y + dst_rect->top_left.x;
+			ei_point_t top_left_rect_dst = dst_rect->top_left;
 			if (src_rect == NULL) { //according to function documentation
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
@@ -809,15 +811,18 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_unlock(source);
 					return 1;
 				} else {
-					uint32_t *final_adrr =
-						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+					ei_point_t bottom_right_rect_dst = {dst_rect->size.width+top_left_rect_dst.x, dst_rect->size.height+top_left_rect_dst.y};
 
-					while (addr_src <= final_adrr) {
-						if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)) {
-							*addr_top_left_dest_rect = *addr_src;
+					for (int xsrc = 0, xdest = top_left_rect_dst.x;
+					     xsrc <= sizesrc.width && xdest <= bottom_right_rect_dst.x; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc <= sizesrc.height && ydest <=
+													bottom_right_rect_dst.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							*current_dst = *current_src;
 						}
-						addr_src++;
-						addr_top_left_dest_rect++;
+
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -833,29 +838,25 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				} else {
 					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
 					ei_size_t sizedest = hw_surface_get_size(destination);
-					uint32_t *addr_top_left_dest_rect =
-						addr_dest + sizedest.width * dst_rect->top_left.y +
-						dst_rect->top_left.x;
+					ei_point_t top_left_src_rect = src_rect->top_left;
 					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 					ei_size_t sizesrc = hw_surface_get_size(source);
-					uint32_t *addr_top_left_src_rect =
-						addr_src + sizesrc.width * (src_rect->top_left.y) +
-						src_rect->top_left.x;
+
 					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
 									    src_rect->top_left.y +
 									    src_rect->size.height};
-					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
-							       bottom_right_src_rect.x;
-					while (addr_top_left_src_rect <= final_addr) {
-						bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source,
-										   src_rect);
-						bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination,
-										   dst_rect);
-						if (verif_one && verif_two) {
-							*addr_top_left_dest_rect = *addr_top_left_src_rect;
+					ei_point_t bottom_right_dst_rect = {top_left_rect_dst.x+dst_rect->size.width, top_left_rect_dst.y+dst_rect->size.height};
+
+					for (int xsrc = top_left_src_rect.x, xdest = top_left_rect_dst.x;
+					     xsrc <= bottom_right_src_rect.x && xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
+						for (int ysrc = top_left_src_rect.y, ydest = top_left_rect_dst.y;
+						     ysrc <= bottom_right_src_rect.y && ydest <=
+											bottom_right_dst_rect.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							*current_dst = *current_src;
 						}
-						addr_top_left_src_rect++;
-						addr_top_left_dest_rect++;
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -867,6 +868,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 		}
 	} else {
+
 		hw_surface_lock(destination);
 		hw_surface_lock(source);
 		if (dst_rect == NULL) { //according to function documentation
@@ -875,59 +877,63 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			if (src_rect == NULL) { //according to function documentation
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
-				if (sizedest.width * sizedest.height != sizesrc.width * sizesrc.height) {
+				if((sizedest.width != sizesrc.width) || ( sizedest.height != sizesrc.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
-					uint32_t *final_adrr =
-						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
-					uint32_t *current_pixel = addr_src;
 					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
-					while (current_pixel <= final_adrr) {
-						uint8_t *channel_ptr = (uint8_t *) current_pixel;
-						uint8_t *channel_ptr2 = (uint8_t *) addr_dest;
-						channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
-						channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
-						channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
-						current_pixel++;
-						addr_dest++;
+
+					for (int xsrc = 0, xdest = 0;
+					     xsrc <= sizesrc.width && xdest <= sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = 0; ysrc <= sizesrc.height && ydest <=
+													sizedest.height; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							uint8_t *channel_ptr_src = (uint8_t *) current_src;
+							uint8_t *channel_ptr_dst = (uint8_t *) current_dst;
+							channel_ptr_dst[ir2] = (channel_ptr_src[ia]*channel_ptr_src[ir]+(255-channel_ptr_src[ia])*channel_ptr_dst[ir2])/255;
+							channel_ptr_dst[ig2]= (channel_ptr_src[ia]*channel_ptr_src[ig]+(255-channel_ptr_src[ia])*channel_ptr_dst[ig2])/255;
+							channel_ptr_dst[ib2] = (channel_ptr_src[ia]*channel_ptr_src[ib]+(255-channel_ptr_src[ia])*channel_ptr_dst[ib2])/255;
+						}
+						hw_surface_unlock(destination);
+						hw_surface_unlock(source);
+						return 0;//
 					}
-					hw_surface_unlock(destination);
-					hw_surface_unlock(source);
-					return 0;//
 				}
 
 			} else {
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 				ei_size_t sizesrc = hw_surface_get_size(source);
-				uint32_t *addr_top_left_src_rect =
-					addr_src + sizesrc.width * (src_rect->top_left.y) + src_rect->top_left.x;
-				if (src_rect->size.width * src_rect->size.height != sizedest.width * sizedest.height) {
+				ei_point_t top_left_rect_src = src_rect->top_left;
+				if ((src_rect->size.width != sizedest.width) ||( src_rect->size.height != sizedest.height)) {
+					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
 					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
 									    src_rect->top_left.y +
 									    src_rect->size.height};
-					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
-							       bottom_right_src_rect.x;
-					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
 					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
-					while (addr_top_left_src_rect <= final_addr) {
-						if (is_pixel_drawable(addr_top_left_src_rect, source, src_rect)) {
-							uint8_t *channel_ptr = (uint8_t *) addr_top_left_src_rect;
-							uint8_t *channel_ptr2 = (uint8_t *) addr_dest;
-							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
-							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
-							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+					for (int xsrc = top_left_rect_src.x, xdest = 0;
+					     xsrc <= bottom_right_src_rect.x && xdest <= sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = top_left_rect_src.y, ydest = 0;
+						     ysrc <= sizesrc.height && ydest <=
+									       bottom_right_src_rect.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							uint8_t *channel_ptr_src = (uint8_t *) current_src;
+							uint8_t *channel_ptr_dst = (uint8_t *) current_dst;
+							channel_ptr_dst[ir2] = (channel_ptr_src[ia]*channel_ptr_src[ir]+(255-channel_ptr_src[ia])*channel_ptr_dst[ir2])/255;
+							channel_ptr_dst[ig2]= (channel_ptr_src[ia]*channel_ptr_src[ig]+(255-channel_ptr_src[ia])*channel_ptr_dst[ig2])/255;
+							channel_ptr_dst[ib2] = (channel_ptr_src[ia]*channel_ptr_src[ib]+(255-channel_ptr_src[ia])*channel_ptr_dst[ib2])/255;
 						}
-						addr_top_left_src_rect++;
-						addr_dest++;
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -938,32 +944,34 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 		} else {
 			uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
 			ei_size_t sizedest = hw_surface_get_size(destination);
-			uint32_t *addr_top_left_dest_rect =
-				addr_dest + sizedest.width * dst_rect->top_left.y + dst_rect->top_left.x;
+			ei_point_t top_left_rect_dst = dst_rect->top_left;
 			if (src_rect == NULL) { //according to function documentation
 				ei_size_t sizesrc = hw_surface_get_size(source);
 				uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
-				if (sizesrc.width * sizesrc.height != dst_rect->size.width * dst_rect->size.height) {
+				if ((sizesrc.width != dst_rect->size.width) || ( sizesrc.height != dst_rect->size.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
-					uint32_t *final_adrr =
-						addr_src + sizesrc.width * sizesrc.height + sizesrc.width;
+					ei_point_t bottom_right_rect_dst = {dst_rect->size.width+top_left_rect_dst.x, dst_rect->size.height+top_left_rect_dst.y};
 					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 
-					while (addr_src <= final_adrr) {
-						if (is_pixel_drawable(addr_top_left_dest_rect, destination, dst_rect)) {
-							uint8_t *channel_ptr = (uint8_t *) addr_src;
-							uint8_t *channel_ptr2 = (uint8_t *) addr_top_left_dest_rect;
-							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
-							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
-							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+					for (int xsrc = 0, xdest = top_left_rect_dst.x;
+					     xsrc <= sizesrc.width && xdest <= bottom_right_rect_dst.x; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc <= sizesrc.height && ydest <=
+															  bottom_right_rect_dst.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							uint8_t *channel_ptr_src = (uint8_t *) current_src;
+							uint8_t *channel_ptr_dst = (uint8_t *) current_dst;
+							channel_ptr_dst[ir2] = (channel_ptr_src[ia]*channel_ptr_src[ir]+(255-channel_ptr_src[ia])*channel_ptr_dst[ir2])/255;
+							channel_ptr_dst[ig2]= (channel_ptr_src[ia]*channel_ptr_src[ig]+(255-channel_ptr_src[ia])*channel_ptr_dst[ig2])/255;
+							channel_ptr_dst[ib2] = (channel_ptr_src[ia]*channel_ptr_src[ib]+(255-channel_ptr_src[ia])*channel_ptr_dst[ib2])/255;
 						}
-						addr_src++;
-						addr_top_left_dest_rect++;
+
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
@@ -971,45 +979,40 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 
 				}
 			} else {
-				if (dst_rect->size.width * dst_rect->size.height !=
-				    src_rect->size.width * src_rect->size.height) {
+				if ((dst_rect->size.width != src_rect->size.width) ||
+				    (src_rect->size.height != dst_rect->size.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					return 1;
 				} else {
 					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
 					ei_size_t sizedest = hw_surface_get_size(destination);
-					uint32_t *addr_top_left_dest_rect =
-						addr_dest + sizedest.width * dst_rect->top_left.y +
-						dst_rect->top_left.x;
+					ei_point_t top_left_src_rect = src_rect->top_left;
 					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 					ei_size_t sizesrc = hw_surface_get_size(source);
-					uint32_t *addr_top_left_src_rect =
-						addr_src + sizesrc.width * (src_rect->top_left.y) +
-						src_rect->top_left.x;
+
 					ei_point_t bottom_right_src_rect = {src_rect->top_left.x + src_rect->size.width,
 									    src_rect->top_left.y +
 									    src_rect->size.height};
-					uint32_t *final_addr = addr_src + sizesrc.width * bottom_right_src_rect.y +
-							       bottom_right_src_rect.x;
+					ei_point_t bottom_right_dst_rect = {top_left_rect_dst.x+dst_rect->size.width, top_left_rect_dst.y+dst_rect->size.height};
 					int ir, ig, ib, ia, ir2, ig2, ib2, ia2;
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
-					while (addr_top_left_src_rect <= final_addr) {
-						bool verif_one = is_pixel_drawable(addr_top_left_src_rect, source,
-										   src_rect);
-						bool verif_two = is_pixel_drawable(addr_top_left_dest_rect, destination,
-										   dst_rect);
-						if (verif_one && verif_two) {
-							*addr_top_left_dest_rect = *addr_top_left_src_rect;
-							uint8_t *channel_ptr = (uint8_t *) addr_top_left_src_rect;
-							uint8_t *channel_ptr2 = (uint8_t *) addr_top_left_dest_rect;
-							channel_ptr2[ir2] = (channel_ptr[ia]*channel_ptr[ir]+(255-channel_ptr[ia])*channel_ptr2[ir2])/255;
-							channel_ptr2[ig2]= (channel_ptr[ia]*channel_ptr[ig]+(255-channel_ptr[ia])*channel_ptr2[ig2])/255;
-							channel_ptr2[ib2] = (channel_ptr[ia]*channel_ptr[ib]+(255-channel_ptr[ia])*channel_ptr2[ib2])/255;
+
+					for (int xsrc = top_left_src_rect.x, xdest = top_left_rect_dst.x;
+					     xsrc <= bottom_right_src_rect.x && xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
+						for (int ysrc = top_left_src_rect.y, ydest = top_left_rect_dst.y;
+						     ysrc <= bottom_right_src_rect.y && ydest <=
+											bottom_right_dst_rect.y; ysrc++, ydest++) {
+							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
+							uint32_t *current_dst =
+								addr_dest + sizedest.width * ydest + xdest;
+							uint8_t *channel_ptr_src = (uint8_t *) current_src;
+							uint8_t *channel_ptr_dst = (uint8_t *) current_dst;
+							channel_ptr_dst[ir2] = (channel_ptr_src[ia]*channel_ptr_src[ir]+(255-channel_ptr_src[ia])*channel_ptr_dst[ir2])/255;
+							channel_ptr_dst[ig2]= (channel_ptr_src[ia]*channel_ptr_src[ig]+(255-channel_ptr_src[ia])*channel_ptr_dst[ig2])/255;
+							channel_ptr_dst[ib2] = (channel_ptr_src[ia]*channel_ptr_src[ib]+(255-channel_ptr_src[ia])*channel_ptr_dst[ib2])/255;
 						}
-						addr_top_left_src_rect++;
-						addr_top_left_dest_rect++;
 					}
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
