@@ -15,6 +15,7 @@
 #include "ei_types.h"
 #include "hw_interface.h"
 #include "ei_draw.h"
+#include "ei_implementation.h"
 #define PI 3.141592654
 
 bool is_pixel_drawable(uint32_t * addr, ei_surface_t surface, const ei_rect_t* clipper){
@@ -1011,7 +1012,7 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 	return conc;
 }
 
-void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief)
+void draw_bouton(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief)
 {
 	//Create colors
 	ei_color_t color_outside_dark = { 108, 109, 112, 0xff};

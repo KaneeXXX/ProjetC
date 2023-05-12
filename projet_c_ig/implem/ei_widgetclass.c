@@ -4,6 +4,14 @@
 #include "ei_widgetclass.h"
 #include "ei_implementation.h"
 
+
+void draw(ei_widget_t widget){
+	widget->wclass->drawfunc(widget, draw_surface, );
+}
+
+void
+
+
 /*list_class dans ei_implementation.h*/
 void ei_widgetclass_register (ei_widgetclass_t* widgetclass) {
 	if(list_class == NULL){
@@ -29,3 +37,16 @@ bool alreadyRegistered(char* class_name){
 	}
 	return false;
 }
+
+ei_widgetclass_t* ei_widgetclass_from_name(ei_const_string_t name) {
+	ei_widgetclass_t* current = list_class;
+	while (current != NULL) {
+		if(current -> name == name){
+			return current;
+		}
+	}
+	return NULL;
+}
+
+
+
