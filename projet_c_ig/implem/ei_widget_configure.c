@@ -35,9 +35,10 @@ void			ei_button_configure		(ei_widget_t		widget,
 								ei_callback_t*		callback,
 								ei_user_param_t*	user_param) {
 
+
 }
 
-void			ei_toplevel_configure		(ei_widget_t		widget,
+void ei_toplevel_configure (ei_widget_t	widget,
 								  ei_size_t*		requested_size,
 								  ei_color_t*		color,
 								  int*			border_width,

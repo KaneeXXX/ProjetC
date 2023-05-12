@@ -9,29 +9,31 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "ei_implementation.h"
 
-void alloc_frame(){
+ei_impl_frame_t * alloc_frame()
+{
+	ei_impl_frame_t* frame = calloc(1, sizeof(ei_impl_frame_t));
+	return frame;
+}
 
+void release_frame(ei_impl_frame_t* frame){
+	free(frame);
+}
+
+void draw_frame(ei_impl_frame_t* frame){
 
 }
 
-void release_frame(){
+void setdefaults_frame(ei_impl_frame_t* frame){
 
 }
 
-void draw_frame(){
+void geomnotify_frame(ei_impl_frame_t* frame){
 
 }
 
-void setdefaults_frame(){
-
-}
-
-void geomnotify_frame(){
-
-}
-
-void handle_frame(){
+void handle_frame(ei_impl_frame_t* frame){
 
 }
 

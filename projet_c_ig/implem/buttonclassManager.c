@@ -3,51 +3,56 @@
 // Created by serafith on 12/05/2023.
 //
 
-/*This file contains the methods of ei_widget_class_t TopLevel*/
+/*This file contains the methods of ei_widget_class_t button*/
 
 #include "ei_widgetclass.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "ei_implementation.h"
 
-void alloc_toplevel(){
+ei_impl_button_t * alloc_button()
+{
+	ei_impl_button_t* bouton = calloc(1, sizeof(ei_impl_button_t));
+	return bouton;
+}
 
+void release_button(ei_impl_button_t* bouton)
+{
+	free(bouton);
+}
+
+void draw_button(ei_impl_button_t* bouton, surface){
+
+	draw_bouton(surface, bouton->widget.screen_location, bouton->radius, bouton->widget.user_data.)
 
 }
 
-void release_toplevel(){
+void setdefaults_button(){
 
 }
 
-void draw_toplevel(){
+void geomnotify_button(){
 
 }
 
-void setdefaults_toplevel(){
+void handle_button(){
 
 }
 
-void geomnotify_toplevel(){
+void create_widgetclass_button(){
+	ei_widgetclass_t* button = calloc(1, sizeof(ei_widgetclass_t));
+	ei_widgetclass_name_t name = "button";
+	strcpy(button->name, name);
+	button->allocfunc = &alloc_button;
+	button-> releasefunc = &release_button;
+	button->drawfunc = &draw_button;
+	button->setdefaultsfunc = &setdefaults_button;
+	button->geomnotifyfunc = &geomnotify_button;
+	button->handlefunc = &handle_button;
+	button->next = NULL;
 
-}
-
-void handle_toplevel(){
-
-}
-
-void create_widgetclass_toplevel(){
-	ei_widgetclass_t* toplevel = calloc(1, sizeof(ei_widgetclass_t));
-	ei_widgetclass_name_t name = "toplevel";
-	strcpy(toplevel->name, name);
-	toplevel->allocfunc = &alloc_toplevel;
-	toplevel-> releasefunc = &release_toplevel;
-	toplevel->drawfunc = &draw_toplevel;
-	toplevel->setdefaultsfunc = &setdefaults_toplevel;
-	toplevel->geomnotifyfunc = &geomnotify_toplevel;
-	toplevel->handlefunc = &handle_toplevel;
-	toplevel->next = NULL;
-
-	ei_widgetclass_register(toplevel);
+	ei_widgetclass_register(button);
 }
 
 

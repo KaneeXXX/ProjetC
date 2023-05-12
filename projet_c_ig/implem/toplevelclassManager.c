@@ -9,29 +9,30 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "ei_implementation.h"
 
-void alloc_toplevel(){
+ei_impl_toplevel_t * alloc_toplevel(){
+	ei_impl_toplevel_t* toplevel = calloc(1, sizeof(ei_impl_toplevel_t));
+	return toplevel;
+}
 
+void release_toplevel(ei_impl_toplevel_t* toplevel){
+	free(toplevel);
+}
+
+void draw_toplevel(ei_impl_toplevel_t* toplevel){
 
 }
 
-void release_toplevel(){
+void setdefaults_toplevel(ei_impl_toplevel_t* toplevel){
 
 }
 
-void draw_toplevel(){
+void geomnotify_toplevel(ei_impl_toplevel_t* toplevel){
 
 }
 
-void setdefaults_toplevel(){
-
-}
-
-void geomnotify_toplevel(){
-
-}
-
-void handle_toplevel(){
+void handle_toplevel(ei_impl_toplevel_t* toplevel){
 
 }
 

@@ -20,17 +20,17 @@ ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, e
 	}
 }
 
-void		ei_place	(ei_widget_t		widget,
-				     ei_anchor_t*		anchor,
-				     int*			x,
-				     int*			y,
-				     int*			width,
-				     int*			height,
-				     float*			rel_x,
-				     float*			rel_y,
-				     float*			rel_width,
-				     float*			rel_height) {
+void ei_widget_destroy(ei_widget_t widget)
+{
 
 }
 
+bool ei_widget_is_displayed	(ei_widget_t widget)
+{
 
+}
+
+ei_widget_t	ei_widget_pick (ei_point_t*	where)
+{
+
+}
