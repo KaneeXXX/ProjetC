@@ -86,6 +86,9 @@ set(LIB_EI_SOURCES
 	${SRC_DIR}/ei_widget_attributes.c
 	${SRC_DIR}/ei_widget_configure.c
 	${SRC_DIR}/ei_widgetclass.c
+	${SRC_DIR}/toplevelclassManager.c
+	${SRC_DIR}/frameclassManager.c
+	${SRC_DIR}/buttonclassManager.c
 )
 
 
