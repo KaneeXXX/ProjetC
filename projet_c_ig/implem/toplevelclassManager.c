@@ -34,6 +34,7 @@ void setdefaults_toplevel(ei_widget_t widget){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	toplevel->title = "Default Title";
 	//set other default values
+	//TODO
 }
 
 void geomnotify_toplevel(ei_widget_t widget){

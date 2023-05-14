@@ -61,18 +61,47 @@ ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, e
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);
 	} else {
-		//Class doesn't exist or registered
+		//Class doesn't exist or is not registered
 	}
 }
 
-void ei_widget_destroy(ei_widget_t widget)
+void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 {
+	//Removes the widget from the screen if it is currently displayed.
+	if(ei_widget_is_displayed(widget)){
+		//TODO
+	}
 
+	/*Destroy widget and all its offspring (descendance)*/
+	//destruction recursive
+	if(widget->children_head != NULL) { //No children
+
+		//get the list of children and DESTROY THEM !! AHAHAHAHAH (the evil strikes again)
+		ei_widget_t current_widgetchild = widget->children_head; //head of the list
+		while (current_widgetchild != NULL) {
+			//Calls its destructor if it was provided.
+			if (widget->destructor != NULL) {
+				widget->destructor(widget);
+			}
+
+			//free memory
+			ei_widgetclass_t *wclass = current_widgetchild->wclass;
+			ei_widget_t to_delete = current_widgetchild;
+			free(wclass);
+			current_widgetchild = current_widgetchild->next_sibling; //move in the list of children before detroying, otherwise may have pb
+			ei_widget_destroy(to_delete);
+		}
+	}
+
+	//Destroy the widget itself
+	ei_widgetclass_t* wclass = widget->wclass;
+	free(wclass);
+	free(widget);
 }
 
 bool ei_widget_is_displayed	(ei_widget_t widget)
 {
-
+	return (widget->placer_params == NULL) ? false : true;
 }
 
 ei_widget_t	ei_widget_pick (ei_point_t*	where)

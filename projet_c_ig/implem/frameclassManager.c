@@ -37,6 +37,7 @@ void setdefaults_frame(ei_widget_t widget){
 	frame->text = "Default Text";
 	//Autres fields a set default
 	//set other default values
+	//TODO
 }
 
 void geomnotify_frame(ei_widget_t widget){

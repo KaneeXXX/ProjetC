@@ -36,7 +36,7 @@ void drawbutton(ei_widget_t		widget,
 void setdefaults_button(ei_widget_t widget){
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
 	//set default value
-
+	//TODO
 }
 
 void geomnotify_button(ei_widget_t widget){
