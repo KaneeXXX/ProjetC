@@ -1,6 +1,12 @@
-//
-// Created by Jack the Ripper in 1888.
-//
+/**
+*  @file      ei_application.c
+*  @brief     Manages the main steps of a graphical application: initialization, main window,
+*	      main loop, quitting, resource freeing.
+*
+*  \author
+*  Created by Notre Groupe.
+*
+*/
 
 #include "ei_application.h"
 #include "hw_interface.h"

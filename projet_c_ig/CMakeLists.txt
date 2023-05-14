@@ -76,7 +76,6 @@ endif(${APPLE})
 
 include_directories(${HEADER_DIRS})
 
-
 # target ei (libei)
 
 set(LIB_EI_SOURCES
@@ -89,10 +88,35 @@ set(LIB_EI_SOURCES
 	${SRC_DIR}/toplevelclassManager.c
 	${SRC_DIR}/frameclassManager.c
 	${SRC_DIR}/buttonclassManager.c
-)
+	)
 
 
 add_library(ei STATIC			${LIB_EI_SOURCES})
+
+# target fill_test
+
+add_executable(fill_test 		${TEST_DIR}/fill_test.c)
+target_link_libraries(fill_test		ei ${PLATFORM_LIB_FLAGS})
+
+# target poly_test
+
+add_executable(poly_test 		${TEST_DIR}/poly_test.c)
+target_link_libraries(poly_test		ei ${PLATFORM_LIB_FLAGS})
+
+# target arc_test
+
+add_executable(arc_test 		${TEST_DIR}/arc_test.c)
+target_link_libraries(arc_test		ei ${PLATFORM_LIB_FLAGS})
+
+# target rounded_frame_test
+
+add_executable(rounded_frame_test 		${TEST_DIR}/rounded_frame_test.c)
+target_link_libraries(rounded_frame_test	ei ${PLATFORM_LIB_FLAGS})
+
+# target buttons_test
+
+add_executable(buttons_test 		${TEST_DIR}/buttons_test.c)
+target_link_libraries(buttons_test	ei ${PLATFORM_LIB_FLAGS})
 
 # target minimal
 

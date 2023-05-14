@@ -44,7 +44,9 @@ int main(int argc, char* argv[])
 	ei_point_t  point_array[] = {{20, 30}, {90, 10},{140, 10},{140, 50}, {120, 100}, {70, 70}, {20, 90}};
 	size_t length=7;
 	ei_color_t color = {0, 255, 255, 0};
-	//ei_draw_polygon (main_window, point_array, length, color, NULL);
+//	ei_rect_t clipper_poly		= ei_rect(ei_point(0, 0), ei_size(100, 50)); //TEST AVEC CLIPPER
+//	ei_rect_t* clipper_poly_ptr		= &clipper_poly;
+	ei_draw_polygon (main_window, point_array, length, color, NULL);
 
 	/*//DRAW RECT
 	ei_point_t  point_array[] = {{200, 200}, {100,200}, {100, 100}, {200, 100}};
@@ -54,7 +56,7 @@ int main(int argc, char* argv[])
 
 	ei_color_t noir = {0, 0, 0, 0xff};
 	pixel_ptr = (uint32_t*)hw_surface_get_buffer(main_window);
-	for(int i=0; i < length; i++) {
+	for(int i=0; i < (int) length; i++) {
 		u_int32_t *point = pixel_ptr + main_window_size.width * point_array[i].y + point_array[i].x;
 		//Get order of colors in pixel because it's not always the same
 

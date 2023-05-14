@@ -134,7 +134,4 @@ typedef struct ei_impl_frame_t {
 
 bool alreadyRegistered(char* class_name);
 
-
-void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
-
 #endif
