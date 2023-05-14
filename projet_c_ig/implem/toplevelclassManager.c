@@ -10,29 +10,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ei_implementation.h"
+#include "ei_utils.h"
 
-ei_impl_toplevel_t * alloc_toplevel(){
+ei_widget_t alloc_toplevel(){
 	ei_impl_toplevel_t* toplevel = calloc(1, sizeof(ei_impl_toplevel_t));
 	return toplevel;
 }
 
-void release_toplevel(ei_impl_toplevel_t* toplevel){
+void release_toplevel(ei_widget_t widget){
+	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	free(toplevel);
 }
 
-void draw_toplevel(ei_impl_toplevel_t* toplevel){
+void draw_toplevel(ei_widget_t		widget,
+		   ei_surface_t		surface,
+		   ei_surface_t		pick_surface,
+		   ei_rect_t*		clipper){
+	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
+	//draw avec les param de top level
+}
+
+void setdefaults_toplevel(ei_widget_t widget){
+	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
+	toplevel->title = "Default Title";
+	toplevel->canClose = true;
+	toplevel->axis_set = ei_axis_both;
+	toplevel->minimalSize = ei_size(100, 100);
+}
+
+void geomnotify_toplevel(ei_widget_t widget){
 
 }
 
-void setdefaults_toplevel(ei_impl_toplevel_t* toplevel){
-
-}
-
-void geomnotify_toplevel(ei_impl_toplevel_t* toplevel){
-
-}
-
-void handle_toplevel(ei_impl_toplevel_t* toplevel){
+bool handle_toplevel(ei_widget_t widget, struct ei_event_t* event){
 
 }
 
@@ -48,7 +58,7 @@ void create_widgetclass_toplevel(){
 	toplevel->handlefunc = &handle_toplevel;
 	toplevel->next = NULL;
 
-		ei_widgetclass_register(toplevel);
+	ei_widgetclass_register(toplevel);
 }
 
 

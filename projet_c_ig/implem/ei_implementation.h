@@ -67,8 +67,8 @@ typedef struct ei_impl_widget_t {
 	/* Widget Hierachy Management */
 	ei_widget_t		parent;		///< Pointer to the parent of this widget.
 	ei_widget_t		children_head;	///< Pointer to the first child of this widget.	Children are chained with the "next_sibling" field.
-	ei_widget_t		children_tail;	///< Pointer to the last child of this widget.
-	ei_widget_t		next_sibling;	///< Pointer to the next child of this widget's parent widget.
+	//ei_widget_t		children_tail;	///< Pointer to the last child of this widget.
+	ei_widget_t		next_sibling;	///< Pointer to the next child (of this widget's parent widget.)
 
 	/* Geometry Management */
 	struct ei_impl_placer_params_t* placer_params;	///< Pointer to the placer parameters for this widget. If NULL, the widget is not currently managed and thus, is not displayed on the screen.
@@ -102,7 +102,7 @@ typedef struct ei_impl_button_t {
     ei_impl_widget_t widget; //Common to all widgets
     /*Attributes*/
     int radius;
-    uint64_t addr_callback_function;
+    ei_callback_t addr_callback_function;
     uint64_t memory_addr;
 } ei_impl_button_t;
 
@@ -115,8 +115,7 @@ typedef struct ei_impl_toplevel_t {
     char* title;
     bool canClose;
     ei_axis_set_t axis_set;
-    int minimalSize;
-    ei_color_t textColor;
+    ei_size_t minimalSize;
 } ei_impl_toplevel_t;
 
 /**
@@ -128,8 +127,10 @@ typedef struct ei_impl_frame_t {
     ei_relief_t relief;
     char* text;
     ei_font_t font;
+    //Add img et autres fields?
     ei_anchor_t anchor;
     ei_rect_t rectangle;
+
 } ei_impl_frame_t;
 
 bool alreadyRegistered(char* class_name);

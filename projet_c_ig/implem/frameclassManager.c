@@ -11,29 +11,39 @@
 #include <stdio.h>
 #include "ei_implementation.h"
 
-ei_impl_frame_t * alloc_frame()
+ei_widget_t alloc_frame()
 {
 	ei_impl_frame_t* frame = calloc(1, sizeof(ei_impl_frame_t));
 	return frame;
 }
 
-void release_frame(ei_impl_frame_t* frame){
+void release_frame(ei_widget_t widget){
+	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
 	free(frame);
 }
 
-void draw_frame(ei_impl_frame_t* frame){
+void draw_frame(ei_widget_t		widget,
+		ei_surface_t		surface,
+		ei_surface_t		pick_surface,
+		ei_rect_t*		clipper){
+	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
+	//draw frame
+}
+
+void setdefaults_frame(ei_widget_t widget){
+	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
+	frame->relief = ei_relief_raised;
+	frame->anchor = ei_anc_center;
+	frame->text = "Default Text";
+	frame->font = ei_default_font;
+	//Autres fields a rajouter mais la jsp
+}
+
+void geomnotify_frame(ei_widget_t widget){
 
 }
 
-void setdefaults_frame(ei_impl_frame_t* frame){
-
-}
-
-void geomnotify_frame(ei_impl_frame_t* frame){
-
-}
-
-void handle_frame(ei_impl_frame_t* frame){
+bool handle_frame(ei_widget_t widget, struct ei_event_t* event){
 
 }
 
