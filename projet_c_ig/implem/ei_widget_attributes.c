@@ -22,9 +22,9 @@ ei_widget_t ei_widget_get_first_child(ei_widget_t widget){
 	widget->children_head;
 }
 
-ei_widget_t ei_widget_get_last_child(ei_widget_t widget) {
-	widget->children_tail;
-}
+/*ei_widget_t ei_widget_get_last_child(ei_widget_t widget) {
+	widget.
+}*/
 
 ei_widget_t ei_widget_get_next_sibling(ei_widget_t widget){
 	widget->next_sibling;
