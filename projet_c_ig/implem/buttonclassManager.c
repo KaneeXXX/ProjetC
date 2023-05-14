@@ -35,11 +35,8 @@ void drawbutton(ei_widget_t		widget,
 
 void setdefaults_button(ei_widget_t widget){
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
-	ei_callback_t callback = button->addr_callback_function;
+	//set default value
 
-	button -> radius = 5;
-	button->addr_callback_function = callback;
-	button->memory_addr = 0x00000000; //ouais ? en vrai elle va être changer je pense par le user
 }
 
 void geomnotify_button(ei_widget_t widget){

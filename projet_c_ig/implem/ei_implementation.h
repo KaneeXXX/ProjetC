@@ -101,9 +101,19 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 typedef struct ei_impl_button_t {
     ei_impl_widget_t widget; //Common to all widgets
     /*Attributes*/
-    int radius;
-    ei_callback_t addr_callback_function;
-    uint64_t memory_addr;
+    ei_color_t	color;
+    int border_width;
+    int corner_radius;
+    ei_relief_t relief;
+    ei_string_t	text;
+    ei_font_t text_font;
+    ei_color_t text_color;
+    ei_anchor_t text_anchor;
+    ei_surface_t img;
+    ei_rect_ptr_t img_rect;
+    ei_anchor_t img_anchor;
+    ei_callback_t callback;
+    ei_user_param_t user_param;
 } ei_impl_button_t;
 
 /**
@@ -112,10 +122,12 @@ typedef struct ei_impl_button_t {
 typedef struct ei_impl_toplevel_t {
     ei_impl_widget_t widget;
     /*Attributes*/
-    char* title;
-    bool canClose;
-    ei_axis_set_t axis_set;
-    ei_size_t minimalSize;
+    ei_color_t color;
+    int border_width;
+    ei_string_t	title;
+    bool closable;
+    ei_axis_set_t resizable;
+    ei_size_ptr_t min_size;
 } ei_impl_toplevel_t;
 
 /**
@@ -124,12 +136,16 @@ typedef struct ei_impl_toplevel_t {
 typedef struct ei_impl_frame_t {
     ei_impl_widget_t widget;
     /*Attributes*/
+    ei_color_t color;
+    int border_width;
     ei_relief_t relief;
-    char* text;
-    ei_font_t font;
-    //Add img et autres fields?
-    ei_anchor_t anchor;
-    ei_rect_t rectangle;
+    ei_string_t text;
+    ei_font_t text_font;
+    ei_color_t	text_color;
+    ei_anchor_t text_anchor;
+    ei_surface_t img;
+    ei_rect_ptr_t img_rect;
+    ei_anchor_t img_anchor;
 
 } ei_impl_frame_t;
 

@@ -33,10 +33,10 @@ void draw_frame(ei_widget_t		widget,
 void setdefaults_frame(ei_widget_t widget){
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
 	frame->relief = ei_relief_raised;
-	frame->anchor = ei_anc_center;
+	frame->text_anchor = ei_anc_center;
 	frame->text = "Default Text";
-	frame->font = ei_default_font;
-	//Autres fields a rajouter mais la jsp
+	//Autres fields a set default
+	//set other default values
 }
 
 void geomnotify_frame(ei_widget_t widget){
