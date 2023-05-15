@@ -62,13 +62,13 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 
 void ei_app_run()
 {
-	getchar();
+	//getchar();
 
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
-		//Draw tout l'arbre de widget
+	//Draw tout l'arbre de widget
 	ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
-		//Listen event
-		//traite l'event
+	//Listen event
+	//traite l'event
 
 
 }

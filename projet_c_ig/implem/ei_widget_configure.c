@@ -64,13 +64,13 @@ void			ei_button_configure		(ei_widget_t		widget,
 }
 
 void ei_toplevel_configure (ei_widget_t	widget,
-								  ei_size_t*		requested_size,
-								  ei_color_t*		color,
-								  int*			border_width,
-								  ei_string_t*		title,
-								  bool*			closable,
-								  ei_axis_set_t*		resizable,
-								  ei_size_ptr_t*		min_size) {
+			    ei_size_t*		requested_size,
+			    ei_color_t*		color,
+			    int*			border_width,
+			    ei_string_t*		title,
+			    bool*			closable,
+			    ei_axis_set_t*		resizable,
+			    ei_size_ptr_t*		min_size) {
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	toplevel -> widget.requested_size = requested_size;
 	toplevel->color = color;

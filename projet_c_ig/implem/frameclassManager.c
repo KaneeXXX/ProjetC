@@ -25,9 +25,16 @@ void release_frame(ei_widget_t widget){
 void draw_frame(ei_widget_t		widget,
 		ei_surface_t		surface,
 		ei_surface_t		pick_surface,
-		ei_rect_t*		clipper){
+		ei_rect_t*		clipper)
+		{
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
-	//draw frame
+	int x=widget->screen_location.top_left.x;
+	int y=widget->screen_location.top_left.y;
+	int width=widget->requested_size->width;
+	int height=widget->requested_size->height;
+	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
+	size_t size=4;
+	ei_draw_polygon(surface, points_rectangle, size, *widget->pick_color, clipper);
 }
 
 void setdefaults_frame(ei_widget_t widget){

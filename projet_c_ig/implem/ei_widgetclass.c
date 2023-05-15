@@ -7,11 +7,14 @@
 /*Chained list of class*/
 ei_widgetclass_t **listclass;
 
-/*void draw(ei_widget_t		widget,
+void draw(ei_widget_t		widget,
 	  ei_surface_t		surface,
 	  ei_surface_t		pick_surface,
 	  ei_rect_t*		clipper) {
+	hw_surface_lock	(surface);
 	widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
+	hw_surface_unlock(surface);
+	//hw_surface_update_rects(surface);
 }
 
 void setDefault(ei_widget_t widget) {
@@ -28,7 +31,7 @@ void geomnotify(ei_widget_t widget) {
 
 void handle(ei_widget_t widget, struct ei_event_t* event) {
 	widget -> wclass -> handlefunc(widget, event);
-}*/
+}
 
 void initlistclassToNull(){
 	listclass = malloc(sizeof(ei_widgetclass_t));
@@ -75,6 +78,3 @@ ei_widgetclass_t* ei_widgetclass_from_name(ei_const_string_t name) {
 	}
 	return NULL;
 }
-
-
-

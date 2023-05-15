@@ -25,7 +25,7 @@ void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
 	}
 }
 
-ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, ei_user_param_t	user_data, ei_widget_destructor_t destructor)
+ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, ei_user_param_t user_data, ei_widget_destructor_t destructor)
 {
 	/*Verify is class_name is known by the library*/
 	ei_widgetclass_t* widgetclassptr = ei_widgetclass_from_name(class_name);

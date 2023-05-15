@@ -12,6 +12,15 @@
 #include "ei_implementation.h"
 #include "ei_utils.h"
 
+//(ei_widget_t	widget,
+//ei_size_t*	requested_size,
+//ei_color_t*	color,
+//int*		border_width,
+//ei_string_t*	title,
+//bool*		losable,
+//ei_axis_set_t*resizable,
+//ei_size_ptr_t*min_size);
+
 ei_widget_t alloc_toplevel(){
 	ei_impl_toplevel_t* toplevel = calloc(1, sizeof(ei_impl_toplevel_t));
 	return toplevel;
@@ -50,7 +59,7 @@ void create_widgetclass_toplevel(){
 	ei_widgetclass_name_t name = "toplevel";
 	strcpy(toplevel->name, name);
 	toplevel->allocfunc = &alloc_toplevel;
-	toplevel-> releasefunc = &release_toplevel;
+	toplevel->releasefunc = &release_toplevel;
 	toplevel->drawfunc = &draw_toplevel;
 	toplevel->setdefaultsfunc = &setdefaults_toplevel;
 	toplevel->geomnotifyfunc = &geomnotify_toplevel;

@@ -71,56 +71,6 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 			surface_buffer++;
 		}
 	}
-
-	//Get order in which colors are stored in pixel because it is not always RGBA
-	/*if (color == NULL) { //then draw in black
-		if (clipper == NULL) {
-			for(int i = 0; i <= nb_pixel - 1; i++) {
-				uint32_t pixel_value; //vector of 4 bytes
-				uint8_t* channel_ptr = (uint8_t*) &pixel_value; //pointer to that vector (pixel_value)
-				channel_ptr[ir] = channel_ptr[ig] = channel_ptr[ib] = 0x00; //BLACK
-				channel_ptr[ia] = 0xff; //OPAQUE
-				*surface_buffer++ = pixel_value; //<=> *surface_buffer = pixel_value; surface_buffer++
-			}
-		}
-		else {
-			for(int i = 0; i <= nb_pixel - 1; i++) {
-				uint32_t pixel_value; //vector of 4 bytes
-				uint8_t* channel_ptr = (uint8_t*) &pixel_value; //pointer to that vector (pixel_value)
-				if (is_pixel_drawable(surface_buffer, surface, clipper)) {
-					channel_ptr[ir] = channel_ptr[ig] = channel_ptr[ib] = 0x00; //BLACK
-					channel_ptr[ia] = 0xff; //OPAQUE
-				}
-				*surface_buffer++ = pixel_value; //<=> *surface_buffer = pixel_value; surface_buffer++
-			}
-		}
-	}
-	else {
-		if (clipper == NULL) {
-			for(int i = 0; i <= nb_pixel - 1; i++) {
-				uint32_t pixel_value;
-				uint8_t* channel_ptr = (uint8_t*) &pixel_value;
-				channel_ptr[ir] = color->red;
-				channel_ptr[ig] = color->green;
-				channel_ptr[ib] = color->blue;
-				channel_ptr[ia] = color->alpha;
-				*surface_buffer++ = pixel_value;
-			}
-		}
-		else {
-			for(int i = 0; i <= nb_pixel - 1; i++) {
-				uint32_t pixel_value;
-				uint8_t* channel_ptr = (uint8_t*) &pixel_value;
-				if (is_pixel_drawable(surface_buffer, surface, clipper)) {
-					channel_ptr[ir] = color->red;
-					channel_ptr[ig] = color->green;
-					channel_ptr[ib] = color->blue;
-					channel_ptr[ia] = color->alpha;
-				}
-				*surface_buffer++ = pixel_value;
-			}
-		}
-	}*/
 }
 
 
@@ -864,23 +814,26 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 }
 
 /*Returns array of points forming an arc*/
-tab_and_length arc(ei_point_t center, int radius, int angle_start, int angle_end)
-{
+tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
 	int d_theta = radius;
-	double radian_step = (d_theta * PI) / 180;
-	double radian_start_angle = (angle_start * PI) / 180;  //precondition: angle_start <= angle_end
+
+	double radian_start_angle = (angle_start * PI) / 180;  //ALways angle_start <= angle_end
 	double radian_end_angle = (angle_end * PI) / 180;
-	int nb_of_points = abs(angle_end - angle_start) / d_theta + 1;
-	ei_point_t* array = calloc((nb_of_points), sizeof(ei_point_t));
+
+	int nb_of_points= (int) (abs(angle_end - angle_start)/d_theta + 1);
+	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
+
 	double current_theta = radian_start_angle;
 	int num_point_in_list = 0;
-	while (current_theta <= radian_end_angle) {
-		ei_point_t p = {center.x + radius * cos(current_theta), center.y + radius * sin(current_theta)};
+
+	while(current_theta <= radian_end_angle) {
+		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
 		array[num_point_in_list] = p;
-		current_theta += radian_step;
+		current_theta = current_theta + ((d_theta * PI) / 180);
 		num_point_in_list++;
 	}
-	return (tab_and_length) {array, num_point_in_list};
+	tab_and_length tab = {array, num_point_in_list};
+	return tab;
 }
 
 tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
