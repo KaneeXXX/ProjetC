@@ -41,10 +41,7 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 	int nb_pixel = size.width * size.height;
 
 	//Get order in which colors are stored in pixel because it is not always RGBA
-	int ir, ig, ib, ia;
-	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
-
-	if (color == NULL) { //then draw in black
+	/*if (color == NULL) { //then draw in black
 		if (clipper == NULL) {
 			for(int i = 0; i <= nb_pixel - 1; i++) {
 				uint32_t pixel_value; //vector of 4 bytes
@@ -91,7 +88,7 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 				*surface_buffer++ = pixel_value;
 			}
 		}
-	}
+	}*/
 }
 
 void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const ei_rect_t* clipper)

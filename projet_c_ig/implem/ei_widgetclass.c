@@ -41,6 +41,7 @@ void ei_widgetclass_register (ei_widgetclass_t* widgetclass) {
 	}
 }
 
+
 bool alreadyRegistered(char* class_name){
 	if (list_class == NULL){
 		return false;
