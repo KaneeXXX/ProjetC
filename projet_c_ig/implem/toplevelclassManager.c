@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "ei_implementation.h"
 #include "ei_utils.h"
+#include "ei_widget_configure.h"
 
 //(ei_widget_t	widget,
 //ei_size_t*	requested_size,
@@ -40,10 +41,8 @@ void drawtoplevel(ei_widget_t		widget,
 }
 
 void setdefaults_toplevel(ei_widget_t widget){
-	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	toplevel->title = "Default Title";
-	//set other default values
-	//TODO
+	//configure avec truc pas défault
+	//ei_toplevel_configure();
 }
 
 void geomnotify_toplevel(ei_widget_t widget){

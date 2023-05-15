@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ei_implementation.h"
+#include "ei_widget_configure.h"
 
 ei_widget_t alloc_frame()
 {
@@ -38,13 +39,7 @@ void draw_frame(ei_widget_t		widget,
 }
 
 void setdefaults_frame(ei_widget_t widget){
-	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
-	frame->relief = ei_relief_raised;
-	frame->text_anchor = ei_anc_center;
-	frame->text = "Default Text";
-	//Autres fields a set default
-	//set other default values
-	//TODO
+	//ei_frame_configure();
 }
 
 void geomnotify_frame(ei_widget_t widget){

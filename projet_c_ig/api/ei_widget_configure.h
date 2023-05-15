@@ -131,7 +131,6 @@ void			ei_toplevel_configure		(ei_widget_t		widget,
 							 ei_axis_set_t*		resizable,
 						 	 ei_size_ptr_t*		min_size);
 
-
 static inline void ei_frame_set_requested_size	(ei_widget_t frame,  ei_size_t size)		{ ei_frame_configure(frame, &size, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL); }
 static inline void ei_frame_set_bg_color	(ei_widget_t frame,  ei_color_t bg_color)	{ ei_frame_configure(frame, NULL, &bg_color, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL); }
 static inline void ei_frame_set_text		(ei_widget_t frame,  ei_string_t text)		{ ei_frame_configure(frame, NULL, NULL, NULL, NULL, &text, NULL, NULL, NULL, NULL, NULL, NULL); }
@@ -141,5 +140,7 @@ static inline void ei_button_set_requested_size	(ei_widget_t button, ei_size_t s
 static inline void ei_button_set_bg_color	(ei_widget_t button, ei_color_t bg_color)	{ ei_button_configure(button, NULL, &bg_color, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL); }
 static inline void ei_button_set_text		(ei_widget_t button, ei_string_t text)		{ ei_button_configure(button, NULL, NULL, NULL, NULL, NULL, &text, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL); }
 static inline void ei_button_set_image		(ei_widget_t button, ei_surface_t image)	{ ei_button_configure(button, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &image, NULL, NULL, NULL, NULL); }
+
+
 
 #endif //EI_WIDGET_CONFIGURE_H

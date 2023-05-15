@@ -12,7 +12,7 @@
 #include "ei_types.h"
 #include "ei_widget.h"
 #include "ei_draw.h"
-
+#include "ei_widget_configure.h"
 
 
 /**

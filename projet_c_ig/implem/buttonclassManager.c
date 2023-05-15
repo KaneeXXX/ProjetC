@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ei_implementation.h"
+#include "ei_widget_configure.h"
 
 ei_widget_t alloc_button()
 {
@@ -33,9 +34,8 @@ void drawbutton(ei_widget_t		widget,
 }
 
 void setdefaults_button(ei_widget_t widget){
-	ei_impl_button_t* button = (ei_impl_button_t*) widget;
-	//set default value
-	//TODO
+	//configure avec valeur par default
+	//ei_button_configure();
 }
 
 void geomnotify_button(ei_widget_t widget){

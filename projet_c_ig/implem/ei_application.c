@@ -21,6 +21,7 @@ ei_surface_t root_surface;
 void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 {
 	//Create window system
+	root_surface = malloc(sizeof(ei_surface_t));
 	if (fullscreen == true) {
 		//the size of the root window = main_window_size
 		root_surface = hw_create_window(main_window_size, true);
@@ -34,16 +35,12 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	create_widgetclass_frame();
 	create_widgetclass_toplevel();
 
-	//creat root widget (frame with blue background)
+	//creat root widget
+	root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
-	ei_frame_configure		(root_widget, &(ei_size_t){600,600},
-					   &ei_default_background_color,
-					   &(int){6},
-					   &(ei_relief_t){ei_relief_raised}, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-
-	//ei_place_xy(root_widget, 0, 0);
-
+	ei_widget_t w = root_widget;
+	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
+	w = root_widget;
 }
 
 void ei_app_free()
@@ -66,7 +63,7 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	hw_surface_unlock(surface);
 	hw_surface_update_rects(surface, NULL);*/
 
-	root_widget->wclass->drawfunc(root_widget, surface, pick_surface, clipper);
+	widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
 
 	ei_widget_t childrenhead = widget->children_head;
 
@@ -91,6 +88,7 @@ void ei_app_run()
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 	while(true) {
+		ei_widget_t wid = ei_app_root_widget();
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 	}
 	//Listen event
