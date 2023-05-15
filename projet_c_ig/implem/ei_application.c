@@ -37,6 +37,8 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 
 void ei_app_free()
 {
+	ei_widget_destroy(root_widget);
+	hw_quit();
 
 }
 

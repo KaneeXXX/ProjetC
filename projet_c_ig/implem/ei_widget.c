@@ -91,17 +91,14 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 			}
 
 			//free memory
-			ei_widgetclass_t *wclass = current_widgetchild->wclass;
 			ei_widget_t to_delete = current_widgetchild;
-			free(wclass);
+
 			current_widgetchild = current_widgetchild->next_sibling; //move in the list of children before detroying, otherwise may have pb
 			ei_widget_destroy(to_delete);
 		}
 	}
 
 	//Destroy the widget itself
-	ei_widgetclass_t* wclass = widget->wclass;
-	free(wclass);
 	free(widget);
 }
 
