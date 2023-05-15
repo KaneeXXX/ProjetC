@@ -28,8 +28,8 @@ void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
 ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, ei_user_param_t	user_data, ei_widget_destructor_t destructor)
 {
 	/*Verify is class_name is known by the library*/
-	if (alreadyRegistered(class_name)) {
-		ei_widgetclass_t* widgetclassptr = ei_widgetclass_from_name(class_name);
+	ei_widgetclass_t* widgetclassptr = ei_widgetclass_from_name(class_name);
+	if (widgetclassptr != NULL) {
 		/*Call the function which allocate memory to store attribut of new widget of this class*/
 		ei_impl_widget_t* widgetptr = widgetclassptr->allocfunc();
 		/*Init widgets' commun attributs*/
@@ -40,10 +40,14 @@ ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, e
 		widgetptr->destructor = destructor;
 
 		/*Hierarchy*/
-		widgetptr->next_sibling = parent->children_head; //If no other child, NULL;
-		/*Update parent fields*/
-		addWidget_to_parent(widgetptr, parent);
-		widgetptr->parent = parent;
+		if(parent != NULL) {
+			widgetptr->next_sibling = parent->children_head; //If no other child, NULL;
+			/*Update parent fields*/
+			addWidget_to_parent(widgetptr, parent);
+			widgetptr->parent = parent;
+		} else {
+			widgetptr->parent = NULL;
+		}
 		/*We've just created the widget so no children for now*/
 		widgetptr->children_head = NULL;
 		//widgetptr->children_tail = NULL;
@@ -52,7 +56,7 @@ ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, e
 		/*Geometry*/
 		widgetptr->placer_params = NULL; //A changer probablement
 		ei_size_t size = ei_size(0,0);
-		widgetptr->requested_size = size; // A CHANGER
+		widgetptr->requested_size = &size; // A CHANGER
 		ei_point_t point = ei_point(0,0);
 		ei_rect_t rect = ei_rect(point, size);
 		widgetptr->screen_location = rect; // A CHANGER
@@ -60,6 +64,8 @@ ei_widget_t	ei_widget_create(ei_const_string_t class_name, ei_widget_t	parent, e
 
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);
+
+		return widgetptr;
 	} else {
 		//Class doesn't exist or is not registered
 	}
