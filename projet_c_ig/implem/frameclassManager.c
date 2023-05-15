@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
+#include "ei_utils.h"
 
 ei_widget_t alloc_frame()
 {
@@ -39,7 +40,8 @@ void draw_frame(ei_widget_t		widget,
 }
 
 void setdefaults_frame(ei_widget_t widget){
-	//ei_frame_configure();
+	ei_size_t sizedef = ei_size(50,50);
+	ei_frame_configure(widget, &sizedef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 void geomnotify_frame(ei_widget_t widget){

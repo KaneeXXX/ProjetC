@@ -90,9 +90,14 @@ void ei_app_run()
 	while(true) {
 		ei_widget_t wid = ei_app_root_widget();
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
+
+		//Attendre un event
+		//hw_event_wait_next()
+		//Analyser l'event pour trouver traitant associe
+		//appeler traitant associé
+
 	}
-	//Listen event
-	//traite l'event
+
 
 
 }
