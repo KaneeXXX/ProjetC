@@ -27,8 +27,8 @@ bool is_pixel_drawable(uint32_t * pixel_addr, ei_surface_t surface, const ei_rec
 	int point_x = addr_minus_addr0 % width;
 	int point_y = addr_minus_addr0 / width;
 
-	bool check_abs = (clipper->top_left.x <= point_x) && (point_x <= clipper->size.width);
-	bool check_ord = (clipper->top_left.y <= point_y) && (point_y <= clipper->size.height);
+	bool check_abs = (clipper->top_left.x <= point_x) && (point_x <= clipper->top_left.x+ clipper->size.width);
+	bool check_ord = (clipper->top_left.y <= point_y) && (point_y <= clipper->top_left.y +clipper->size.height);
 	return check_abs && check_ord;
 }
 
