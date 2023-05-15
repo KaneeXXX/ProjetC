@@ -34,7 +34,7 @@ void draw_frame(ei_widget_t		widget,
 	int height=widget->requested_size->height;
 	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
 	size_t size=4;
-	ei_draw_polygon(surface, points_rectangle, size, *widget->pick_color, clipper);
+	ei_draw_polygon(surface, points_rectangle, size, *(frame->color), clipper);
 }
 
 void setdefaults_frame(ei_widget_t widget){

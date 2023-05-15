@@ -7,6 +7,7 @@
 /*Chained list of class*/
 ei_widgetclass_t **listclass;
 
+
 void draw(ei_widget_t		widget,
 	  ei_surface_t		surface,
 	  ei_surface_t		pick_surface,
@@ -16,6 +17,7 @@ void draw(ei_widget_t		widget,
 	hw_surface_unlock(surface);
 	//hw_surface_update_rects(surface);
 }
+
 
 void setDefault(ei_widget_t widget) {
 	widget->wclass->setdefaultsfunc(widget); // comprend pas comment son gerer les arguments, pasles meme ds draw frame par exemple
