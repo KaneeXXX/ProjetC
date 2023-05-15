@@ -72,7 +72,7 @@ void ei_toplevel_configure (ei_widget_t	widget,
 			    ei_axis_set_t*		resizable,
 			    ei_size_ptr_t*		min_size) {
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	toplevel -> widget.requested_size = requested_size;
+	toplevel->widget.requested_size = requested_size;
 	toplevel->color = color;
 	toplevel->border_width = border_width;
 	toplevel->title = title;

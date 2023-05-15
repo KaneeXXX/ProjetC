@@ -119,6 +119,11 @@ target_link_libraries(rounded_frame_test	ei ${PLATFORM_LIB_FLAGS})
 add_executable(buttons_test 		${TEST_DIR}/buttons_test.c)
 target_link_libraries(buttons_test	ei ${PLATFORM_LIB_FLAGS})
 
+# target toplevel_test
+
+add_executable(toplevel_test 		${TEST_DIR}/toplevel_test.c)
+target_link_libraries(toplevel_test	ei ${PLATFORM_LIB_FLAGS})
+
 # target minimal
 
 add_executable(minimal 			${TEST_DIR}/minimal.c)

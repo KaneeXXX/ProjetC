@@ -130,4 +130,6 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 
 void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
 
+void draw_toplevel(ei_surface_t surface, ei_rect_t rectangle, ei_string_t* title, int border_width, bool closable, ei_axis_set_t resizable);
+
 #endif

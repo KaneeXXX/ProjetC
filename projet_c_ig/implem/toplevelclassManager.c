@@ -31,7 +31,7 @@ void release_toplevel(ei_widget_t widget){
 	free(toplevel);
 }
 
-void draw_toplevel(ei_widget_t		widget,
+void drawtoplevel(ei_widget_t		widget,
 		   ei_surface_t		surface,
 		   ei_surface_t		pick_surface,
 		   ei_rect_t*		clipper){
@@ -60,7 +60,7 @@ void create_widgetclass_toplevel(){
 	strcpy(toplevel->name, name);
 	toplevel->allocfunc = &alloc_toplevel;
 	toplevel->releasefunc = &release_toplevel;
-	toplevel->drawfunc = &draw_toplevel;
+	toplevel->drawfunc = &drawtoplevel;
 	toplevel->setdefaultsfunc = &setdefaults_toplevel;
 	toplevel->geomnotifyfunc = &geomnotify_toplevel;
 	toplevel->handlefunc = &handle_toplevel;
