@@ -17,9 +17,8 @@ void		ei_place	(ei_widget_t		widget,
 				     float*			rel_width,
 				     float*			rel_height){
 
-	ei_widget_t parent = ei_widget_get_parent(widget);
-	const ei_rect_t* content_rect = ei_widget_get_content_rect(parent);
-
+	/*ei_widget_t parent = ei_widget_get_parent(widget);
+	const ei_rect_t* content_rect = ei_widget_get_content_rect(parent);*/
 
 
 }
