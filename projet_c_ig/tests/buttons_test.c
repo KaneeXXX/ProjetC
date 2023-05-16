@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_raised,
 		    "Bouton",
-		    hw_text_font_create(ei_default_font_filename, ei_style_normal, 20),
+		    (ei_font_t) hw_text_font_create(ei_default_font_filename, ei_style_normal, 20),
 		    black,
 		    NULL,
 		    NULL);
