@@ -28,11 +28,11 @@ int main(int argc, char** argv)
 	/* Draw the toplevel */
 	ei_fill(main_window, &white, NULL);
 
-	ei_rect_t rectangle = (ei_rect_t) {{100, 100}, {250, 300}};
+	ei_rect_t rectangle = (ei_rect_t) {{200, 200}, {300, 200}};
 	draw_toplevel(main_window,
 			rectangle,
 			(ei_color_t) {128, 128, 128, 0xff},
-			5,
+			10,
 			"Window",
 			true,
 			 (ei_axis_set_t) ei_axis_both,

@@ -31,7 +31,18 @@ void drawbutton(ei_widget_t		widget,
 		 ei_rect_t*		clipper)
 		 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
-	//draw_button(surface, widget->content_rect, button->corner_radius, button->relief);
+	draw_button(surface,
+	     (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+	     button->color,
+	     button->border_width,
+	     button->corner_radius,
+	     button->relief,
+	     button->text,
+	     button->text_font,
+	     button->text_color,
+	     button->img,
+	     NULL
+	     );
 }
 
 void setdefaults_button(ei_widget_t widget){
