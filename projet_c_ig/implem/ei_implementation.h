@@ -37,15 +37,15 @@ uint32_t ei_impl_map_rgba(ei_surface_t surface, ei_color_t color);
  */
 
 struct ei_impl_placer_params_t {
-    ei_anchor_t*		anchor;
-    int*			x;
-    int*			y;
-    int*			width;
-    int*			height;
-    float*			rel_x;
-    float*			rel_y;
-    float*			rel_width;
-    float*			rel_height;
+    ei_anchor_t		anchor;
+    int			x;
+    int			y;
+    int			width;
+    int			height;
+    float			rel_x;
+    float			rel_y;
+    float			rel_width;
+    float			rel_height;
 };
 
 

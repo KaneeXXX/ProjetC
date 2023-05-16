@@ -36,7 +36,7 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	create_widgetclass_toplevel();
 
 	//creat root widget
-	root_widget = calloc(1, sizeof(ei_widget_t));
+	//root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
 	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
@@ -67,6 +67,7 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 
 	if(childrenhead == NULL) { //No children
 		hw_surface_lock	(surface);
+		ei_impl_placer_run(widget);
 		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
 		hw_surface_unlock(surface);
 		hw_surface_update_rects(surface, NULL);
