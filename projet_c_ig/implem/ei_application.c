@@ -23,6 +23,7 @@ ei_event_t *event_listener;
 
 void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 {
+	hw_init();
 	//Create window system
 	root_surface = malloc(sizeof(ei_surface_t));
 	if (fullscreen == true) {
@@ -41,7 +42,6 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	//creat root widget
 	root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
-	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
 
 	event_listener = malloc(sizeof(ei_event_t));
@@ -82,6 +82,7 @@ _Noreturn void ei_app_run()
 
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
+
 	while(true) {
 		hw_surface_lock	(ei_app_root_surface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
@@ -94,11 +95,6 @@ _Noreturn void ei_app_run()
 			ei_app_free();
 		}
 
-		/*ei_event_t* event = malloc(sizeof(ei_event_t));
-		hw_event_wait_next(event);
-		if(event->param.key.key_code == SDLK_l){
-			ei_app_free();
-		}*/
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
