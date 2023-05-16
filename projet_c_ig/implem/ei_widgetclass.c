@@ -7,6 +7,9 @@
 /*Chained list of class*/
 ei_widgetclass_t **listclass;
 
+size_t ei_widget_struct_size() {
+	return sizeof(ei_widget_t);
+}
 
 void draw(ei_widget_t		widget,
 	  ei_surface_t		surface,
@@ -18,13 +21,16 @@ void draw(ei_widget_t		widget,
 	//hw_surface_update_rects(surface);
 }
 
+void alloc(ei_widget_t widget) {
+	widget->wclass->allocfunc(widget);
+}
 
 void setDefault(ei_widget_t widget) {
 	widget->wclass->setdefaultsfunc(widget); // comprend pas comment son gerer les arguments, pasles meme ds draw frame par exemple
 }
 
 void release(ei_widget_t widget) {
-
+	widget->wclass->releasefunc(widget);
 }
 
 void geomnotify(ei_widget_t widget) {
