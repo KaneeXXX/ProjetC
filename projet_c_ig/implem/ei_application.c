@@ -14,6 +14,7 @@
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
 #include "ei_utils.h"
+#include "ei_event.h"
 
 ei_widget_t root_widget;
 ei_surface_t root_surface;
@@ -63,6 +64,8 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	hw_surface_unlock(surface);
 	hw_surface_update_rects(surface, NULL);*/
 
+	widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
+
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
@@ -87,15 +90,18 @@ void ei_app_run()
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 	while(true) {
-		hw_surface_lock	(ei_app_root_surface());
-		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
-		hw_surface_unlock(ei_app_root_surface());
+		ei_widget_t wid = ei_app_root_widget();
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event
 		//hw_event_wait_next()
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
+		struct ei_event_t* evenement;
+		hw_event_wait_next(evenement);
+		if (evenement->param.key.key_code == SDLK_x){
+			ei_app_free();
+		}
 
 	}
 

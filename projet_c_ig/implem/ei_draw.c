@@ -813,14 +813,55 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 }
 
+typedef struct {
+    ei_point_t point;
+    ei_point_t * suivant;
+}cell_point;
+
+
+void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
+
+	double angle_start_radian_radian = angle_start_radian * PI / 180;
+	double angle_end_radian = angle_end * PI / 180;
+	ei_size_t size = hw_surface_get_size(surface);
+	uint32_t *surface_buffer = (uint32_t *) hw_surface_get_buffer(surface);
+	ei_color_t color = {0, 0, 255, 255};
+	ei_point_t point_debut = {(int) (centre.x + radius * cos(angle_start_radian)),
+				  (int) (centre.y + radius * sin(angle_start_radian))};
+	ei_point_t point_final = {(int) (centre.x + radius * cos(angle_end_radian)),
+				  (int) (centre.y + radius * sin(angle_end_radian))};
+	ei_point_t current = point_debut;
+	cell_point *tete;
+
+	if (point_debut.x <= point_final.x) {
+		//1
+		if (point_debut.y >= point_final.y) {
+
+			int m_error = 4 * ((current.x + 1) * (current.x + 1) + (current.y - 0.5) * (current.y - 0.5) -
+					   radius * radius);
+
+			while (current.x <= point_final.x) {
+				uint32_t *addr = surface_buffer + size.width * (current.y) + current.x;
+				draw_pixel(addr, surface, color, NULL);
+				if (m_error > 0) {
+					current.y = current.y - 1;
+					m_error = m_error + 8 * (current.x + 1) + 4 - 8 * current.y;
+				}
+				current.x = current.x + 1;
+				m_error = m_error + 8 * current.x + 4;
+			}
+		}
+
+	}
+}
 /*Returns array of points forming an arc*/
-tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
+tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
 	int d_theta = radius;
 
-	double radian_start_angle = (angle_start * PI) / 180;  //ALways angle_start <= angle_end
+	double radian_start_angle = (angle_start_radian * PI) / 180;  //ALways angle_start_radian <= angle_end
 	double radian_end_angle = (angle_end * PI) / 180;
 
-	int nb_of_points= (int) (abs(angle_end - angle_start)/d_theta + 1);
+	int nb_of_points= (int) (abs(angle_end - angle_start_radian)/d_theta + 1);
 	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
 
 	double current_theta = radian_start_angle;
@@ -959,8 +1000,7 @@ void draw_toplevel(ei_surface_t surface,
 		   ei_string_t title,
 		   bool closable,
 		   ei_axis_set_t resizable,
-		   ei_size_ptr_t* min_size)
-{
+		   ei_size_ptr_t* min_size){
 	//Draw the big frame
 	int RADIUS = 10;
 	tab_and_length conc;
