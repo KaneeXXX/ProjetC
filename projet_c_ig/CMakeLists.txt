@@ -98,31 +98,38 @@ add_library(ei STATIC			${LIB_EI_SOURCES})
 
 add_executable(fill_test 		${TEST_DIR}/fill_test.c)
 target_link_libraries(fill_test		ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(fill_test	PRIVATE ${SRC_DIR})
 
 # target poly_test
 
 add_executable(poly_test 		${TEST_DIR}/poly_test.c)
 target_link_libraries(poly_test		ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(poly_test	PRIVATE ${SRC_DIR})
 
 # target arc_test
 
 add_executable(arc_test 		${TEST_DIR}/arc_test.c)
 target_link_libraries(arc_test		ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(arc_test	PRIVATE ${SRC_DIR})
+
 
 # target rounded_frame_test
 
 add_executable(rounded_frame_test 		${TEST_DIR}/rounded_frame_test.c)
 target_link_libraries(rounded_frame_test	ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(rounded_frame_test	PRIVATE ${SRC_DIR})
 
 # target buttons_test
 
 add_executable(buttons_test 		${TEST_DIR}/buttons_test.c)
 target_link_libraries(buttons_test	ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(buttons_test	PRIVATE ${SRC_DIR})
 
 # target toplevel_test
 
 add_executable(toplevel_test 		${TEST_DIR}/toplevel_test.c)
 target_link_libraries(toplevel_test	ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(toplevel_test	PRIVATE ${SRC_DIR})
 
 # target minimal
 

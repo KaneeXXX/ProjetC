@@ -9,6 +9,7 @@
 #include "ei_utils.h"
 #include "ei_draw.h"
 #include "ei_event.h"
+#include "ei_implementation.h"
 
 int main(int argc, char** argv)
 {
@@ -28,7 +29,14 @@ int main(int argc, char** argv)
 	ei_fill(main_window, &white, NULL);
 
 	ei_rect_t rectangle = (ei_rect_t) {{100, 100}, {250, 300}};
-	draw_toplevel(main_window, rectangle, "fenêtre", 5, true, (ei_axis_set_t) ei_axis_both);
+	draw_toplevel(main_window,
+			rectangle,
+			(ei_color_t) {128, 128, 128, 0xff},
+			5,
+			"Window",
+			true,
+			 (ei_axis_set_t) ei_axis_both,
+			NULL);
 
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);

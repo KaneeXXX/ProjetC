@@ -891,16 +891,27 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 	return conc;
 }
 
-void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief)
+//Darken a color index between 0 and 255
+int darken(int color_index)
 {
-	//Create colors
-	ei_color_t color_outside_dark = { 108, 109, 112, 0xff};
-	ei_color_t color_outside_bright = { 188, 189, 192, 0xff};
-	ei_color_t color_inside = { 147, 149, 152, 0xff};
-	ei_color_t default_color_text = { 255, 255, 255, 0xff};
+	return color_index + (int) ceil((255 - color_index) / 2);
+}
+
+void draw_button(ei_surface_t surface,
+		 ei_rect_t rectangle,
+		 const ei_color_t color_inside,
+		 int border_width,
+		 int corner_radius,
+		 ei_relief_t relief,
+		 ei_string_t text,
+		 ei_font_t text_font,
+		 ei_color_t text_color,
+		 ei_surface_t img,
+		 ei_rect_ptr_t* img_rect)
+{
 	//Create edges
-	tab_and_length arr_upper = rounded_frame(rectangle, rayon, ei_relief_raised);
-	tab_and_length arr_lower = rounded_frame(rectangle, rayon, ei_relief_sunken);
+	tab_and_length arr_upper = rounded_frame(rectangle, corner_radius, ei_relief_raised);
+	tab_and_length arr_lower = rounded_frame(rectangle, corner_radius, ei_relief_sunken);
 	int width = rectangle.size.width;
 	int height = rectangle.size.height;
 	int min_size = (width < height) ? width : height;
@@ -913,41 +924,55 @@ void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief
 	}
 	else if (relief == ei_relief_raised) {
 		where = (ei_point_t) {rectangle.top_left.x + width / 3 - 3 * size_text / 4, rectangle.top_left.y + height / 2 - 3 * size_text / 4};
+		ei_color_t color_outside_dark = {(int) color_inside.red / 2, (int) color_inside.green / 2, (int) color_inside.blue / 2, 0xff};
+		ei_color_t color_outside_bright = {darken(color_inside.red), darken(color_inside.green), darken(color_inside.blue), 0xff};
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_bright, NULL);
 		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_dark, NULL);
 	}
 	else { //ei_relief_sunken
 		where = (ei_point_t) {rectangle.top_left.x + width / 3 - size_text / 2, rectangle.top_left.y + height / 2 - size_text / 2};
+		ei_color_t color_outside_dark = {(int) color_inside.red / 2, (int) color_inside.green / 2, (int) color_inside.blue / 2, 0xff};
+		ei_color_t color_outside_bright = {darken(color_inside.red), darken(color_inside.green), darken(color_inside.blue), 0xff};
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_dark, NULL);
 		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_bright, NULL);
 	}
 	//Create centered rounded frame
-	int dist = 0.020 * width;
-	ei_point_t p_inside = {rectangle.top_left.x + dist, rectangle.top_left.y + dist};
-	ei_size_t size_inside = {width - 2 * dist, height - 2 * dist};
+	ei_point_t p_inside = {rectangle.top_left.x + border_width, rectangle.top_left.y + border_width};
+	ei_size_t size_inside = {width - 2 * border_width, height - 2 * border_width};
 	ei_rect_t inside_rec = {p_inside, size_inside};
-	tab_and_length arr_inside_rect = rounded_frame(inside_rec, rayon, ei_relief_none);
+	tab_and_length arr_inside_rect = rounded_frame(inside_rec, corner_radius, ei_relief_none);
 	ei_draw_polygon(surface, arr_inside_rect.tab, arr_inside_rect.length, color_inside, NULL);
+	//Add the image
+	if (img != NULL) {
+		ei_copy_surface(surface, &rectangle, img, *img_rect, true);
+	}
 	//Add the text
-	ei_const_string_t default_text = "Bouton";
-	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_bold, size_text);
-	ei_draw_text(surface, &where, default_text, default_font, default_color_text, NULL);
+	if (text != NULL) { //note: every sensible parameter such as text_font==NULL is not tested because already taken into account in the function
+		ei_draw_text(surface, &where, text, text_font, text_color, NULL);
+	}
 }
 
-void draw_toplevel(ei_surface_t surface, ei_rect_t rectangle, ei_string_t* title, int border_width, bool closable, ei_axis_set_t resizable)
+void draw_toplevel(ei_surface_t surface,
+		   ei_rect_t rectangle,
+		   ei_color_t color,
+		   int border_width,
+		   ei_string_t title,
+		   bool closable,
+		   ei_axis_set_t resizable,
+		   ei_size_ptr_t* min_size)
 {
 	//Draw the big frame
-	int radius_arbitraire = 10;
+	int RADIUS = 10;
 	tab_and_length conc;
 	ei_point_t top_left_point = rectangle.top_left;
 	int height = rectangle.size.height;
 	int width = rectangle.size.width;
 
-	ei_point_t center_top_left = {top_left_point.x + radius_arbitraire, top_left_point.y + radius_arbitraire};
-	tab_and_length t1 = arc(center_top_left, radius_arbitraire, 180, 270);
+	ei_point_t center_top_left = {top_left_point.x + RADIUS, top_left_point.y + RADIUS};
+	tab_and_length t1 = arc(center_top_left, RADIUS, 180, 270);
 
-	ei_point_t center_top_right = {top_left_point.x + (width - radius_arbitraire), top_left_point.y + radius_arbitraire};
-	tab_and_length t2 = arc(center_top_right, radius_arbitraire, 270, 360);
+	ei_point_t center_top_right = {top_left_point.x + (width - RADIUS), top_left_point.y + RADIUS};
+	tab_and_length t2 = arc(center_top_right, RADIUS, 270, 360);
 
 	ei_point_t center_bottom_right = (ei_point_t) {top_left_point.x + width, top_left_point.y + height};
 
@@ -960,37 +985,50 @@ void draw_toplevel(ei_surface_t surface, ei_rect_t rectangle, ei_string_t* title
 
 	conc = concatenate_four_point_lists(t1.tab, t2.tab, list_1point, list_1point2, t1.length, t2.length, 1, 1);
 
-	ei_draw_polygon(surface, conc.tab, conc.length, (ei_color_t) {108, 109, 112, 0xff}, NULL);
+	ei_draw_polygon(surface, conc.tab, conc.length, color, NULL);
 
 	//Draw the interior frame
 	ei_point_t * list_rect_inter = calloc(4, sizeof(ei_point_t));
-	list_rect_inter[0] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + 2*radius_arbitraire};
-	list_rect_inter[1] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + 2*radius_arbitraire};
+	list_rect_inter[0] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + 2*RADIUS};
+	list_rect_inter[1] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + 2*RADIUS};
 	list_rect_inter[2] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + height - border_width};
 	list_rect_inter[3] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + height - border_width};
 
-	ei_draw_polygon(surface, list_rect_inter, 4, (ei_color_t) { 188, 189, 192, 0xff}, NULL);
+	ei_draw_polygon(surface, list_rect_inter, 4, ei_font_default_color, NULL);
 
 	//Draw the close button
 	if (closable == true) {
-		int radius_button_arbitraire = 3;
-		ei_rect_t rectangle_button_close = (ei_rect_t) {{top_left_point.x, top_left_point.y}, {2*radius_arbitraire, 2*radius_arbitraire}};
-		draw_button(surface, rectangle_button_close, radius_button_arbitraire, ei_relief_raised);
+		ei_color_t red = {128, 0, 0, 0};
+		ei_rect_t rectangle_button_close = (ei_rect_t) {{top_left_point.x, top_left_point.y}, {2*RADIUS, 2*RADIUS}};
+		draw_button(surface,
+			    rectangle_button_close,
+			    red,
+			    2,
+			    2,
+			    ei_relief_raised,
+			    NULL,
+			    NULL,
+			    red,
+			    NULL,
+			    NULL);
 	}
 
 	//Draw frame title
-	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, radius_arbitraire);
-	ei_point_t where = (ei_point_t) {top_left_point.x + 2*radius_arbitraire, top_left_point.y + (int) radius_arbitraire/2};
+	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, RADIUS);
+	ei_point_t where = (ei_point_t) {top_left_point.x + 2*RADIUS, top_left_point.y + (int) RADIUS/2};
 	ei_draw_text(surface, &where, title, default_font, (ei_color_t) {255, 255, 255, 255}, NULL);
 
 	//Draw the resize button
 	if (resizable != ei_axis_none) {
-		ei_point_t * list_rect_inter = calloc(4, sizeof(ei_point_t));
-		list_rect_inter[0] = (ei_point_t) {top_left_point.x + width - radius_arbitraire, top_left_point.y + height - radius_arbitraire};
-		list_rect_inter[1] = (ei_point_t) {top_left_point.x + width, top_left_point.y + height - radius_arbitraire};
-		list_rect_inter[2] = (ei_point_t) {top_left_point.x + width, top_left_point.y + height};
-		list_rect_inter[3] = (ei_point_t) {top_left_point.x + width - radius_arbitraire, top_left_point.y + height};
+//		if (min_size == NULL) {
+//			**min_size = (ei_size_t) {160, 120};
+//		}
+		ei_point_t * list_rect_resize = calloc(4, sizeof(ei_point_t));
+		list_rect_resize[0] = (ei_point_t) {top_left_point.x + width - RADIUS, top_left_point.y + height - RADIUS};
+		list_rect_resize[1] = (ei_point_t) {top_left_point.x + width, top_left_point.y + height - RADIUS};
+		list_rect_resize[2] = (ei_point_t) {top_left_point.x + width, top_left_point.y + height};
+		list_rect_resize[3] = (ei_point_t) {top_left_point.x + width - RADIUS, top_left_point.y + height};
 
-		ei_draw_polygon(surface, list_rect_inter, 4, (ei_color_t) {108, 109, 112, 0xff}, NULL);
+		ei_draw_polygon(surface, list_rect_resize, 4, color, NULL);
 	}
 }

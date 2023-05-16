@@ -105,6 +105,37 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 					ei_surface_t		pick_surface,
 					ei_rect_t*		clipper);
 
+
+typedef struct {
+    ei_point_t* 				tab;
+    int 					length;
+} tab_and_length;
+
+tab_and_length arc(ei_point_t center, int radius, int angle_start, int angle_end);
+
+tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief);
+
+void draw_button(ei_surface_t surface,
+		 ei_rect_t rectangle,
+		 const ei_color_t color,
+		 int border_width,
+		 int corner_radius,
+		 ei_relief_t relief,
+		 ei_string_t text,
+		 ei_font_t text_font,
+		 ei_color_t text_color,
+		 ei_surface_t img,
+		 ei_rect_ptr_t* img_rect);
+
+void draw_toplevel(ei_surface_t surface,
+		   ei_rect_t rectangle,
+		   ei_color_t color,
+		   int border_width,
+		   ei_string_t title,
+		   bool closable,
+		   ei_axis_set_t resizable,
+		   ei_size_ptr_t* min_size);
+
 /**
  * Def Button class
  */

@@ -9,6 +9,7 @@
 #include "ei_utils.h"
 #include "ei_draw.h"
 #include "ei_event.h"
+#include "ei_implementation.h"
 
 int main(int argc, char** argv)
 {

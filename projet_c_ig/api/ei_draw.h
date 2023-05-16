@@ -118,18 +118,4 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
 
-//TROUVER UNE SOLUTION POUR VOUS PLACER DANS IMPLEMENTATION.H
-typedef struct {
-    ei_point_t* 				tab;
-    int 					length;
-} tab_and_length;
-
-tab_and_length arc(ei_point_t center, int radius, int angle_start, int angle_end);
-
-tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief);
-
-void draw_button(ei_surface_t surface, ei_rect_t rectangle, int rayon, ei_relief_t relief);
-
-void draw_toplevel(ei_surface_t surface, ei_rect_t rectangle, ei_string_t* title, int border_width, bool closable, ei_axis_set_t resizable);
-
 #endif
