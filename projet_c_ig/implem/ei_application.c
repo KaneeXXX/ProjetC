@@ -39,7 +39,7 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	create_widgetclass_toplevel();
 
 	//creat root widget
-	//root_widget = calloc(1, sizeof(ei_widget_t));
+	root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
 	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
@@ -82,14 +82,14 @@ void ei_app_run()
 
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
-	while(event_listener->type != ei_ev_close) {
+	while(true) {
 		hw_surface_lock	(ei_app_root_surface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 		hw_surface_unlock(ei_app_root_surface());
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event
-		hw_event_wait_next(&event_listener);
+		//hw_event_wait_next(&event_listener);
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
