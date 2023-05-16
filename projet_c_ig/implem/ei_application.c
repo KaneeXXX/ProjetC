@@ -14,9 +14,12 @@
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
 #include "ei_utils.h"
+#include "ei_event.h"
 
 ei_widget_t root_widget;
 ei_surface_t root_surface;
+
+ei_event_t *event_listener;
 
 void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 {
@@ -40,7 +43,9 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
 	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
-	w = root_widget;
+
+	event_listener = malloc(sizeof(ei_event_t));
+	event_listener->type = ei_ev_none;
 }
 
 void ei_app_free()
@@ -53,15 +58,6 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 					ei_surface_t		surface,
 					ei_surface_t		pick_surface,
 					ei_rect_t*		clipper) {
-/*	hw_surface_lock	(surface);
-	widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
-	hw_surface_unlock(surface);
-	hw_surface_update_rects(surface, NULL);
-	ei_widget_t child = widget->children_head;
-	hw_surface_lock	(surface);
-	widget->wclass->drawfunc(child, surface, pick_surface, clipper);
-	hw_surface_unlock(surface);
-	hw_surface_update_rects(surface, NULL);*/
 
 	ei_widget_t childrenhead = widget->children_head;
 
@@ -86,14 +82,14 @@ void ei_app_run()
 
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
-	while(true) {
+	while(event_listener->type != ei_ev_close) {
 		hw_surface_lock	(ei_app_root_surface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 		hw_surface_unlock(ei_app_root_surface());
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event
-		//hw_event_wait_next()
+		hw_event_wait_next(&event_listener);
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
