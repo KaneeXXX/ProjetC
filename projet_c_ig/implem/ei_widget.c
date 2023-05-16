@@ -55,26 +55,16 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		//widgetptr->children_tail = NULL;
 
 
-		/*Geometry*//*
-		//struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
-		widgetptr->placer_params = calloc(1, sizeof(struct ei_impl_placer_params_t));
-		ei_anchor_t anc = ei_anc_center;
-		float rel_x = 0.5;
-		float rel_y = 0.5;
-		ei_place(widgetptr, &anc, NULL, NULL, NULL, NULL, &rel_x, &rel_y, &rel_x, &rel_y); //rempli widget->placer_params
+		//Geometry
 
-		ei_impl_placer_run(widgetptr); //calcul et rempli screen location
-
-		widgetptr->content_rect = widgetptr->screen_location;*/
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
-		widgetptr->placer_params = params; //A changer probablement
+		widgetptr->placer_params = params;
 		ei_size_t size = ei_size(0,0);
-		widgetptr->requested_size = size; // A CHANGER
+		widgetptr->requested_size = size;
 		ei_point_t point = ei_point(0,0);
 		ei_rect_t rect = ei_rect(point, size);
-		widgetptr->screen_location = rect; // A CHANGER
-		widgetptr->content_rect = rect; //A CHANGER
-
+		widgetptr->screen_location = rect;
+		widgetptr->content_rect = rect;
 
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);

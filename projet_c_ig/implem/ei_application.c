@@ -90,6 +90,12 @@ void ei_app_run()
 
 		//Attendre un event
 		//hw_event_wait_next(&event_listener);
+
+		ei_event_t* event = malloc(sizeof(ei_event_t));
+		hw_event_wait_next(event);
+		if(event->param.key.key_code == SDLK_l){
+			ei_app_free();
+		}
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
