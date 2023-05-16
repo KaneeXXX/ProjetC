@@ -892,7 +892,7 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 }
 
 //Darken a color index between 0 and 255
-int darken(int color_index)
+int brighten(int color_index)
 {
 	return color_index + (int) ceil((255 - color_index) / 2);
 }
@@ -925,14 +925,14 @@ void draw_button(ei_surface_t surface,
 	else if (relief == ei_relief_raised) {
 		where = (ei_point_t) {rectangle.top_left.x + width / 3 - 3 * size_text / 4, rectangle.top_left.y + height / 2 - 3 * size_text / 4};
 		ei_color_t color_outside_dark = {(int) color_inside.red / 2, (int) color_inside.green / 2, (int) color_inside.blue / 2, 0xff};
-		ei_color_t color_outside_bright = {darken(color_inside.red), darken(color_inside.green), darken(color_inside.blue), 0xff};
+		ei_color_t color_outside_bright = {brighten(color_inside.red), brighten(color_inside.green), brighten(color_inside.blue), 0xff};
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_bright, NULL);
 		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_dark, NULL);
 	}
 	else { //ei_relief_sunken
 		where = (ei_point_t) {rectangle.top_left.x + width / 3 - size_text / 2, rectangle.top_left.y + height / 2 - size_text / 2};
 		ei_color_t color_outside_dark = {(int) color_inside.red / 2, (int) color_inside.green / 2, (int) color_inside.blue / 2, 0xff};
-		ei_color_t color_outside_bright = {darken(color_inside.red), darken(color_inside.green), darken(color_inside.blue), 0xff};
+		ei_color_t color_outside_bright = {brighten(color_inside.red), brighten(color_inside.green), brighten(color_inside.blue), 0xff};
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_outside_dark, NULL);
 		ei_draw_polygon(surface, arr_lower.tab, arr_lower.length, color_outside_bright, NULL);
 	}
