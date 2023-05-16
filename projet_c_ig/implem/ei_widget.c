@@ -10,6 +10,7 @@
 #include "ei_widget_attributes.h"
 #include "ei_widgetclass.h"
 #include "ei_utils.h"
+#include "ei_application.h"
 
 void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
 	/*Add widget to parent chained list*/
@@ -55,13 +56,14 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 
 		/*Geometry*/
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
-		widgetptr->placer_params = params; //A changer probablement
-		ei_size_t size = ei_size(0,0);
-		widgetptr->requested_size = size; // A CHANGER
-		ei_point_t point = ei_point(0,0);
-		ei_rect_t rect = ei_rect(point, size);
-		widgetptr->screen_location = rect; // A CHANGER
-		widgetptr->content_rect = rect; //A CHANGER
+		ei_anchor_t anc = ei_anc_center;
+		float rel_x = 0.5;
+		float rel_y = 0.5;
+		ei_place(widgetptr, &anc, NULL, NULL, NULL, NULL, &rel_x, &rel_y, &rel_x, &rel_y); //rempli widget->placer_params
+
+		ei_impl_placer_run(widgetptr); //calcul et rempli screen location
+
+		widgetptr->content_rect = widgetptr->screen_location;
 
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);
@@ -108,7 +110,42 @@ bool ei_widget_is_displayed	(ei_widget_t widget)
 	return (widget->placer_params == NULL) ? false : true;
 }
 
-ei_widget_t	ei_widget_pick (ei_point_t*	where)
-{
+bool is_point_in_rect(ei_rect_t rect, ei_point_t point){
+	int x_rect = rect.top_left.x;
+	int y_rect = rect.top_left.y;
+	int width = rect.size.width;
+	int height = rect.size.height;
+	if((point.x >= x_rect) && (point.x <= (x_rect + width)) && (point.y >= y_rect) && (point.y <= y_rect + height)){
+		return true;
+	}
+	return false;
+}
 
+bool is_point_in_widget(ei_widget_t widget, ei_point_t point){
+	return (is_point_in_rect(widget->screen_location, point)) ? true : false;
+}
+
+ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
+{
+	ei_widget_t widget_picked = NULL; //default
+
+	ei_widget_t current_widget = ei_app_root_widget();
+
+	while(ei_widget_get_first_child(current_widget) != NULL) {
+
+		bool cursor_in_no_children = false;
+		ei_widget_t child = ei_widget_get_first_child(current_widget);
+		while (child != NULL) {
+			if (is_point_in_widget(child, *where)) {
+				widget_picked = child;
+				cursor_in_no_children = true;
+			}
+			child = child->next_sibling;
+		}
+		if(cursor_in_no_children == false){
+			return widget_picked;
+		} else {
+			current_widget = widget_picked;
+		}
+	}
 }
