@@ -88,7 +88,8 @@ set(LIB_EI_SOURCES
 	${SRC_DIR}/toplevelclassManager.c
 	${SRC_DIR}/frameclassManager.c
 	${SRC_DIR}/buttonclassManager.c
-	${SRC_DIR}/ei_placer.c)
+	${SRC_DIR}/ei_placer.c
+	${SRC_DIR}/ei_event.c)
 
 
 

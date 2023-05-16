@@ -2,6 +2,7 @@
 // Created by Donald Duck on 1942.
 //
 
+#include <stdio.h>
 #include "ei_widget.h"
 #include "ei_widget_configure.h"
 #include "ei_placer.h"
@@ -70,7 +71,7 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 
 		return widgetptr;
 	} else {
-		//Class doesn't exist or is not registered
+		printf("This widget class does not exist !");
 	}
 }
 
