@@ -58,11 +58,10 @@ void geomnotify_toplevel(ei_widget_t widget){
 
 }
 
+//traitant interne de la classe toplevel
 bool handle_toplevel(ei_widget_t widget, struct ei_event_t* event){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	if(event->param.mouse.button == ei_mouse_button_left && isevent->param.mouse.where ) {
-		ei_app_free();
-	}
+	//if()
 }
 
 void create_widgetclass_toplevel(){

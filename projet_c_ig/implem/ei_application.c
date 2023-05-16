@@ -44,8 +44,8 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
 
-	/*event_listener = malloc(sizeof(ei_event_t));
-	event_listener->type = ei_ev_none;*/
+	event_listener = malloc(sizeof(ei_event_t));
+	event_listener->type = ei_ev_none;
 }
 
 void ei_app_free()
@@ -76,7 +76,7 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	}
 }
 
-void ei_app_run()
+_Noreturn void ei_app_run()
 {
 	//getchar();
 
@@ -89,13 +89,16 @@ void ei_app_run()
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event
-		//hw_event_wait_next(&event_listener);
+		hw_event_wait_next(event_listener);
+		if(event_listener->param.key.key_code == SDLK_x){
+			ei_app_free();
+		}
 
-		ei_event_t* event = malloc(sizeof(ei_event_t));
+		/*ei_event_t* event = malloc(sizeof(ei_event_t));
 		hw_event_wait_next(event);
 		if(event->param.key.key_code == SDLK_l){
 			ei_app_free();
-		}
+		}*/
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 

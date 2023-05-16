@@ -52,6 +52,7 @@ void geomnotify_button(ei_widget_t widget){
 
 }
 
+//traitant interne de la calsse button
 bool handle_button(ei_widget_t widget, struct ei_event_t* event){
 
 	printf("not implemented %s\n", __func__ );
