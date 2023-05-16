@@ -12,6 +12,8 @@
 #include "ei_implementation.h"
 #include "ei_utils.h"
 #include "ei_widget_configure.h"
+#include "ei_event.h"
+#include "ei_application.h"
 
 //(ei_widget_t	widget,
 //ei_size_t*	requested_size,
@@ -57,7 +59,10 @@ void geomnotify_toplevel(ei_widget_t widget){
 }
 
 bool handle_toplevel(ei_widget_t widget, struct ei_event_t* event){
-
+	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
+	if(event->param.mouse.button == ei_mouse_button_left && isevent->param.mouse.where ) {
+		ei_app_free();
+	}
 }
 
 void create_widgetclass_toplevel(){

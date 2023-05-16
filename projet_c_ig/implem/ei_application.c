@@ -99,12 +99,7 @@ void ei_app_run()
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
-		ei_event_t * evenement = calloc(1, sizeof(ei_event_t));
-		hw_event_wait_next(evenement);
-		if (evenement->param.key.key_code == SDLK_x){
-			ei_app_free();
 
-		}
 	}
 
 
@@ -118,7 +113,7 @@ void ei_app_invalidate_rect(const ei_rect_t* rect)
 
 void ei_app_quit_request()
 {
-
+	ei_app_free();
 }
 
 ei_widget_t ei_app_root_widget()
