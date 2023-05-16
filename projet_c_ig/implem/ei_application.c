@@ -18,6 +18,7 @@
 
 ei_widget_t root_widget;
 ei_surface_t root_surface;
+ei_surface_t offscreen_surface;
 
 ei_event_t *event_listener;
 
@@ -34,18 +35,26 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 		root_surface = hw_create_window(main_window_size, false);
 	}
 	initlistclassToNull();
+
 	//Register class
 	create_widgetclass_button();
 	create_widgetclass_frame();
 	create_widgetclass_toplevel();
 
-	//creat root widget
+	//create root widget
 	root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
-	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
+	ei_size_t size_windows = hw_surface_get_size(root_surface);
+	ei_frame_set_requested_size(root_widget, size_windows);
 
+	//register event_listener
 	event_listener = malloc(sizeof(ei_event_t));
 	event_listener->type = ei_ev_none;
+
+	//init offscreen surface
+	offscreen_surface = malloc(sizeof(ei_surface_t));
+	//penser a free plus tard
+	offscreen_surface = hw_surface_create(root_surface, size_windows, true);
 }
 
 void ei_app_free()
@@ -91,18 +100,19 @@ _Noreturn void ei_app_run()
 
 		//Attendre un event
 		hw_event_wait_next(event_listener);
-		if(event_listener->param.key.key_code == SDLK_x){
+		/*if(event_listener->param.key.key_code == SDLK_x){
 			ei_app_free();
-		}
+		}*/
 
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
-
-
+		if(event_listener->type == ei_ev_mouse_buttondown) {
+			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
+			if(manipulated_widget != NULL) {
+				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
+			}
+		}
 	}
-
-
-
 }
 
 void ei_app_invalidate_rect(const ei_rect_t* rect)
