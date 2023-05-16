@@ -42,7 +42,14 @@ void drawtoplevel(ei_widget_t		widget,
 
 void setdefaults_toplevel(ei_widget_t widget){
 	//configure avec truc pas défault
-	//ei_toplevel_configure();
+	ei_size_t sizedef = ei_size(100,100);
+	bool closable = true;
+	bool resisable = true;
+	int min_size = 100;
+	int border_width = 4;
+	ei_string_t titledef = "default title";
+	ei_color_t colordef = {162, 219, 225, 0xff};
+	ei_toplevel_configure(widget, &sizedef, &colordef, &border_width, &titledef, &closable, &resisable, &min_size);
 }
 
 void geomnotify_toplevel(ei_widget_t widget){

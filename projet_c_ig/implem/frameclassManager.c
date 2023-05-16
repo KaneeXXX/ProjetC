@@ -41,6 +41,7 @@ void draw_frame(ei_widget_t		widget,
 
 void setdefaults_frame(ei_widget_t widget){
 	ei_size_t sizedef = ei_size(50,50);
+
 	ei_frame_configure(widget, &sizedef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
