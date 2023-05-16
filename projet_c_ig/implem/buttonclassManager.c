@@ -15,7 +15,7 @@
 ei_widget_t alloc_button()
 {
 	ei_impl_button_t* bouton = calloc(1, sizeof(ei_impl_button_t));
-	return bouton;
+	return (ei_widget_t) bouton;
 }
 
 void release_button(ei_widget_t widget)
@@ -30,7 +30,7 @@ void drawbutton(ei_widget_t		widget,
 		 ei_rect_t*		clipper)
 		 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
-	draw_button(surface, *widget->content_rect, button->corner_radius, *button->relief);
+	draw_button(surface, widget->content_rect, button->corner_radius, button->relief);
 }
 
 void setdefaults_button(ei_widget_t widget){
@@ -43,7 +43,8 @@ void geomnotify_button(ei_widget_t widget){
 }
 
 bool handle_button(ei_widget_t widget, struct ei_event_t* event){
-
+	printf("not implemented %s\n", __func__ );
+	exit(1);
 }
 
 void create_widgetclass_button(){

@@ -57,11 +57,11 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
 		widgetptr->placer_params = params; //A changer probablement
 		ei_size_t size = ei_size(0,0);
-		widgetptr->requested_size = &size; // A CHANGER
+		widgetptr->requested_size = size; // A CHANGER
 		ei_point_t point = ei_point(0,0);
 		ei_rect_t rect = ei_rect(point, size);
 		widgetptr->screen_location = rect; // A CHANGER
-		widgetptr->content_rect = &rect; //A CHANGER
+		widgetptr->content_rect = rect; //A CHANGER
 
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);

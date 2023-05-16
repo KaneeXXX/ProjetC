@@ -16,7 +16,7 @@
 ei_widget_t alloc_frame()
 {
 	ei_impl_frame_t* frame = calloc(1, sizeof(ei_impl_frame_t));
-	return frame;
+	return (ei_widget_t) frame;
 }
 
 void release_frame(ei_widget_t widget){
@@ -32,11 +32,11 @@ void draw_frame(ei_widget_t		widget,
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
 	int x=widget->screen_location.top_left.x;
 	int y=widget->screen_location.top_left.y;
-	int width=widget->requested_size->width;
-	int height=widget->requested_size->height;
+	int width=widget->requested_size.width;
+	int height=widget->requested_size.height;
 	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
 	size_t size=4;
-	ei_draw_polygon(surface, points_rectangle, size, *(frame->color), clipper);
+	ei_draw_polygon(surface, points_rectangle, size, frame->color, clipper);
 }
 
 void setdefaults_frame(ei_widget_t widget){
@@ -49,7 +49,7 @@ void geomnotify_frame(ei_widget_t widget){
 }
 
 bool handle_frame(ei_widget_t widget, struct ei_event_t* event){
-
+	exit(1);
 }
 
 void create_widgetclass_frame(){

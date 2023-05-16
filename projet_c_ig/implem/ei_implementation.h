@@ -45,7 +45,7 @@ struct ei_impl_placer_params_t {
     float*			rel_x;
     float*			rel_y;
     float*			rel_width;
-    float*			rel_height
+    float*			rel_height;
 };
 
 
@@ -82,9 +82,9 @@ typedef struct ei_impl_widget_t {
 
     /* Geometry Management */
     struct ei_impl_placer_params_t* placer_params;	///< Pointer to the placer parameters for this widget. If NULL, the widget is not currently managed and thus, is not displayed on the screen.
-    ei_size_t*		requested_size;	///< Size requested by the widget (big enough for its label, for example), or by the programmer. This can be different than its screen size defined by the placer.
+    ei_size_t		requested_size;	///< Size requested by the widget (big enough for its label, for example), or by the programmer. This can be different than its screen size defined by the placer.
     ei_rect_t		screen_location;///< Position and size of the widget expressed in the root window reference.
-    ei_rect_t*		content_rect;	///< Where to place children, when this widget is used as a container. By defaults, points to the screen_location.
+    ei_rect_t		content_rect;	///< Where to place children, when this widget is used as a container. By defaults, points to the screen_location.
 } ei_impl_widget_t;
 
 
@@ -111,19 +111,19 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 typedef struct ei_impl_button_t {
     ei_impl_widget_t widget; //Common to all widgets
     /*Attributes*/
-    ei_color_t*	color;
-    int* border_width;
-    int* corner_radius;
-    ei_relief_t* relief;
-    ei_string_t*	text;
-    ei_font_t* text_font;
-    ei_color_t* text_color;
-    ei_anchor_t* text_anchor;
-    ei_surface_t* img;
-    ei_rect_ptr_t* img_rect;
-    ei_anchor_t* img_anchor;
-    ei_callback_t* callback;
-    ei_user_param_t* user_param;
+    ei_color_t	color;
+    int border_width;
+    int corner_radius;
+    ei_relief_t relief;
+    ei_string_t	text;
+    ei_font_t text_font;
+    ei_color_t text_color;
+    ei_anchor_t text_anchor;
+    ei_surface_t img;
+    ei_rect_ptr_t img_rect;
+    ei_anchor_t img_anchor;
+    ei_callback_t callback;
+    ei_user_param_t user_param;
 } ei_impl_button_t;
 
 /**
@@ -132,12 +132,12 @@ typedef struct ei_impl_button_t {
 typedef struct ei_impl_toplevel_t {
     ei_impl_widget_t widget;
     /*Attributes*/
-    ei_color_t* color;
-    int* border_width;
-    ei_string_t*	title;
-    bool* closable;
-    ei_axis_set_t* resizable;
-    ei_size_ptr_t* min_size;
+    ei_color_t color;
+    int border_width;
+    ei_string_t	title;
+    bool closable;
+    ei_axis_set_t resizable;
+    ei_size_ptr_t min_size;
 } ei_impl_toplevel_t;
 
 /**
@@ -146,16 +146,16 @@ typedef struct ei_impl_toplevel_t {
 typedef struct ei_impl_frame_t {
     ei_impl_widget_t widget;
     /*Attributes*/
-    ei_color_t* color;
-    int* border_width;
-    ei_relief_t* relief;
-    ei_string_t* text;
-    ei_font_t* text_font;
-    ei_color_t*	text_color;
-    ei_anchor_t* text_anchor;
-    ei_surface_t* img;
-    ei_rect_ptr_t* img_rect;
-    ei_anchor_t* img_anchor;
+    ei_color_t color;
+    int border_width;
+    ei_relief_t relief;
+    ei_string_t text;
+    ei_font_t text_font;
+    ei_color_t	text_color;
+    ei_anchor_t text_anchor;
+    ei_surface_t img;
+    ei_rect_ptr_t img_rect;
+    ei_anchor_t img_anchor;
 
 } ei_impl_frame_t;
 
