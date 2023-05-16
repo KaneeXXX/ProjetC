@@ -44,8 +44,8 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	ei_widget_t w = root_widget;
 	ei_frame_set_requested_size(root_widget, ei_size(600, 600));
 
-	event_listener = malloc(sizeof(ei_event_t));
-	event_listener->type = ei_ev_none;
+	/*event_listener = malloc(sizeof(ei_event_t));
+	event_listener->type = ei_ev_none;*/
 }
 
 void ei_app_free()
@@ -99,6 +99,12 @@ void ei_app_run()
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
+		ei_event_t * evenement = calloc(1, sizeof(ei_event_t));
+		hw_event_wait_next(evenement);
+		if (evenement->param.key.key_code == SDLK_x){
+			ei_app_free();
+
+		}
 	}
 
 
