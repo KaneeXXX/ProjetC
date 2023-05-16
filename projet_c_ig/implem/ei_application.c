@@ -63,8 +63,6 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	hw_surface_unlock(surface);
 	hw_surface_update_rects(surface, NULL);*/
 
-	widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
-
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
@@ -89,7 +87,9 @@ void ei_app_run()
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 	while(true) {
-		ei_widget_t wid = ei_app_root_widget();
+		hw_surface_lock	(ei_app_root_surface());
+		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
+		hw_surface_unlock(ei_app_root_surface());
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event

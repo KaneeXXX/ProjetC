@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
+#include "ei_utils.h"
 
 ei_widget_t alloc_button()
 {
@@ -35,7 +36,16 @@ void drawbutton(ei_widget_t		widget,
 
 void setdefaults_button(ei_widget_t widget){
 	//configure avec valeur par default
-	//ei_button_configure();
+	ei_size_t sizedef = ei_size(50, 30);
+	const ei_color_t color_inside = { 147, 149, 152, 0xff};
+	int border_width = 4;
+	int border_radius = 5;
+	ei_relief_t reliefdef = ei_relief_raised;
+	ei_string_t textdef = "default text";
+	ei_font_t fontdef = ei_default_font;
+	ei_color_t black = {0,0,0,0xff};
+	ei_anchor_t anchordef = ei_anc_center;
+	ei_button_configure(widget, &sizedef, &color_inside, &border_width, &border_radius, &reliefdef, &textdef, &fontdef, &black, &anchordef, NULL, NULL, NULL, NULL, NULL);
 }
 
 void geomnotify_button(ei_widget_t widget){
