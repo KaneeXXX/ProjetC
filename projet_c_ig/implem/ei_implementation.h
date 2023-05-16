@@ -77,7 +77,7 @@ typedef struct ei_impl_widget_t {
     /* Widget Hierachy Management */
     ei_widget_t		parent;		///< Pointer to the parent of this widget.
     ei_widget_t		children_head;	///< Pointer to the first child of this widget.	Children are chained with the "next_sibling" field.
-    //ei_widget_t		children_tail;	///< Pointer to the last child of this widget.
+    ei_widget_t		children_tail;	///< Pointer to the last child of this widget.
     ei_widget_t		next_sibling;	///< Pointer to the next child (of this widget's parent widget.)
 
     /* Geometry Management */
