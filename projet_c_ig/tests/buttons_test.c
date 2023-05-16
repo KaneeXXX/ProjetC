@@ -138,6 +138,18 @@ int main(int argc, char** argv)
 		    black,
 		    NULL,
 		    NULL);
+	ei_rect_t rectangle123 = (ei_rect_t) {{0, 0}, {300,200}};
+	draw_button(main_window,
+	     rectangle123,
+	     (ei_color_t){0x88, 0x88, 0x88, 0xff},
+	     6,
+	     40,
+	     ei_relief_raised,
+	     "Mon premier Bouton !",
+		    NULL,
+	     (ei_color_t){0x00, 0x00, 0x00, 0xff},
+	     NULL,
+	     NULL);
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);

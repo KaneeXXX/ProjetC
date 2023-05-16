@@ -792,6 +792,10 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	 * Theory: create surface of text, take its associated rectangle, take the rectangle associated
 	 * with the original surface starting at the where point, paste the text rectangle to that rectangle.
 	 */
+	if (font == NULL) {
+		font=ei_default_font;
+	}
+
 	if (text == NULL) { //according to function documentation
 		printf("Text is NULL.\n");
 	}
