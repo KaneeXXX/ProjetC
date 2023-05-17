@@ -12,6 +12,8 @@
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
 #include "ei_utils.h"
+#include "ei_event.h"
+#include "ei_widget.h"
 
 ei_widget_t alloc_frame()
 {
@@ -40,7 +42,7 @@ void draw_frame(ei_widget_t		widget,
 }
 
 void setdefaults_frame(ei_widget_t widget){
-	ei_size_t sizedef = ei_size(50,50);
+	ei_size_t sizedef = ei_size(0,0);
 
 	ei_frame_configure(widget, &sizedef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
@@ -50,9 +52,15 @@ void geomnotify_frame(ei_widget_t widget){
 }
 
 //traitant interne de la classe frame
-bool handle_frame(ei_widget_t widget, struct ei_event_t* event){
-
-	exit(1);
+bool handle_frame(ei_widget_t widget, ei_event_t* event){
+	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(widget->requested_size.width, widget->requested_size.height)), event->param.mouse.where);
+	if (event->type == ei_ev_keydown){
+		return true;
+	}
+	if ((event->type == ei_ev_mouse_buttonup)&&(event->param.mouse.button == ei_mouse_button_left)&&(mouse_location)){
+		return true;
+	}
+	return false;
 }
 
 void create_widgetclass_frame(){

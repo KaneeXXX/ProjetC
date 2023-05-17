@@ -138,6 +138,7 @@ int main(int argc, char** argv)
 		    black,
 		    NULL,
 		    NULL);
+
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);

@@ -47,14 +47,14 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	ei_size_t size_windows = hw_surface_get_size(root_surface);
 	ei_frame_set_requested_size(root_widget, size_windows);
 
-	//register event_listener
+/*	//register event_listener
 	event_listener = malloc(sizeof(ei_event_t));
 	event_listener->type = ei_ev_none;
 
 	//init offscreen surface
 	offscreen_surface = malloc(sizeof(ei_surface_t));
 	//penser a free plus tard
-	offscreen_surface = hw_surface_create(root_surface, size_windows, true);
+	offscreen_surface = hw_surface_create(root_surface, size_windows, true);*/
 }
 
 void ei_app_free()
@@ -71,11 +71,14 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
-		hw_surface_lock	(surface);
-		ei_impl_placer_run(widget);
-		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
-		hw_surface_unlock(surface);
-		hw_surface_update_rects(surface, NULL);
+		if (ei_widget_is_displayed(widget)){
+			hw_surface_lock	(surface);
+			ei_impl_placer_run(widget);
+			widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
+			hw_surface_unlock(surface);
+			hw_surface_update_rects(surface, NULL);
+		}
+
 	} else {
 		ei_widget_t currentchildren = childrenhead;
 		while(currentchildren != NULL){
@@ -85,34 +88,35 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	}
 }
 
-_Noreturn void ei_app_run()
-{
+_Noreturn void ei_app_run() {
 	//getchar();
 
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 
-	while(true) {
-		hw_surface_lock	(ei_app_root_surface());
+	while (true) {
+		hw_surface_lock(ei_app_root_surface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 		hw_surface_unlock(ei_app_root_surface());
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), NULL, NULL);
 
 		//Attendre un event
+		event_listener = calloc(1, sizeof(ei_event_t));
 		hw_event_wait_next(event_listener);
-		/*if(event_listener->param.key.key_code == SDLK_x){
+		ei_widget_t current = ei_app_root_widget()->children_head;
+		if (current->wclass->handlefunc(current, event_listener)) {
 			ei_app_free();
-		}*/
+		}
 
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
-//		if(event_listener->type == ei_ev_mouse_buttondown) {
-//			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
-//			if(manipulated_widget != NULL) {
-//				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
-//			}
-//		}
+/*		if(event_listener->type == ei_ev_mouse_buttondown) {
+			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
+			if(manipulated_widget != NULL) {
+				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
+			}
+		}
 
 		ei_widget_t current_widget = ei_widget_pick(&event_listener->param.mouse.where);
 		if (event_listener->type == ei_ev_mouse_buttondown) {
@@ -128,9 +132,9 @@ _Noreturn void ei_app_run()
 			ei_event_set_default_handle_func(ei_event_get_default_handle_func());
 		}
 
+	}*/
 	}
 }
-
 void ei_app_invalidate_rect(const ei_rect_t* rect)
 {
 

@@ -14,6 +14,7 @@
 #include "ei_utils.h"
 #include "ei_event.h"
 #include "ei_application.h"
+#include "ei_widget.h"
 
 ei_widget_t alloc_button()
 {
@@ -66,17 +67,15 @@ void geomnotify_button(ei_widget_t widget){
 }
 
 //traitant interne de la calsse button
-bool handle_button(ei_widget_t widget, struct ei_event_t* event){
-	if (event->type == ei_ev_mouse_buttondown) {
-		ei_impl_button_t* button = (ei_impl_button_t*) widget;
-		button->relief == (ei_relief_t) ei_relief_sunken;
-		ei_widget_t new_widget = (ei_widget_t) button;
-		drawbutton(new_widget,
-			ei_app_root_surface(),
-			NULL,
-			NULL);
+bool handle_button(ei_widget_t widget,  ei_event_t* event){
+	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(widget->requested_size.width, widget->requested_size.height)), event->param.mouse.where);
+	if (event->type == ei_ev_keydown){
+		return true;
 	}
-
+	if ((event->type == ei_ev_mouse_buttonup)&&(event->param.mouse.button == ei_mouse_button_left)&&(mouse_location)){
+		return true;
+	}
+	return false;
 }
 
 void create_widgetclass_button(){
