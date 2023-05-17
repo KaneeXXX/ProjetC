@@ -12,6 +12,8 @@
 #include "ei_implementation.h"
 #include "ei_widget_configure.h"
 #include "ei_utils.h"
+#include "ei_event.h"
+#include "ei_application.h"
 
 ei_widget_t alloc_button()
 {
@@ -65,9 +67,15 @@ void geomnotify_button(ei_widget_t widget){
 
 //traitant interne de la calsse button
 bool handle_button(ei_widget_t widget, struct ei_event_t* event){
-
-	printf("not implemented %s\n", __func__ );
-	exit(1);
+	if (event->type == ei_ev_mouse_buttondown) {
+		ei_impl_button_t* button = (ei_impl_button_t*) widget;
+		button->relief == (ei_relief_t) ei_relief_sunken;
+		ei_widget_t new_widget = (ei_widget_t) button;
+		drawbutton(new_widget,
+			ei_app_root_surface(),
+			NULL,
+			NULL);
+	}
 
 }
 
