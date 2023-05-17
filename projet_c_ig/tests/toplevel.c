@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	/* Create the application and change the color of the background. */
 	ei_app_create			((ei_size_t){600, 600}, false);
 	ei_frame_set_bg_color		(ei_app_root_widget(), (ei_color_t){0x52, 0x7f, 0xb4, 0xff});
-	//ei_event_set_default_handle_func(process_key);
+	ei_event_set_default_handle_func(process_key);
 
 	/* Create, configure and place the toplevel on screen. */
 	toplevel = ei_widget_create	("toplevel", ei_app_root_widget(), NULL, NULL);

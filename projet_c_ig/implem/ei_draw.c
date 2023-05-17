@@ -824,7 +824,7 @@ typedef struct {
 }cell_point;
 
 
-void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
+/*void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
 
 	double angle_start_radian_radian = angle_start_radian * PI / 180;
 	double angle_end_radian = angle_end * PI / 180;
@@ -858,7 +858,7 @@ void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angl
 		}
 
 	}
-}
+}*/
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
 	int d_theta = 4;

@@ -46,6 +46,10 @@ void drawbutton(ei_widget_t		widget,
 	     button->img,
 	     NULL
 	     );
+
+	//dessiner dans l'offscreen
+	tab_and_length tabandlenght = rounded_frame((ei_rect_t) {widget->screen_location.top_left, widget->requested_size}, button->corner_radius, ei_relief_none);
+	ei_draw_polygon(pick_surface, tabandlenght.tab, tabandlenght.length, *(widget->pick_color),NULL);
 }
 
 void setdefaults_button(ei_widget_t widget){

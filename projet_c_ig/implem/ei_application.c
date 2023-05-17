@@ -47,14 +47,14 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	ei_size_t size_windows = hw_surface_get_size(root_surface);
 	ei_frame_set_requested_size(root_widget, size_windows);
 
-/*	//register event_listener
+	//register event_listener
 	event_listener = malloc(sizeof(ei_event_t));
 	event_listener->type = ei_ev_none;
 
 	//init offscreen surface
 	offscreen_surface = malloc(sizeof(ei_surface_t));
 	//penser a free plus tard
-	offscreen_surface = hw_surface_create(root_surface, size_windows, true);*/
+	offscreen_surface = hw_surface_create(root_surface, size_windows, true);
 }
 
 void ei_app_free()
