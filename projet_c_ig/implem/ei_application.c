@@ -114,12 +114,28 @@ _Noreturn void ei_app_run()
 
 		//Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
-		if(event_listener->type == ei_ev_mouse_buttondown) {
-			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
-			if(manipulated_widget != NULL) {
-				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
-			}
+
+//		if(event_listener->type == ei_ev_mouse_buttondown) {
+//			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
+//			if(manipulated_widget != NULL) {
+//				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
+//			}
+//		}
+
+		ei_widget_t current_widget = ei_widget_pick(&event_listener->param.mouse.where);
+		if (event_listener->type == ei_ev_mouse_buttondown) {
+			current_widget->wclass->handlefunc(current_widget, event_listener);
 		}
+//		else if (c est un keyboard event) {
+//			current_widget->wclass->handlefunc(current_widget, event_listener);
+//		}
+//		else if (c est un application event) {
+//			current_widget->wclass->handlefunc(current_widget, event_listener);
+//		}
+		else {
+			ei_event_set_default_handle_func(ei_event_get_default_handle_func());
+		}
+
 	}
 }
 
