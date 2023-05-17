@@ -64,7 +64,7 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		uint8_t B = tp8[2];
 		ei_color_t pick_color = {R, G, B, 0xff};
 		widgetptr->pick_color = &pick_color;
-		pick_id++;
+		pick_id = pick_id + 10000;
 		//Geometry
 
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
@@ -147,7 +147,7 @@ ei_color_t get_widget_offscreen_color(ei_surface_t surface, int width ,ei_point_
 	hw_surface_lock(surface);
 	//get the adresse of the pixel (x,y)
 	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
-	uint32_t* px_y = surface_buffer + point.y * width + point.x; //+  =  move forward with 4 bytes (4 octets en 4 octets)     32 bits = 4 octets
+	uint32_t* px_y = surface_buffer + point.y * width + point.x; //+  =  move forward with 4 bytes (4 octets en 4 octets)     32 bits = 4 octets (1 octet = 8 bits)
 	//px_y = adress of pixel
 	uint8_t * px_y8 = (uint8_t*) px_y;
 	ei_color_t color;
@@ -186,19 +186,19 @@ ei_widget_t find_widget(ei_widget_t current_widget, ei_color_t picked_color){ //
 	}
 	return NULL;
 }
-//
-//ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
-//{
-//	//get the pick color at the coordinate of the point
-//	ei_size_t size = hw_surface_get_size(get_picksurface());
-//	ei_color_t picked_color = get_widget_offscreen_color(get_picksurface(), size.width ,*where);
-//
-//	ei_widget_t current_widget = ei_app_root_widget(); //start exploring the widget tree
-//
-//	return find_widget(current_widget, picked_color);
-//}
 
-//unused with picking
+ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
+{
+	//get the pick color at the coordinate of the point
+	ei_size_t size = hw_surface_get_size(get_picksurface());
+	ei_color_t picked_color = get_widget_offscreen_color(get_picksurface(), size.width ,*where);
+
+	ei_widget_t current_widget = ei_app_root_widget(); //start exploring the widget tree
+
+	return find_widget(current_widget, picked_color);
+}
+
+/*//unused with picking
 ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 {
 	ei_widget_t widget_picked = NULL; //default
@@ -223,4 +223,4 @@ ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 		}
 	}
 	return NULL;
-}
+}*/

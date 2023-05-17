@@ -4,7 +4,7 @@
 *	      main loop, quitting, resource freeing.
 *
 *  \author
-*  Created by Notre Groupe.
+*  Created by the C language itself.
 *
 */
 
@@ -26,14 +26,16 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 {
 	hw_init();
 	//Create window system
-	root_surface = malloc(sizeof(ei_surface_t));
-	if (fullscreen == true) {
-		//the size of the root window = main_window_size
-		root_surface = hw_create_window(main_window_size, true);
-	} else {
-		//the size of the root window = the current monitor resolution
-		root_surface = hw_create_window(main_window_size, false);
-	}
+
+	//the size of the root window = main_window_size
+	root_surface = hw_create_window(main_window_size, fullscreen);
+	ei_size_t size_windows = hw_surface_get_size(root_surface);
+	//init offscreen surface
+	//penser a free plus tard
+	pick_surface = hw_surface_create(root_surface, size_windows, true);
+
+	pick_id = 0;
+
 	initlistclassToNull();
 
 	//Register class
@@ -42,20 +44,13 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	create_widgetclass_toplevel();
 
 	//create root widget
-	root_widget = calloc(1, sizeof(ei_widget_t));
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
-	ei_size_t size_windows = hw_surface_get_size(root_surface);
+
 	ei_frame_set_requested_size(root_widget, size_windows);
 
 	//register event_listener
 	event_listener = malloc(sizeof(ei_event_t));
 	event_listener->type = ei_ev_none;
-
-	//init offscreen surface
-	pick_surface = malloc(sizeof(ei_surface_t));
-	//penser a free plus tard
-	pick_surface = hw_surface_create(root_surface, size_windows, true);
-	pick_id = 0;
 }
 
 void ei_app_free()
@@ -93,8 +88,6 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 
 _Noreturn void ei_app_run()
 {
-	//getchar();
-
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 
@@ -106,36 +99,38 @@ _Noreturn void ei_app_run()
 		hw_surface_unlock(get_picksurface());
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
-		//Attendre un event
-		hw_event_wait_next(event_listener);
-		/*if(event_listener->param.key.key_code == SDLK_x){
-			ei_app_free();
-		}*/
 
-		//Analyser l'event pour trouver traitant associe
+		//I) Attendre un event
+		hw_event_wait_next(event_listener);
+
+		//II) Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
 
-//		if(event_listener->type == ei_ev_mouse_buttondown) {
-//			ei_widget_t manipulated_widget = ei_widget_pick(&event_listener->param.mouse.where);
-//			if(manipulated_widget != NULL) {
-//				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
-//			}
-//		}
-		printf("ok\n");
-		ei_widget_t current_widget = ei_widget_pick(&event_listener->param.mouse.where);
-		if (event_listener->type == ei_ev_mouse_buttonup) {
-//			current_widget->wclass->handlefunc(current_widget, event_listener);
-			printf("okif %s\n", current_widget->wclass->name);
+		/*Si un event de souris*/
+		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
+
+			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
+
+			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
+			switch (event_listener->type) {
+				case ei_ev_mouse_buttondown:
+					ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
+				case ei_ev_mouse_buttonup:
+					ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
+				case ei_ev_mouse_move:
+					widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+				}
+			}
 		}
 //		else if (c est un keyboard event) {
 //			current_widget->wclass->handlefunc(current_widget, event_listener);
 //		}
 //		else if (c est un application event) {
 //			current_widget->wclass->handlefunc(current_widget, event_listener);
-//		}
+//		}//Event de keyboard et autre
 		else {
 			printf("okelse\n");
-			ei_event_set_default_handle_func(ei_event_get_default_handle_func());
+			//call default handle function
 		}
 
 	}
