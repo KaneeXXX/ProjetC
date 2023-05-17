@@ -13,6 +13,8 @@
 #include "ei_utils.h"
 #include "ei_application.h"
 
+uint32_t pick_id;
+
 void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
 	/*Add widget to parent chained list*/
 	//No children before
@@ -54,7 +56,15 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		widgetptr->children_head = NULL;
 		//widgetptr->children_tail = NULL;
 
-
+		widgetptr->pick_id = pick_id;
+		uint32_t* tp = &pick_id;
+		uint8_t* tp8 = (uint8_t*) tp;
+		uint8_t R = tp8[0];
+		uint8_t G = tp8[1];
+		uint8_t B = tp8[2];
+		ei_color_t pick_color = {R, G, B, 0xff};
+		widgetptr->pick_color = &pick_color;
+		pick_id++;
 		//Geometry
 
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
@@ -112,6 +122,7 @@ bool ei_widget_is_displayed	(ei_widget_t widget)
 	return (widget->placer_params == NULL) ? false : true;
 }
 
+//unused with picking
 bool is_point_in_rect(ei_rect_t rect, ei_point_t point){
 	int x_rect = rect.top_left.x;
 	int y_rect = rect.top_left.y;
@@ -123,11 +134,72 @@ bool is_point_in_rect(ei_rect_t rect, ei_point_t point){
 	return false;
 }
 
+//unused with picking
 bool is_point_in_widget(ei_widget_t widget, ei_point_t point){
 	return (is_point_in_rect(widget->screen_location, point)) ? true : false;
 }
 
+ei_color_t get_widget_offscreen_color(ei_surface_t surface, int width ,ei_point_t point){
+	//Get order of colors in pixel because it's not always the same
+	int ir, ig, ib, ia;
+	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
+
+	hw_surface_lock(surface);
+	//get the adresse of the pixel (x,y)
+	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
+	uint32_t* px_y = surface_buffer + point.y * width + point.x; //+  =  move forward with 4 bytes (4 octets en 4 octets)     32 bits = 4 octets
+	//px_y = adress of pixel
+	uint8_t * px_y8 = (uint8_t*) px_y;
+	ei_color_t color;
+
+	color.red = px_y8[ir];
+	color.green = px_y8[ig];
+	color.blue = px_y8[ib];
+	color.alpha = px_y8[ia];
+	hw_surface_unlock(surface);
+
+	return color;
+}
+
+bool is_same_color(ei_color_t color1, ei_color_t color2){
+	if(color1.red == color2.red && color1.green == color2.green && color1.blue == color2.blue && color1.alpha == color2.alpha){
+		return true;
+	}
+	return false;
+}
+
+ei_widget_t find_widget(ei_widget_t current_widget, ei_color_t picked_color){ //recursif
+	if(ei_widget_get_first_child(current_widget) == NULL){
+		return NULL;
+	}
+	if(is_same_color(*current_widget->pick_color, picked_color)){
+		return current_widget;
+	}
+
+	ei_widget_t child = ei_widget_get_first_child(current_widget);
+	while(child != NULL){
+		ei_widget_t widget = find_widget(child, picked_color);
+		if(widget != NULL){
+			return widget;
+		}
+		child = child->next_sibling;
+	}
+	return NULL;
+}
+
 ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
+{
+	//get the pick color at the coordinate of the point
+	ei_size_t size = hw_surface_get_size(get_picksurface());
+	ei_color_t picked_color = get_widget_offscreen_color(get_picksurface(), size.width ,*where);
+
+	ei_widget_t current_widget = ei_app_root_widget(); //start exploring the widget tree
+
+	return find_widget(current_widget, picked_color);
+}
+
+//unused with picking
+/*ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 {
 	ei_widget_t widget_picked = NULL; //default
 
@@ -151,4 +223,4 @@ ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 		}
 	}
 	return NULL;
-}
+}*/

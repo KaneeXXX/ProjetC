@@ -198,4 +198,10 @@ void create_widgetclass_button();
 
 void initlistclassToNull();
 
+extern uint32_t pick_id;
+
+ei_surface_t get_picksurface();
+
+tab_and_length concatenate_four_point_lists(ei_point_t* list1, ei_point_t* list2, ei_point_t* list3, ei_point_t* list4, int length1, int length2, int length3, int length4);
+
 #endif

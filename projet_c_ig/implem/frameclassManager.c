@@ -37,6 +37,9 @@ void draw_frame(ei_widget_t		widget,
 	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
 	size_t size=4;
 	ei_draw_polygon(surface, points_rectangle, size, frame->color, clipper);
+
+	//dessiner dans offscreen
+	ei_draw_polygon(pick_surface, points_rectangle, size, *(widget->pick_color), NULL);
 }
 
 void setdefaults_frame(ei_widget_t widget){
