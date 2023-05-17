@@ -121,10 +121,11 @@ _Noreturn void ei_app_run()
 //				manipulated_widget->wclass->handlefunc(manipulated_widget, event_listener);
 //			}
 //		}
-
+		printf("ok\n");
 		ei_widget_t current_widget = ei_widget_pick(&event_listener->param.mouse.where);
-		if (event_listener->type == ei_ev_mouse_buttondown) {
-			current_widget->wclass->handlefunc(current_widget, event_listener);
+		if (event_listener->type == ei_ev_mouse_buttonup) {
+//			current_widget->wclass->handlefunc(current_widget, event_listener);
+			printf("okif %s\n", current_widget->wclass->name);
 		}
 //		else if (c est un keyboard event) {
 //			current_widget->wclass->handlefunc(current_widget, event_listener);
@@ -133,6 +134,7 @@ _Noreturn void ei_app_run()
 //			current_widget->wclass->handlefunc(current_widget, event_listener);
 //		}
 		else {
+			printf("okelse\n");
 			ei_event_set_default_handle_func(ei_event_get_default_handle_func());
 		}
 
