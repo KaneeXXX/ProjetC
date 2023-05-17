@@ -29,18 +29,15 @@ int main(int argc, char** argv)
 	ei_fill(main_window, &white, NULL);
 
 	//Circle
-/*
-	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 0, 90);
-	ei_draw_polyline(main_window, arc11.tab, arc11.length, (ei_color_t){0, 255, 0, 255}, NULL);
-	tab_and_length arc12 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 90, 180);
+	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 15, 0, 360);
+	ei_draw_polygon(main_window, arc11.tab, arc11.length, (ei_color_t){0, 255, 0, 255}, NULL);
+	/*tab_and_length arc12 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 90, 181);
 	ei_draw_polyline(main_window, arc12.tab, arc12.length, (ei_color_t){0, 255, 0, 255}, NULL);
-	tab_and_length arc13 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 180, 270);
+	tab_and_length arc13 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 180, 271);
 	ei_draw_polyline(main_window, arc13.tab, arc13.length, (ei_color_t){0, 255, 0, 255}, NULL);
 	tab_and_length arc14 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 270, 360);
 	ei_draw_polyline(main_window, arc14.tab, arc14.length, (ei_color_t){0, 255, 0, 255}, NULL);
 */
-
-        arc_bresenham(main_window, ei_point(400, 300), 100, 90, 0);
 
 //	//Square inside a circle
 //	tab_and_length arc21 = (tab_and_length) arc((ei_point_t) {300,100}, 30, 0, 90);

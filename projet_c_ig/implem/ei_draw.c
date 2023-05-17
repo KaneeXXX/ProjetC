@@ -45,7 +45,8 @@ void draw_pixel(u_int32_t* addr, ei_surface_t surface, ei_color_t color, const e
 		channel_ptr[ir] = color.red;
 		channel_ptr[ig] = color.green;
 		channel_ptr[ib] = color.blue;
-		channel_ptr[ia] = color.alpha;
+		if (ia != -1)
+			channel_ptr[ia] = color.alpha;
 		*addr = pixel_value;
 	}
 }
@@ -66,7 +67,7 @@ void ei_fill(ei_surface_t surface, const ei_color_t* color, const ei_rect_t* cli
 
 
 	}else {
-		for(int i = 0; i <= nb_pixel - 1; i++){
+		for(int i = 0; i < nb_pixel; i++){
 			draw_pixel(surface_buffer, surface, *color, clipper);
 			surface_buffer++;
 		}
@@ -860,7 +861,7 @@ typedef struct {
 }*/
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
-	int d_theta = radius;
+	int d_theta = 4;
 
 	double radian_start_angle = (angle_start_radian * PI) / 180;  //ALways angle_start_radian <= angle_end
 	double radian_end_angle = (angle_end * PI) / 180;
@@ -871,7 +872,7 @@ tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int an
 	double current_theta = radian_start_angle;
 	int num_point_in_list = 0;
 
-	while(current_theta <= radian_end_angle) {
+	while(current_theta < radian_end_angle) {
 		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
 		array[num_point_in_list] = p;
 		current_theta = current_theta + ((d_theta * PI) / 180);

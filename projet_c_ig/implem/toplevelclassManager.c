@@ -102,7 +102,14 @@ void geomnotify_toplevel(ei_widget_t widget){
 //traitant interne de la classe toplevel
 bool handle_toplevel(ei_widget_t widget, struct ei_event_t* event){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	//if()
+	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(15, 15)), event->param.mouse.where);
+	if (event->type == ei_ev_keydown){
+		return true;
+	}
+	if ((event->type == ei_ev_mouse_buttonup)&&(event->param.mouse.button == ei_mouse_button_left)&&(mouse_location)){
+		return true;
+	}
+	return false;
 }
 
 void create_widgetclass_toplevel(){
@@ -116,7 +123,6 @@ void create_widgetclass_toplevel(){
 	toplevel->geomnotifyfunc = &geomnotify_toplevel;
 	toplevel->handlefunc = &handle_toplevel;
 	toplevel->next = NULL;
-
 	ei_widgetclass_register(toplevel);
 }
 

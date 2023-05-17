@@ -4,7 +4,7 @@
 *	      main loop, quitting, resource freeing.
 *
 *  \author
-*  Created by the C language itself.
+*  Created by Notre Groupe.
 *
 */
 
