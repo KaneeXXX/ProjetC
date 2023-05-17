@@ -39,7 +39,15 @@ void drawtoplevel(ei_widget_t		widget,
 		   ei_surface_t		pick_surface,
 		   ei_rect_t*		clipper){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	//draw avec les param de top level
+	draw_toplevel(surface,
+	       (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+		toplevel->color,
+		toplevel->border_width,
+		toplevel->title,
+		toplevel->closable,
+		toplevel->resizable,
+		toplevel->min_size
+		);
 }
 
 void setdefaults_toplevel(ei_widget_t widget){

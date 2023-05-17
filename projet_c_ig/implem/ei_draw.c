@@ -936,7 +936,7 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 	return conc;
 }
 
-//Darken a color index between 0 and 255
+//Brighten a color index between 0 and 255
 int brighten(int color_index)
 {
 	return color_index + (int) ceil((255 - color_index) / 2);
