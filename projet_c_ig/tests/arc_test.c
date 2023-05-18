@@ -28,26 +28,39 @@ int main(int argc, char** argv)
 	/* Draw the arcs */
 	ei_fill(main_window, &white, NULL);
 
-	//Circle
-	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 15, 0, 360);
-	ei_draw_polygon(main_window, arc11.tab, arc11.length, (ei_color_t){0, 255, 0, 255}, NULL);
-	/*tab_and_length arc12 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 90, 181);
-	ei_draw_polyline(main_window, arc12.tab, arc12.length, (ei_color_t){0, 255, 0, 255}, NULL);
-	tab_and_length arc13 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 180, 271);
-	ei_draw_polyline(main_window, arc13.tab, arc13.length, (ei_color_t){0, 255, 0, 255}, NULL);
-	tab_and_length arc14 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 270, 360);
-	ei_draw_polyline(main_window, arc14.tab, arc14.length, (ei_color_t){0, 255, 0, 255}, NULL);
-*/
+	//Arcs of different sizes
+	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 10, 0, 90);
+	ei_draw_polyline(main_window, arc11.tab, arc11.length, (ei_color_t){0, 0, 0, 255}, NULL);
+	tab_and_length arc12 = (tab_and_length) arc((ei_point_t) {100,100}, 50, 90, 180);
+	ei_draw_polyline(main_window, arc12.tab, arc12.length, (ei_color_t){0, 0, 0, 255}, NULL);
+	tab_and_length arc13 = (tab_and_length) arc((ei_point_t) {100,100}, 90, 180, 270);
+	ei_draw_polyline(main_window, arc13.tab, arc13.length, (ei_color_t){0, 0, 0, 255}, NULL);
+	tab_and_length arc14 = (tab_and_length) arc((ei_point_t) {100,100}, 100, 270, 360);
+	ei_draw_polyline(main_window, arc14.tab, arc14.length, (ei_color_t){0, 0, 0, 255}, NULL);
 
-//	//Square inside a circle
-//	tab_and_length arc21 = (tab_and_length) arc((ei_point_t) {300,100}, 30, 0, 90);
-//	ei_draw_polygon(main_window, arc21.tab, arc21.length, (ei_color_t){0, 255, 255, 255}, NULL);
-//	tab_and_length arc22 = (tab_and_length) arc((ei_point_t) {300,100}, 30, 90, 180);
+	//Circle with one arc
+	tab_and_length circle = (tab_and_length) arc((ei_point_t) {100,400}, 100, 0, 360);
+	ei_draw_polyline(main_window, circle.tab, circle.length, (ei_color_t){255, 0, 255, 255}, NULL);
+
+	//Circle with 4 arcs
+	tab_and_length arc11b = (tab_and_length) arc((ei_point_t) {400,400}, 100, 0, 90);
+	ei_draw_polyline(main_window, arc11b.tab, arc11b.length, (ei_color_t){0, 0, 255, 255}, NULL);
+	tab_and_length arc12b = (tab_and_length) arc((ei_point_t) {400,400}, 100, 90, 180);
+	ei_draw_polyline(main_window, arc12b.tab, arc12b.length, (ei_color_t){0, 0, 255, 255}, NULL);
+	tab_and_length arc13b = (tab_and_length) arc((ei_point_t) {400,400}, 100, 180, 270);
+	ei_draw_polyline(main_window, arc13b.tab, arc13b.length, (ei_color_t){0, 0, 255, 255}, NULL);
+	tab_and_length arc14b = (tab_and_length) arc((ei_point_t) {400,400}, 100, 270, 360);
+	ei_draw_polyline(main_window, arc14b.tab, arc14b.length, (ei_color_t){0, 0, 255, 255}, NULL);
+
+	//Square inside a circle
+	tab_and_length arc21 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 0, 90);
+	ei_draw_polygon(main_window, arc21.tab, arc21.length, (ei_color_t){0, 255, 255, 255}, NULL);
+//	tab_and_length arc22 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 90, 180);
 //	ei_draw_polygon(main_window, arc22.tab, arc22.length, (ei_color_t){0, 255, 255, 255}, NULL);
-//	tab_and_length arc23 = (tab_and_length) arc((ei_point_t) {300,100}, 30, 180, 270);
+//	tab_and_length arc23 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 180, 270);
 //	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
-//	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 30, 270, 360);
-//	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
+	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 270, 360);
+	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
 
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);

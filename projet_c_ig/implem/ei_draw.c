@@ -18,14 +18,14 @@
 #define PI 3.141592654
 
 //Check if pixel is in the clipped rectangle of the surface
-bool is_pixel_drawable(uint32_t * pixel_addr, ei_surface_t surface, const ei_rect_t* clipper){
+bool is_pixel_drawable(const uint32_t * pixel_addr, ei_surface_t surface, const ei_rect_t* clipper){
 
 	uint32_t* surface_buffer = (uint32_t*) hw_surface_get_buffer(surface);
 	int width = hw_surface_get_size(surface).width; //because variable used twice
 	uint32_t addr_minus_addr0 = pixel_addr - surface_buffer; //used twice
 
-	int point_x = addr_minus_addr0 % width;
-	int point_y = addr_minus_addr0 / width;
+	int point_x = (int) addr_minus_addr0 % width;
+	int point_y = (int) addr_minus_addr0 / width;
 
 	bool check_abs = (clipper->top_left.x <= point_x) && (point_x <= clipper->top_left.x+ clipper->size.width);
 	bool check_ord = (clipper->top_left.y <= point_y) && (point_y <= clipper->top_left.y +clipper->size.height);
@@ -354,7 +354,7 @@ void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_colo
 			state = OUT;
 		} else { //state == OUT, interval exit
 			x_to_color2 = floor(x_ymin); //round down
-			draw_line(surface, (ei_point_t) {x_to_color1, y}, (ei_point_t) {x_to_color2, y}, color, clipper);
+			draw_line(surface, (ei_point_t) {(int) x_to_color1, y}, (ei_point_t) {(int) x_to_color2, y}, color, clipper);
 			state = IN;
 		}
 		ptr_current_cell = ptr_current_cell->next;
@@ -590,8 +590,6 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					success = 1;
 				}
 				else {
-					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
-					ei_size_t sizedest = hw_surface_get_size(destination);
 					ei_point_t top_left_src_rect = src_rect->top_left;
 					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 					ei_size_t sizesrc = hw_surface_get_size(source);
@@ -736,8 +734,6 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_unlock(source);
 					success = 1;
 				} else {
-					uint32_t *addr_dest = (uint32_t *) hw_surface_get_buffer(destination);
-					ei_size_t sizedest = hw_surface_get_size(destination);
 					ei_point_t top_left_src_rect = src_rect->top_left;
 					uint32_t *addr_src = (uint32_t *) hw_surface_get_buffer(source);
 					ei_size_t sizesrc = hw_surface_get_size(source);
@@ -818,10 +814,10 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 }
 
-typedef struct {
-    ei_point_t point;
-    ei_point_t * suivant;
-}cell_point;
+//typedef struct {
+//    ei_point_t point;
+//    ei_point_t * suivant;
+//}cell_point;
 
 
 /*void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
@@ -859,26 +855,40 @@ typedef struct {
 
 	}
 }*/
+
+///*Returns array of points forming an arc*/
+//tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
+//	int d_theta = 4;
+//
+//	double radian_start_angle = (angle_start_radian * PI) / 180;  //ALways angle_start_radian <= angle_end
+//	double radian_end_angle = (angle_end * PI) / 180;
+//
+//	int nb_of_points= (int) (abs(angle_end - angle_start_radian)/d_theta + 1);
+//	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
+//
+//	double current_theta = radian_start_angle;
+//	int num_point_in_list = 0;
+//
+//	while(current_theta < radian_end_angle) {
+//		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
+//		array[num_point_in_list] = p;
+//		current_theta = current_theta + ((d_theta * PI) / 180);
+//		num_point_in_list++;
+//	}
+//	tab_and_length tab = {array, num_point_in_list};
+//	return tab;
+//}
+
 /*Returns array of points forming an arc*/
-tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
-	int d_theta = 4;
-
-	double radian_start_angle = (angle_start_radian * PI) / 180;  //ALways angle_start_radian <= angle_end
-	double radian_end_angle = (angle_end * PI) / 180;
-
-	int nb_of_points= (int) (abs(angle_end - angle_start_radian)/d_theta + 1);
-	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
-
-	double current_theta = radian_start_angle;
-	int num_point_in_list = 0;
-
-	while(current_theta < radian_end_angle) {
-		ei_point_t p = {centre.x + radius * cos(current_theta), centre.y + radius * sin(current_theta)};
-		array[num_point_in_list] = p;
-		current_theta = current_theta + ((d_theta * PI) / 180);
-		num_point_in_list++;
+tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
+	int nb_points = abs(angle_end - angle_start) + 1;
+	ei_point_t* array = malloc(nb_points*sizeof(ei_point_t));
+	for (int i = 0; angle_start <= angle_end; i++) {
+		ei_point_t pt = {centre.x + (int) (radius * cos((angle_start)*PI/180)), centre.y + (int) (radius * sin((angle_start)*PI/180))};
+		array[i] = pt;
+		angle_start++;
 	}
-	tab_and_length tab = {array, num_point_in_list};
+	tab_and_length tab = {array, nb_points};
 	return tab;
 }
 
@@ -940,7 +950,7 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 //Brighten a color index between 0 and 255
 int brighten(int color_index)
 {
-	return color_index + (int) ceil((255 - color_index) / 2);
+	return color_index + (int) ((255 - color_index) / 2);
 }
 
 void draw_button(ei_surface_t surface,
