@@ -294,6 +294,9 @@ void add_to_TCA(lc_t** TCA, lc_t* chain) {
 			ptr_current_cell_TCA = ptr_current_cell_TCA->next;
 			header = false;
 		}
+		if(placed == false){ //place to at the end
+			ptr_previous->next = ptr_first_cell_in_chain;
+		}
 		if (ptr_second_cell_in_chain == NULL) { //if there is no 2nd cell
 			return;
 		}
@@ -395,6 +398,29 @@ void add_to_chain(lc_t* first_cell, lc_t* cell_to_add)
 	current -> next = cell_to_add;
 }
 
+//petit function pour print_TC
+void print_TC(int sizeTC, lc_t** tab_TC) {
+
+	for(int j = 0; j < sizeTC; j++) {
+		//tab_TC est un tableau de pointeur vers des struct lc_t
+		if (tab_TC[j] == NULL) { //Cas pour F et D par exemple, ils n'ont pas de voisin "sous eux".
+			printf("indice_TC= %i | NULL\n", j);
+			return;
+		}
+		lc_t cell = *(tab_TC[j]);
+		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", j, cell.y_max,
+		       cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+		while (cell.next != NULL) {
+			printf("- > ");
+			cell = *(cell.next);
+			printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", j,
+			       cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
+		}
+		printf("\n");
+	}
+}
+
+
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
 {
 	//Build TC
@@ -444,8 +470,27 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			else {
 				add_to_chain(tab_TC[index_in_TC], side);
 			}
-		}
+
+		} /*else {
+			lc_t* s = calloc(1, sizeof(lc_t));
+			s->y_max = p1.y;
+			s->x_ymin = p1.x;
+			s->abs_dx = abs(p1.x - p2.x);
+			s->abs_dy = 0;
+			s->E = 0;
+			s->dir = (p1.x < p2.x) ? RIGHT : LEFT;
+			s->next = NULL;
+			int index_in_TC = p1.y - y_min;
+			if (tab_TC[index_in_TC] == NULL) {
+				tab_TC[index_in_TC] = s;
+			}
+			else {
+				add_to_chain(tab_TC[index_in_TC], s);
+			}
+		}*/
+
 	}
+	print_TC(size_tc, tab_TC);
 	//Build TCA
 	lc_t** TCA = malloc(sizeof(lc_t));
 	*TCA = NULL; //TCA initially points to NULL

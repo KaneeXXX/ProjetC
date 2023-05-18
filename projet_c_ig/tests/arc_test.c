@@ -28,6 +28,13 @@ int main(int argc, char** argv)
 	/* Draw the arcs */
 	ei_fill(main_window, &white, NULL);
 
+
+	ei_color_t black = {0,0,0,0xff};
+	ei_point_t point_array[] = {{0,0}, {30, 0}, {50, 10}, {60,10},{60, 30}, {0, 30}};
+
+	ei_draw_polygon(main_window, point_array, 6, black,NULL);
+/*
+
 	//Arcs of different sizes
 	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 10, 0, 90);
 	ei_draw_polyline(main_window, arc11.tab, arc11.length, (ei_color_t){0, 0, 0, 255}, NULL);
@@ -61,6 +68,7 @@ int main(int argc, char** argv)
 //	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
 	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 270, 360);
 	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
+*/
 
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);

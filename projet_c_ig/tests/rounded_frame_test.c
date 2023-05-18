@@ -30,7 +30,15 @@ int main(int argc, char** argv)
 
 	//With polygon, height > width
 	tab_and_length whole_figure_polygon = rounded_frame((ei_rect_t) {(ei_point_t) {100, 100}, (ei_size_t) {100, 150}}, 30, ei_relief_none);
-	ei_draw_polygon(main_window, whole_figure_polygon.tab, whole_figure_polygon.length, (ei_color_t){255, 255, 0, 255}, NULL);
+
+	ei_point_t* l = calloc(whole_figure_polygon.length + 1, sizeof(ei_point_t));
+	for(int i = 0; i < whole_figure_polygon.length; i++){
+		l[i] = whole_figure_polygon.tab[i];
+	}
+	l[whole_figure_polygon.length] = ei_point(100, 200);
+	printf("%i , %i", l[whole_figure_polygon.length].x, l[whole_figure_polygon.length].y);
+
+	ei_draw_polygon(main_window, l, whole_figure_polygon.length + 1, (ei_color_t){255, 255, 0, 255}, NULL);
 	tab_and_length top_figure_polygon = rounded_frame((ei_rect_t) {(ei_point_t) {300, 100}, (ei_size_t) {100, 150}}, 30, ei_relief_raised);
 	ei_draw_polygon(main_window, top_figure_polygon.tab, top_figure_polygon.length, (ei_color_t){0, 255, 255, 255}, NULL);
 	tab_and_length bottom_figure_polygon = rounded_frame((ei_rect_t) {(ei_point_t) {500, 100}, (ei_size_t) {100, 150}}, 30, ei_relief_sunken);
