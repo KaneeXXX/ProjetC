@@ -1,15 +1,12 @@
 //
-// Created by Donald Duck on 1942.
+// ei_widget.c
 //
 
 #include <stdio.h>
 #include "ei_widget.h"
 #include "ei_widget_configure.h"
-#include "ei_placer.h"
-#include "ei_widgetclass.h"
 #include "ei_implementation.h"
 #include "ei_widget_attributes.h"
-#include "ei_widgetclass.h"
 #include "ei_utils.h"
 #include "ei_application.h"
 
@@ -31,20 +28,18 @@ void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
 
 ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, ei_user_param_t user_data, ei_widget_destructor_t destructor)
 {
-	/*Verify is class_name is known by the library*/
+	/* Verify the widget class_name is known by the library */
 	ei_widgetclass_t* widgetclassptr = ei_widgetclass_from_name(class_name);
 	if (widgetclassptr != NULL) {
 		/*Call the function which allocate memory to store attribut of new widget of this class*/
 		ei_impl_widget_t* widgetptr = widgetclassptr->allocfunc();
-		/*Init widgets' commun attributs*/
+		/*Init widget common attributes*/
 		widgetptr->wclass = widgetclassptr;
-		widgetptr->pick_id = 0; // a CHANGER
-		widgetptr->pick_color = &ei_default_background_color; // a CHANGER
 		widgetptr->user_data = user_data;
 		widgetptr->destructor = destructor;
 
 		/*Hierarchy*/
-		if(parent != NULL) {
+		if (parent != NULL) {
 			widgetptr->next_sibling = parent->children_head; //If no other child, NULL;
 			/*Update parent fields*/
 			addWidget_to_parent(widgetptr, parent);
@@ -52,9 +47,8 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		} else {
 			widgetptr->parent = NULL;
 		}
-		/*We've just created the widget so no children for now*/
-		widgetptr->children_head = NULL;
-		//widgetptr->children_tail = NULL;
+		widgetptr->children_head = NULL; //no children because widget just has been created
+		widgetptr->children_tail = NULL;
 
 		widgetptr->pick_id = pick_id;
 		uint32_t* tp = &pick_id;
@@ -65,8 +59,8 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		ei_color_t pick_color = {R, G, B, 0xff};
 		widgetptr->pick_color = &pick_color;
 		pick_id = pick_id + 10000;
-		//Geometry
 
+		/*Geometry*/
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
 		widgetptr->placer_params = params;
 		ei_size_t size = ei_size(0,0);
@@ -96,7 +90,6 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 	/*Destroy widget and all its offspring (descendance)*/
 	//destruction recursive
 	if(widget->children_head != NULL) { //No children
-
 		//get the list of children and DESTROY THEM !! AHAHAHAHAH (the evil strikes again)
 		ei_widget_t current_widgetchild = widget->children_head; //head of the list
 		while (current_widgetchild != NULL) {
@@ -108,7 +101,7 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 			//free memory
 			ei_widget_t to_delete = current_widgetchild;
 
-			current_widgetchild = current_widgetchild->next_sibling; //move in the list of children before detroying, otherwise may have pb
+			current_widgetchild = current_widgetchild->next_sibling; //move in the list of children before detroying
 			ei_widget_destroy(to_delete);
 		}
 	}
@@ -117,7 +110,7 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 	free(widget);
 }
 
-bool ei_widget_is_displayed	(ei_widget_t widget)
+bool ei_widget_is_displayed(ei_widget_t widget)
 {
 	return (widget->placer_params == NULL) ? false : true;
 }

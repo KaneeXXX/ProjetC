@@ -100,8 +100,4 @@ bool	 		ei_widget_is_displayed		(ei_widget_t		widget);
 ei_widget_t		ei_widget_pick			(ei_point_t*		where);
 
 
-bool is_point_in_rect(ei_rect_t rect, ei_point_t point);
-
-
-
 #endif

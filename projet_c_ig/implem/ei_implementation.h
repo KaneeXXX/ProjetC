@@ -198,6 +198,8 @@ void create_widgetclass_button();
 
 void initlistclassToNull();
 
+bool is_point_in_rect(ei_rect_t rect, ei_point_t point);
+
 extern uint32_t pick_id;
 
 ei_surface_t get_picksurface();

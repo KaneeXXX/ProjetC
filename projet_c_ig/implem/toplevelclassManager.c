@@ -123,9 +123,6 @@ void create_widgetclass_toplevel(){
 	toplevel->geomnotifyfunc = &geomnotify_toplevel;
 	toplevel->handlefunc = &handle_toplevel;
 	toplevel->next = NULL;
+
 	ei_widgetclass_register(toplevel);
 }
-
-
-
-

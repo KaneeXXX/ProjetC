@@ -96,7 +96,3 @@ void create_widgetclass_button(){
 
 	ei_widgetclass_register(button);
 }
-
-
-
-

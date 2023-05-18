@@ -925,22 +925,11 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 		tab_and_length t4 = arc(center_bottom_left, radius, 135, 180);
 		//+2 interior points
 		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
-		int h ;
-		if (width < height) {
-			h = (int) width / 2;
-			ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
-			list_2points[0] = p1;
-			ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
-			list_2points[1] = p2;
-
-		}
-		else {
-			h = (int) height / 2;
-			ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
-			list_2points[0] = p1;
-			ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
-			list_2points[1] = p2;
-		}
+		int h = (int) (width < height ? width : height) / 2;
+		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
+		list_2points[0] = p1;
+		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
+		list_2points[1] = p2;
 		conc = concatenate_four_point_lists(t1.tab, t2.tab, list_2points, t4.tab, t1.length, t2.length, 2, t4.length);
 	}
 	else { //ei_relief_sunken
@@ -950,22 +939,11 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 		tab_and_length t4 = arc(center_bottom_left, radius, 90, 135);
 		//+2 interior points
 		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
-		int h;
-		if (width < height) {
-			h = (int) width / 2;
-			ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
-			list_2points[1] = p1;
-			ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
-			list_2points[0] = p2;
-
-		}
-		else {
-			h = (int) height / 2;
-			ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
-			list_2points[1] = p1;
-			ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
-			list_2points[0] = p2;
-		}
+		int h = (int) (width < height ? width : height) / 2;
+		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
+		list_2points[1] = p1;
+		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
+		list_2points[0] = p2;
 		conc = concatenate_four_point_lists(t4.tab, list_2points, t2.tab, t3.tab, t4.length, 2, t2.length, t3.length);
 	}
 	return conc;
