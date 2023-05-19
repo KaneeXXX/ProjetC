@@ -15,6 +15,7 @@
 #include "hw_interface.h"
 #include "ei_draw.h"
 #include "ei_implementation.h"
+#include "ei_utils.h"
 #define PI 3.141592654
 
 //Check if pixel is in the clipped rectangle of the surface
@@ -282,7 +283,7 @@ void add_to_TCA(lc_t** TCA, lc_t* chain) {
 				if (header) {
 					*TCA = ptr_first_cell_in_chain;
 					ptr_first_cell_in_chain->next = ptr_current_cell_TCA;
-
+					placed = true;
 				}
 				else {
 					ptr_previous->next = ptr_first_cell_in_chain;
@@ -294,7 +295,7 @@ void add_to_TCA(lc_t** TCA, lc_t* chain) {
 			ptr_current_cell_TCA = ptr_current_cell_TCA->next;
 			header = false;
 		}
-		if(placed == false){ //place to at the end
+		if(placed == false){ //place at the end
 			ptr_previous->next = ptr_first_cell_in_chain;
 		}
 		if (ptr_second_cell_in_chain == NULL) { //if there is no 2nd cell
@@ -323,12 +324,11 @@ int delete_side_TCA(lc_t** TCA, int scanline_num)
 				free(to_free);
 			}
 			else {
-				//ptr_previous = ptr_current_side->next;
-				//free(ptr_current_side); //ptr_current_side is of type lc_t
-				//ptr_current_side = ptr_previous; //hang up
 				ptr_previous->next = ptr_current_side->next;
-				free(ptr_current_side);
-				size_TCA--;
+				lc_t* to_delete = ptr_current_side;
+				ptr_current_side = ptr_current_side->next;
+				free(to_delete);
+
 			}
 		}
 		else {
@@ -405,7 +405,7 @@ void print_TC(int sizeTC, lc_t** tab_TC) {
 		//tab_TC est un tableau de pointeur vers des struct lc_t
 		if (tab_TC[j] == NULL) { //Cas pour F et D par exemple, ils n'ont pas de voisin "sous eux".
 			printf("indice_TC= %i | NULL\n", j);
-			return;
+			continue;
 		}
 		lc_t cell = *(tab_TC[j]);
 		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", j, cell.y_max,
@@ -936,6 +936,23 @@ tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end
 	tab_and_length tab = {array, nb_points};
 	return tab;
 }
+
+tab_and_length arc2(ei_point_t centre, int radius, int angle_start, int angle_end) {
+	int alpha_degree = abs(angle_end - angle_start); //angle_end > angle_start
+	int nb_points = ceil((alpha_degree * radius) / 90);
+	ei_point_t *array = calloc(nb_points, sizeof(ei_point_t));
+	double angle = (double) angle_start * PI / 180;
+	double d_0 = (alpha_degree / (radius - 1)) * PI / 180;
+	for (int i = 0; i < nb_points; i++) {
+		ei_point_t p = ei_point(ceil(centre.x + radius * cos(angle)),
+					ceil(centre.y + radius * sin(angle)));
+		array[i] = p;
+		angle = angle + d_0;
+	}
+	tab_and_length tab = {array, nb_points};
+	return tab;
+}
+
 
 tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 {
