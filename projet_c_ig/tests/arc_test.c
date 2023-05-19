@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	ei_draw_polygon(main_window, point_array, 6, black,NULL);*/
 
 
-	tab_and_length arcs = arc2(ei_point(50,50), 50, 0, 90);
+	tab_and_length arcs = arc(ei_point(0,0), 90, 0, 45);
 	int comp = 0;
 	for(int i = 0; i < arcs.length; i++){
 		printf("%i, %i\n", arcs.tab[i].x, arcs.tab[i].y);
@@ -46,8 +46,8 @@ int main(int argc, char** argv)
 
 
 	ei_draw_polygon(main_window, arcs.tab, arcs.length, black, NULL);
-
 /*
+
 	//Arcs of different sizes
 	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 10, 0, 90);
 	ei_draw_polyline(main_window, arc11.tab, arc11.length, (ei_color_t){0, 0, 0, 255}, NULL);
@@ -75,10 +75,10 @@ int main(int argc, char** argv)
 	//Square inside a circle
 	tab_and_length arc21 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 0, 90);
 	ei_draw_polygon(main_window, arc21.tab, arc21.length, (ei_color_t){0, 255, 255, 255}, NULL);
-//	tab_and_length arc22 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 90, 180);
-//	ei_draw_polygon(main_window, arc22.tab, arc22.length, (ei_color_t){0, 255, 255, 255}, NULL);
-//	tab_and_length arc23 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 180, 270);
-//	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
+	tab_and_length arc22 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 90, 180);
+	ei_draw_polygon(main_window, arc22.tab, arc22.length, (ei_color_t){0, 255, 255, 255}, NULL);
+	tab_and_length arc23 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 180, 270);
+	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
 	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 270, 360);
 	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
 */

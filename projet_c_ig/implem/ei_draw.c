@@ -422,6 +422,7 @@ void print_TC(int sizeTC, lc_t** tab_TC) {
 
 
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
+
 {
 	//Build TC
 	minmax_t critical_pts = min_max_y(point_array, point_array_size);
@@ -925,7 +926,7 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 //}
 
 /*Returns array of points forming an arc*/
-tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
+/*tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
 	int nb_points = abs(angle_end - angle_start) + 1;
 	ei_point_t* array = malloc(nb_points*sizeof(ei_point_t));
 	for (int i = 0; angle_start <= angle_end; i++) {
@@ -935,19 +936,20 @@ tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end
 	}
 	tab_and_length tab = {array, nb_points};
 	return tab;
-}
+}*/
 
-tab_and_length arc2(ei_point_t centre, int radius, int angle_start, int angle_end) {
+tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
 	int alpha_degree = abs(angle_end - angle_start); //angle_end > angle_start
 	int nb_points = ceil((alpha_degree * radius) / 90);
 	ei_point_t *array = calloc(nb_points, sizeof(ei_point_t));
-	double angle = (double) angle_start * PI / 180;
-	double d_0 = (alpha_degree / (radius - 1)) * PI / 180;
+	double angle = (double) angle_start;
+	double d_0 = (alpha_degree / (nb_points - 1));
 	for (int i = 0; i < nb_points; i++) {
-		ei_point_t p = ei_point(ceil(centre.x + radius * cos(angle)),
-					ceil(centre.y + radius * sin(angle)));
+		ei_point_t p = ei_point(ceil(centre.x + radius * cos(angle * (PI/180))),
+					ceil(centre.y + radius * sin(angle* (PI/180))));
 		array[i] = p;
 		angle = angle + d_0;
+		printf("%f \n", angle);
 	}
 	tab_and_length tab = {array, nb_points};
 	return tab;

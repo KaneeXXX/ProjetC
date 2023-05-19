@@ -67,9 +67,16 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
+		hw_surface_lock	(surface);
+		hw_surface_lock(pick_surface);
 
 		ei_impl_placer_run(widget);
 		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
+
+		hw_surface_unlock(surface);
+		hw_surface_unlock(pick_surface);
+
+		hw_surface_update_rects(surface, NULL);
 	} else {
 		ei_widget_t currentchildren = childrenhead;
 		while(currentchildren != NULL){
@@ -79,20 +86,18 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	}
 }
 
-void ei_app_run()
+_Noreturn void ei_app_run()
 {
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 
-	while(event_listener->type != ei_ev_close) {
-
-		hw_surface_update_rects(ei_app_root_surface(), NULL);
+	while(true) {
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
-		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 		hw_surface_unlock(ei_app_root_surface());
 		hw_surface_unlock(get_picksurface());
+		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
 
 		//I) Attendre un event
@@ -107,13 +112,13 @@ void ei_app_run()
 			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
 
 			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
-				switch (event_listener->type) {
-					case ei_ev_mouse_buttondown:
-						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
-					case ei_ev_mouse_buttonup:
-						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
-					case ei_ev_mouse_move:
-						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+			switch (event_listener->type) {
+				case ei_ev_mouse_buttondown:
+					ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
+				case ei_ev_mouse_buttonup:
+					ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
+				case ei_ev_mouse_move:
+					widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
 				}
 			}
 		}

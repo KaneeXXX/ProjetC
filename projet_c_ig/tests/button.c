@@ -9,22 +9,21 @@
 #include "ei_placer.h"
 
 /*
-*//*
+
  * button_press --
  *
  *	Callback called when a user clicks on the button.
- *//*
+*/
 void button_press(ei_widget_t widget, ei_event_t* event, ei_user_param_t user_param)
 {
 	printf("Click !\n");
 }
-
-*//*
+/*
  * process_key --
  *
  *	Callback called when any key is pressed by the user.
  *	Simply looks for the "Escape" key to request the application to quit.
- *//*
+ */
 bool process_key(ei_event_t* event)
 {
 	if ( (event->type == ei_ev_close) ||
@@ -33,7 +32,7 @@ bool process_key(ei_event_t* event)
 		return true;
 	} else
 		return false;
-}*/
+}
 
 /*
  * ei_main --
@@ -47,7 +46,7 @@ int main(int argc, char** argv)
 	/* Create the application and change the color of the background. */
 	ei_app_create			((ei_size_t){600, 600}, false);
 	ei_frame_set_bg_color		(ei_app_root_widget(), (ei_color_t){0x52, 0x7f, 0xb4, 0xff});
-	//ei_event_set_default_handle_func(process_key);
+	ei_event_set_default_handle_func(process_key);
 
 	/* Create, configure and place the button on screen. */
 	button = ei_widget_create	("button", ei_app_root_widget(), NULL, NULL);
@@ -58,7 +57,7 @@ int main(int argc, char** argv)
 					 	&(ei_relief_t){ei_relief_raised},
 					 	&(ei_string_t){"Mon premier Bouton !"}, NULL,
 					 	&(ei_color_t){0x00, 0x00, 0x00, 0xff}, NULL, NULL, NULL, NULL,
-					 	NULL, NULL);
+					    &(ei_callback_t){button_press}, NULL);
 	ei_place_xy			(button, 150, 200);
 
 	/* Run the application's main loop. */
