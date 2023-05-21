@@ -427,7 +427,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//Build TC
 	minmax_t critical_pts = min_max_y(point_array, point_array_size);
 	int y_min = critical_pts.y_min;
-	int size_tc = critical_pts.y_max - y_min + 1 + (1); // On commence a compter à 0 en info starfoulah
+	int size_tc = critical_pts.y_max - y_min + 1 + (1); // On commence a compter à 0 en info
 	lc_t** tab_TC = calloc(size_tc , sizeof(lc_t*));
 	ei_point_t p1;
 	ei_point_t p2;

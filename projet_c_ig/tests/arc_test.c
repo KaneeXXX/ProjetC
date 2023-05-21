@@ -30,22 +30,22 @@ int main(int argc, char** argv)
 
 
 	ei_color_t black = {0,0,0,0xff};
-	ei_point_t point_array[] = {{10,0}, {30,0}, {50,10}, {60,10}, {40,40}, {20, 30}};
+	/*ei_point_t point_array[] = {{10,0}, {30,0}, {50,10}, {60,10}, {40,40}, {20, 30}};
 
-	ei_draw_polygon(main_window, point_array, 6, black,NULL);
+	ei_draw_polygon(main_window, point_array, 6, black,NULL);*/
 
 
-	/*tab_and_length arcs = arc(ei_point(100,100), 40, 180, 360);
+	tab_and_length arcs = arc(ei_point(50,50), 20, 90, 180);
 	int comp = 0;
 	for(int i = 0; i < arcs.length; i++){
 		printf("%i, %i\n", arcs.tab[i].x, arcs.tab[i].y);
 		comp ++;
 	}
 	printf("comp %i", comp);
-	printf("lenght %i",arcs.length);
+	printf("lenght %i", arcs.length);
 
 
-	ei_draw_polygon(main_window, arcs.tab, arcs.length, black, NULL);*/
+	ei_draw_polygon(main_window, arcs.tab, arcs.length, black, NULL);
 
 	//ei_point_t array[] = {{0,0}, {3,3},{4,3},{4,4},{5,5}};
 	//ei_point_t array[] = {{0,0}, {5,5},{4,4},{4,3},{3,3}};
