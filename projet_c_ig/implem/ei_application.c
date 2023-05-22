@@ -89,7 +89,6 @@ _Noreturn void ei_app_run()
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 
-
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
 		hw_surface_unlock(ei_app_root_surface());
@@ -103,22 +102,36 @@ _Noreturn void ei_app_run()
 
 		//II) Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
+		ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
 
 		/*Si un event de souris*/
 		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup) {
-
-			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
-			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
+			if(widget_manipulated != NULL){ //Otherwise we're manipulating the root widget -> background
 				switch (event_listener->type) {
 					case ei_ev_mouse_buttondown:
 						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
-						bool res = widget_manipulated->wclass->handlefunc;
-						printf("%s", widget_manipulated->wclass->name);
-					case ei_ev_mouse_buttonup:
-						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
-					case ei_ev_mouse_move:
 						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+						//printf("%s", widget_manipulated->wclass->name);
+						break;
+					case ei_ev_mouse_buttonup:
+						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
+						break;
+
+					/*case ei_ev_mouse_move:
+						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+						break;*/
+
+					default:
+						break;
 					}
+			}
+			else {
+				if(event_listener->type == ei_ev_mouse_buttonup) {
+					ei_widget_t active = ei_event_get_active_widget();
+					active->wclass->handlefunc(active, event_listener);
+					ei_event_set_active_widget(NULL);
+				}
 			}
 		}
 //		else if (c est un keyboard event) {
