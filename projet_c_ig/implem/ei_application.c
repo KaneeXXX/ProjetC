@@ -129,8 +129,10 @@ _Noreturn void ei_app_run()
 			else {
 				if(event_listener->type == ei_ev_mouse_buttonup) {
 					ei_widget_t active = ei_event_get_active_widget();
-					active->wclass->handlefunc(active, event_listener);
-					ei_event_set_active_widget(NULL);
+					if(active != NULL) {
+						active->wclass->handlefunc(active, event_listener);
+						ei_event_set_active_widget(NULL);
+					}
 				}
 			}
 		}
