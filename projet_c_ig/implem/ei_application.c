@@ -15,6 +15,7 @@
 #include "ei_widget_configure.h"
 #include "ei_utils.h"
 #include "ei_event.h"
+#include "ei_widget_attributes.h"
 
 ei_widget_t root_widget;
 ei_surface_t root_surface;
@@ -81,6 +82,21 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	}
 }
 
+void draw_rec(ei_widget_t widget){
+	if(widget != ei_app_root_widget()) {
+		ei_impl_placer_run(widget);
+	}
+	widget->wclass->drawfunc(widget, ei_app_root_surface(), get_picksurface(), NULL);
+	ei_widget_t child = ei_widget_get_first_child(widget);
+	if(child == NULL) {
+		return;
+	}
+	while(child != NULL){
+		draw_rec(child);
+		child = child->next_sibling;
+	}
+}
+
 _Noreturn void ei_app_run()
 {
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
@@ -89,9 +105,11 @@ _Noreturn void ei_app_run()
 	while(event_listener->type != ei_ev_close) {
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
-		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
-		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
+		//supprimer les truc en commentaire
+		//ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
+		//ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
+		draw_rec(ei_app_root_widget());
 
 		hw_surface_unlock(ei_app_root_surface());
 		hw_surface_unlock(get_picksurface());
