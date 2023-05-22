@@ -44,7 +44,7 @@ void draw_frame(ei_widget_t		widget,
 	//dessiner dans offscreen
 	ei_draw_polygon(pick_surface, points_rectangle, size, *(widget->pick_color), NULL);
 
-	//ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
+	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_frame(ei_widget_t widget){

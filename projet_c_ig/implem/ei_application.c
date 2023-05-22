@@ -66,33 +66,16 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 					ei_surface_t		pick_surface,
 					ei_rect_t*		clipper) {
 
-	ei_widget_t childrenhead = widget->children_head;
-
-	if(childrenhead == NULL) { //No children
-
-		ei_impl_placer_run(widget);
-		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
-
-	} else {
-		ei_widget_t currentchildren = childrenhead;
-		while(currentchildren != NULL){
-			ei_impl_widget_draw_children(currentchildren, surface, pick_surface, clipper);
-			currentchildren = currentchildren->next_sibling;
-		}
-	}
-}
-
-void draw_rec(ei_widget_t widget){
-	if(widget != ei_app_root_widget()) {
+	if(widget != ei_app_root_widget()) { //normalement on rentre jamais dedans mais bon au cas ou
 		ei_impl_placer_run(widget);
 	}
-	widget->wclass->drawfunc(widget, ei_app_root_surface(), get_picksurface(), NULL);
 	ei_widget_t child = ei_widget_get_first_child(widget);
 	if(child == NULL) {
-		return;
+		return; //plus rien a dessiner en dessous dans hiérarchie
 	}
+
 	while(child != NULL){
-		draw_rec(child);
+		child->wclass->drawfunc(child, ei_app_root_surface(), get_picksurface(), NULL);
 		child = child->next_sibling;
 	}
 }
@@ -106,10 +89,8 @@ _Noreturn void ei_app_run()
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 
-		//supprimer les truc en commentaire
-		//ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
-		//ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
-		draw_rec(ei_app_root_widget());
+
+		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
 		hw_surface_unlock(ei_app_root_surface());
 		hw_surface_unlock(get_picksurface());

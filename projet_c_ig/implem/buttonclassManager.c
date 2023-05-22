@@ -60,7 +60,7 @@ void drawbutton(ei_widget_t		widget,
 		     NULL,
 		     NULL
 	 );
-	 //ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
+	 ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_button(ei_widget_t widget){

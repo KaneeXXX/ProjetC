@@ -80,7 +80,7 @@ void drawtoplevel(ei_widget_t		widget,
 	//dessiner dans offscreen
 	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->requested_size}, pick_surface, *widget->pick_color);
 
-	//ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
+	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_toplevel(ei_widget_t widget){
