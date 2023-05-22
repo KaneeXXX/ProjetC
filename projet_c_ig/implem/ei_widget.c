@@ -193,6 +193,7 @@ ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 	//get the pick color at the coordinate of the point
 	ei_size_t size = hw_surface_get_size(get_picksurface());
 	ei_color_t picked_color = get_widget_offscreen_color(get_picksurface(), size.width ,*where);
+	printf("%i %i %i\n", picked_color.red, picked_color.green, picked_color.blue);
 
 	ei_widget_t current_widget = ei_app_root_widget(); //start exploring the widget tree
 

@@ -48,18 +48,19 @@ void drawbutton(ei_widget_t		widget,
 	     );
 
 	//dessiner dans l'offscreen
-			 draw_button(pick_surface,
-				     (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
-				     *(widget->pick_color),
-				     button->border_width,
-				     button->corner_radius,
-				     ei_relief_none,
-				     NULL,
-				     button->text_font,
-				     button->text_color,
-				     NULL,
-				     NULL
-			 );
+	 draw_button(pick_surface,
+		     (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+		     *(widget->pick_color),
+		     button->border_width,
+		     button->corner_radius,
+		     ei_relief_none,
+		     NULL,
+		     button->text_font,
+		     button->text_color,
+		     NULL,
+		     NULL
+	 );
+	 //ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_button(ei_widget_t widget){
