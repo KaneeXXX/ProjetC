@@ -105,32 +105,17 @@ _Noreturn void ei_app_run()
 		ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
 
 		/*Si un event de souris*/
-		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup) {
+		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
+
 			if(widget_manipulated != NULL){ //Otherwise we're manipulating the root widget -> background
-				switch (event_listener->type) {
-					case ei_ev_mouse_buttondown:
-						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
-						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
-						//printf("%s", widget_manipulated->wclass->name);
-						break;
-					case ei_ev_mouse_buttonup:
-						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
-						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
-						break;
-
-					/*case ei_ev_mouse_move:
-						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
-						break;*/
-
-					default:
-						break;
-					}
+				widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
 			}
 			else {
 				if(event_listener->type == ei_ev_mouse_buttonup) {
 					ei_widget_t active = ei_event_get_active_widget();
-					if(active != NULL) {
-						active->wclass->handlefunc(active, event_listener);
+					if(active != NULL) { //marche que pour button
+						ei_relief_t relief_raised = ei_relief_raised;
+						ei_button_configure(active, NULL, NULL, NULL, NULL, &relief_raised, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 						ei_event_set_active_widget(NULL);
 					}
 				}

@@ -14,6 +14,7 @@
 #include "ei_utils.h"
 #include "ei_event.h"
 #include "ei_application.h"
+#include "ei_types.h"
 #include "ei_widget.h"
 
 ei_widget_t alloc_button()
@@ -82,20 +83,30 @@ void geomnotify_button(ei_widget_t widget){
 }
 
 //traitant interne de la calsse button
-bool handle_button(ei_widget_t widget,  ei_event_t* event) {
+bool handle_button(ei_widget_t widget_manipulated,  ei_event_t* event_listener) {
 
-	if (event->type == ei_ev_mouse_buttonup){
-		printf("release button\n");
-		ei_relief_t reliefdef = ei_relief_raised;
-		ei_button_configure(widget, NULL, NULL, NULL, NULL, &reliefdef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-		return true;
-	}
+	switch (event_listener->type) {
+		case ei_ev_mouse_buttondown:
+			ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
+			ei_relief_t relief_pushed = ei_relief_sunken;
+			ei_button_configure(widget_manipulated, NULL, NULL, NULL, NULL, &relief_pushed, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+			//widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+			//printf("%s", widget_manipulated->wclass->name);
+			return true;
+			break;
+		case ei_ev_mouse_buttonup:
+			printf("er");
+			ei_relief_t relief_raised = ei_relief_raised;
+			ei_button_configure(widget_manipulated, NULL, NULL, NULL, NULL, &relief_raised, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+			ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
+			return true;
+			break;
 
-	if ((event->type == ei_ev_mouse_buttondown)){
-		printf("push button\n");
-		ei_relief_t reliefdef = ei_relief_sunken;
-		ei_button_configure(widget, NULL, NULL, NULL, NULL, &reliefdef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-		return true;
+			/*case ei_ev_mouse_move:
+				widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+				break;*/
+		default:
+			break;
 	}
 
 	return false;
