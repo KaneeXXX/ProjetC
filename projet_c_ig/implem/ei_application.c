@@ -91,7 +91,7 @@ _Noreturn void ei_app_run()
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 
-	while(true) {
+	while(event_listener->type != ei_ev_close) {
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
@@ -110,10 +110,11 @@ _Noreturn void ei_app_run()
 		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
 
 			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
-
+			printf("widget manipulated : %s", widget_manipulated->wclass->name);
 			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
 			switch (event_listener->type) {
 				case ei_ev_mouse_buttondown:
+					printf("détecté dans boucle principale\n");
 					ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
 				case ei_ev_mouse_buttonup:
 					ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
@@ -129,7 +130,6 @@ _Noreturn void ei_app_run()
 //			current_widget->wclass->handlefunc(current_widget, event_listener);
 //		}//Event de keyboard et autre
 		else {
-			printf("okelse\n");
 			//call default handle function
 		}
 

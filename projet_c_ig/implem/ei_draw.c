@@ -15,7 +15,6 @@
 #include "hw_interface.h"
 #include "ei_draw.h"
 #include "ei_implementation.h"
-#include "ei_utils.h"
 #define PI 3.141592654
 
 //Check if pixel is in the clipped rectangle of the surface
@@ -206,18 +205,18 @@ enum direction {LEFT, RIGHT};
 typedef struct lc_t lc_t;
 
 struct lc_t {
-	int        			y_max; // max ord
-	int        			x_ymin; // min ord
-	int 				E;
-	int 				abs_dx;
-	int 				abs_dy;
-	enum direction 			dir;
-	lc_t 				*next; // next
+    int        			y_max; // max ord
+    int        			x_ymin; // min ord
+    int 				E;
+    int 				abs_dx;
+    int 				abs_dy;
+    enum direction 			dir;
+    lc_t 				*next; // next
 };
 
 typedef struct {
-	int 				y_min;
-	int 				y_max;
+    int 				y_min;
+    int 				y_max;
 } minmax_t;
 
 //Return the min and max y-coordinate of an array of points
@@ -283,7 +282,7 @@ void add_to_TCA(lc_t** TCA, lc_t* chain) {
 				if (header) {
 					*TCA = ptr_first_cell_in_chain;
 					ptr_first_cell_in_chain->next = ptr_current_cell_TCA;
-					placed = true;
+
 				}
 				else {
 					ptr_previous->next = ptr_first_cell_in_chain;
@@ -294,9 +293,6 @@ void add_to_TCA(lc_t** TCA, lc_t* chain) {
 			ptr_previous = ptr_current_cell_TCA;
 			ptr_current_cell_TCA = ptr_current_cell_TCA->next;
 			header = false;
-		}
-		if(placed == false){ //place at the end
-			ptr_previous->next = ptr_first_cell_in_chain;
 		}
 		if (ptr_second_cell_in_chain == NULL) { //if there is no 2nd cell
 			return;
@@ -324,11 +320,12 @@ int delete_side_TCA(lc_t** TCA, int scanline_num)
 				free(to_free);
 			}
 			else {
+				//ptr_previous = ptr_current_side->next;
+				//free(ptr_current_side); //ptr_current_side is of type lc_t
+				//ptr_current_side = ptr_previous; //hang up
 				ptr_previous->next = ptr_current_side->next;
-				lc_t* to_delete = ptr_current_side;
-				ptr_current_side = ptr_current_side->next;
-				free(to_delete);
-
+				free(ptr_current_side);
+				size_TCA--;
 			}
 		}
 		else {
@@ -398,31 +395,7 @@ void add_to_chain(lc_t* first_cell, lc_t* cell_to_add)
 	current -> next = cell_to_add;
 }
 
-//petit function pour print_TC
-void print_TC(int sizeTC, lc_t** tab_TC) {
-
-	for(int j = 0; j < sizeTC; j++) {
-		//tab_TC est un tableau de pointeur vers des struct lc_t
-		if (tab_TC[j] == NULL) { //Cas pour F et D par exemple, ils n'ont pas de voisin "sous eux".
-			printf("indice_TC= %i | NULL\n", j);
-			continue;
-		}
-		lc_t cell = *(tab_TC[j]);
-		printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i ", j, cell.y_max,
-		       cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
-		while (cell.next != NULL) {
-			printf("- > ");
-			cell = *(cell.next);
-			printf("indice_TC = %i | ymax=%i | x_ymin=%i | abs_dx=%i | abs_dy=%i | E=%i\n", j,
-			       cell.y_max, cell.x_ymin, cell.abs_dx, cell.abs_dy, cell.E);
-		}
-		printf("\n");
-	}
-}
-
-
 void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t point_array_size, ei_color_t color, const ei_rect_t* clipper)
-
 {
 	//Build TC
 	minmax_t critical_pts = min_max_y(point_array, point_array_size);
@@ -433,8 +406,8 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	ei_point_t p2;
 	for (size_t i = 0; i < point_array_size; i++) {
 		if (i == point_array_size - 1) { //because "next" point of last point is first point
-			 p1 = point_array[i];
-			 p2 = point_array[0];
+			p1 = point_array[i];
+			p2 = point_array[0];
 		}
 		else {
 			p1 = point_array[i];
@@ -471,27 +444,8 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			else {
 				add_to_chain(tab_TC[index_in_TC], side);
 			}
-
-		} /*else {
-			lc_t* s = calloc(1, sizeof(lc_t));
-			s->y_max = p1.y;
-			s->x_ymin = p1.x;
-			s->abs_dx = abs(p1.x - p2.x);
-			s->abs_dy = 0;
-			s->E = 0;
-			s->dir = (p1.x < p2.x) ? RIGHT : LEFT;
-			s->next = NULL;
-			int index_in_TC = p1.y - y_min;
-			if (tab_TC[index_in_TC] == NULL) {
-				tab_TC[index_in_TC] = s;
-			}
-			else {
-				add_to_chain(tab_TC[index_in_TC], s);
-			}
-		}*/
-
+		}
 	}
-	print_TC(size_tc, tab_TC);
 	//Build TCA
 	lc_t** TCA = calloc(1, sizeof(lc_t));
 	*TCA = NULL; //TCA initially points to NULL
@@ -614,7 +568,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					for (int xsrc = 0, xdest = top_left_rect_dst.x;
 					     xsrc <= sizesrc.width && xdest <= bottom_right_rect_dst.x; xsrc++, xdest++) {
 						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc <= sizesrc.height && ydest <=
-													bottom_right_rect_dst.y; ysrc++, ydest++) {
+															  bottom_right_rect_dst.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
 								addr_dest + sizedest.width * ydest + xdest;
@@ -630,7 +584,7 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 			}
 			else {
 				if ((dst_rect->size.width != src_rect->size.width) ||
-					(src_rect->size.height != dst_rect->size.height)) {
+				    (src_rect->size.height != dst_rect->size.height)) {
 					hw_surface_unlock(destination);
 					hw_surface_unlock(source);
 					success = 1;
@@ -860,48 +814,6 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 }
 
-//typedef struct {
-//    ei_point_t point;
-//    ei_point_t * suivant;
-//}cell_point;
-
-
-/*void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
-
-	double angle_start_radian_radian = angle_start_radian * PI / 180;
-	double angle_end_radian = angle_end * PI / 180;
-	ei_size_t size = hw_surface_get_size(surface);
-	uint32_t *surface_buffer = (uint32_t *) hw_surface_get_buffer(surface);
-	ei_color_t color = {0, 0, 255, 255};
-	ei_point_t point_debut = {(int) (centre.x + radius * cos(angle_start_radian)),
-				  (int) (centre.y + radius * sin(angle_start_radian))};
-	ei_point_t point_final = {(int) (centre.x + radius * cos(angle_end_radian)),
-				  (int) (centre.y + radius * sin(angle_end_radian))};
-	ei_point_t current = point_debut;
-	cell_point *tete;
-
-	if (point_debut.x <= point_final.x) {
-		//1
-		if (point_debut.y >= point_final.y) {
-
-			int m_error = 4 * ((current.x + 1) * (current.x + 1) + (current.y - 0.5) * (current.y - 0.5) -
-					   radius * radius);
-
-			while (current.x <= point_final.x) {
-				uint32_t *addr = surface_buffer + size.width * (current.y) + current.x;
-				draw_pixel(addr, surface, color, NULL);
-				if (m_error > 0) {
-					current.y = current.y - 1;
-					m_error = m_error + 8 * (current.x + 1) + 4 - 8 * current.y;
-				}
-				current.x = current.x + 1;
-				m_error = m_error + 8 * current.x + 4;
-			}
-		}
-
-	}
-}*/
-
 ///*Returns array of points forming an arc*/
 //tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
 //	int d_theta = 4;
@@ -926,7 +838,9 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 //}
 
 /*Returns array of points forming an arc*/
-/*tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
+tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end)
+{
+	radius = 0;
 	int nb_points = abs(angle_end - angle_start) + 1;
 	ei_point_t* array = malloc(nb_points*sizeof(ei_point_t));
 	for (int i = 0; angle_start <= angle_end; i++) {
@@ -936,25 +850,7 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	}
 	tab_and_length tab = {array, nb_points};
 	return tab;
-}*/
-
-tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end) {
-	int alpha_degree = abs(angle_end - angle_start); //angle_end > angle_start
-	int nb_points = ceil((alpha_degree * radius) / 90);
-	ei_point_t *array = calloc(nb_points, sizeof(ei_point_t));
-	double angle = (double) angle_start;
-	double d_0 = (alpha_degree / (nb_points - 1));
-	for (int i = 0; i < nb_points; i++) {
-		ei_point_t p = ei_point(ceil(centre.x + radius * cos(angle * (PI/180))),
-					ceil(centre.y + radius * sin(angle* (PI/180))));
-		array[i] = p;
-		angle = angle + d_0;
-		printf("%f \n", angle);
-	}
-	tab_and_length tab = {array, nb_points};
-	return tab;
 }
-
 
 tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 {
@@ -1083,7 +979,7 @@ void draw_toplevel(ei_surface_t surface,
 		   ei_axis_set_t resizable,
 		   ei_size_ptr_t* min_size){
 	//Draw the big frame
-	int RADIUS = 10;
+	int RADIUS = 0; //Put to 10 if draw_polygon works
 	tab_and_length conc;
 	ei_point_t top_left_point = rectangle.top_left;
 	int height = rectangle.size.height;
@@ -1110,8 +1006,8 @@ void draw_toplevel(ei_surface_t surface,
 
 	//Draw the interior frame
 	ei_point_t * list_rect_inter = calloc(4, sizeof(ei_point_t));
-	list_rect_inter[0] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + 2*RADIUS};
-	list_rect_inter[1] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + 2*RADIUS};
+	list_rect_inter[0] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + 20}; //draw_poly -> 2*RADIUS
+	list_rect_inter[1] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + 20}; //draw_poly -> 2*RADIUS
 	list_rect_inter[2] = (ei_point_t) {top_left_point.x + width - border_width, top_left_point.y + height - border_width};
 	list_rect_inter[3] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + height - border_width};
 
@@ -1120,7 +1016,8 @@ void draw_toplevel(ei_surface_t surface,
 	//Draw the close button
 	if (closable == true) {
 		ei_color_t red = {128, 0, 0, 0};
-		ei_rect_t rectangle_button_close = (ei_rect_t) {{top_left_point.x, top_left_point.y}, {2*RADIUS, 2*RADIUS}};
+		//ei_rect_t rectangle_button_close = (ei_rect_t) {{top_left_point.x, top_left_point.y}, {2*RADIUS, 2*RADIUS}}; draw_poly
+		ei_rect_t rectangle_button_close = (ei_rect_t) {{top_left_point.x + 1, top_left_point.y + 1}, {20, 20}};
 		draw_button(surface,
 			    rectangle_button_close,
 			    red,
@@ -1135,8 +1032,9 @@ void draw_toplevel(ei_surface_t surface,
 	}
 
 	//Draw frame title
-	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, RADIUS);
-	ei_point_t where = (ei_point_t) {top_left_point.x + 2*RADIUS, top_left_point.y + (int) RADIUS/2};
+	ei_font_t default_font = hw_text_font_create(ei_default_font_filename, ei_style_normal, 10); //size=RADIUS draw_poly
+	//ei_point_t where = (ei_point_t) {top_left_point.x + 2*RADIUS, top_left_point.y + (int) RADIUS/2}; draw_poly
+	ei_point_t where = (ei_point_t) {top_left_point.x + 21, top_left_point.y + 6};
 	ei_draw_text(surface, &where, title, default_font, (ei_color_t) {255, 255, 255, 255}, NULL);
 
 	//Draw the resize button

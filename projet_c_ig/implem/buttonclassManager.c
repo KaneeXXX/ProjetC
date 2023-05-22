@@ -71,7 +71,7 @@ void geomnotify_button(ei_widget_t widget){
 }
 
 //traitant interne de la calsse button
-bool handle_button(ei_widget_t widget,  ei_event_t* event){
+bool handle_button(ei_widget_t widget,  ei_event_t* event) {
 
 	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(widget->requested_size.width, widget->requested_size.height)), event->param.mouse.where);
 	if (event->type == ei_ev_keydown){
@@ -79,6 +79,7 @@ bool handle_button(ei_widget_t widget,  ei_event_t* event){
 		return true;
 	}
 	if ((event->type == ei_ev_mouse_buttondown)&&(mouse_location)){
+		printf("détecté buttondown\n");
 		ei_relief_t reliefdef = ei_relief_sunken;
 		ei_button_configure(widget, NULL, NULL, NULL, NULL, &reliefdef, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 		return true;

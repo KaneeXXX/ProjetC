@@ -35,23 +35,18 @@ int main(int argc, char** argv)
 	ei_draw_polygon(main_window, point_array, 6, black,NULL);*/
 
 
-	tab_and_length arcs = arc(ei_point(50,50), 20, 90, 180);
-	int comp = 0;
-	for(int i = 0; i < arcs.length; i++){
-		printf("%i, %i\n", arcs.tab[i].x, arcs.tab[i].y);
-		comp ++;
-	}
-	printf("comp %i", comp);
-	printf("lenght %i", arcs.length);
+//	tab_and_length arcs = arc(ei_point(0,0), 90, 0, 90);
+//	int comp = 0;
+//	for(int i = 0; i < arcs.length; i++){
+//		printf("%i, %i\n", arcs.tab[i].x, arcs.tab[i].y);
+//		comp ++;
+//	}
+//	printf("comp %i", comp);
+//	printf("lenght %i",arcs.length);
+//
+//
+//	ei_draw_polygon(main_window, arcs.tab, arcs.length, black, NULL);
 
-
-	ei_draw_polygon(main_window, arcs.tab, arcs.length, black, NULL);
-
-	//ei_point_t array[] = {{0,0}, {3,3},{4,3},{4,4},{5,5}};
-	//ei_point_t array[] = {{0,0}, {5,5},{4,4},{4,3},{3,3}};
-	//ei_draw_polygon(main_window, array, 5, black, NULL);
-
-/*
 	//Arcs of different sizes
 	tab_and_length arc11 = (tab_and_length) arc((ei_point_t) {100,100}, 10, 0, 90);
 	ei_draw_polyline(main_window, arc11.tab, arc11.length, (ei_color_t){0, 0, 0, 255}, NULL);
@@ -85,8 +80,8 @@ int main(int argc, char** argv)
 	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
 	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 270, 360);
 	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
-
 */
+
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
