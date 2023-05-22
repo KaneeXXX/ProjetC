@@ -8,6 +8,9 @@
 #include "ei_widget.h"
 #include "ei_placer.h"
 
+
+
+static ei_string_t		k_default_image_filename	= "misc/klimt.jpg";
 /*
 
  * button_press --
@@ -44,21 +47,29 @@ int main(int argc, char** argv)
 	ei_widget_t	button;
 
 	/* Create the application and change the color of the background. */
-	ei_app_create			((ei_size_t){600, 600}, false);
+	ei_app_create			((ei_size_t){1600, 1600}, false);
 	ei_frame_set_bg_color		(ei_app_root_widget(), (ei_color_t){0x52, 0x7f, 0xb4, 0xff});
 	ei_event_set_default_handle_func(process_key);
+        ei_surface_t *image = calloc(1, sizeof(ei_surface_t));
+	*image		= hw_image_load(k_default_image_filename, ei_app_root_surface());
+	ei_size_t image_size	= hw_surface_get_size(image);
+	ei_rect_t image_rect   = {{150, 200}, {image_size.width, image_size.height}};
+	ei_rect_t ** image_rect_ptr = calloc(1, sizeof(ei_rect_t*));
+	*image_rect_ptr = &image_rect;
+
 
 	/* Create, configure and place the button on screen. */
 	button = ei_widget_create	("button", ei_app_root_widget(), NULL, NULL);
-	ei_button_configure		(button, &((ei_size_t){300, 200}),
+	ei_button_configure		(button, &((ei_size_t){image_size.width, image_size.height }),
 						&(ei_color_t){0x88, 0x88, 0x88, 0xff},
 					 	&(int){6},
 					 	&(int){1},
 					 	&(ei_relief_t){ei_relief_raised},
 					 	&(ei_string_t){"Mon premier Bouton !"}, NULL,
-					 	&(ei_color_t){0x00, 0x00, 0x00, 0xff}, NULL, NULL, NULL, NULL,
+					 	&(ei_color_t){0x00, 0x00, 0x00, 0xff}, NULL,image, image_rect_ptr, NULL,
 					    &(ei_callback_t){button_press}, NULL);
 	ei_place_xy			(button, 150, 200);
+
 
 	/* Run the application's main loop. */
 	ei_app_run();

@@ -963,6 +963,9 @@ void draw_button(ei_surface_t surface,
 	ei_draw_polygon(surface, arr_inside_rect.tab, arr_inside_rect.length, color_inside, NULL);
 	//Add the image
 	if (img != NULL) {
+		ei_surface_t image = img;
+		ei_size_t image_size = hw_surface_get_size(image);
+
 		ei_copy_surface(surface, &rectangle, img, *img_rect, true);
 	}
 	//Add the text
