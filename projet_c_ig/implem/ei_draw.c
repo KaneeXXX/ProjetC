@@ -926,7 +926,7 @@ void draw_button(ei_surface_t surface,
 		 ei_font_t text_font,
 		 ei_color_t text_color,
 		 ei_surface_t img,
-		 ei_rect_ptr_t* img_rect)
+		 ei_rect_ptr_t img_rect)
 {
 	//Create edges
 	tab_and_length arr_upper = rounded_frame(rectangle, corner_radius, ei_relief_raised);
@@ -966,7 +966,7 @@ void draw_button(ei_surface_t surface,
 		ei_surface_t image = img;
 		ei_size_t image_size = hw_surface_get_size(image);
 
-		ei_copy_surface(surface, &rectangle, img, *img_rect, true);
+		ei_copy_surface(surface, &rectangle, img, img_rect, true);
 	}
 	//Add the text
 	if (text != NULL) { //note: every sensible parameter such as text_font==NULL is not tested because already taken into account in the function

@@ -125,7 +125,7 @@ void draw_button(ei_surface_t surface,
 		 ei_font_t text_font,
 		 ei_color_t text_color,
 		 ei_surface_t img,
-		 ei_rect_ptr_t* img_rect);
+		 ei_rect_ptr_t img_rect);
 
 void draw_toplevel(ei_surface_t surface,
 		   ei_rect_t rectangle,
