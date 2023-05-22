@@ -112,7 +112,6 @@ _Noreturn void ei_app_run()
 			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
 				switch (event_listener->type) {
 					case ei_ev_mouse_buttondown:
-						printf("détecté dans boucle principale\n");
 						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
 					case ei_ev_mouse_buttonup:
 						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !

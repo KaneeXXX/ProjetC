@@ -61,7 +61,7 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		//Penser a free
 		*pick_color = (ei_color_t) {R, G, B, 0xff};
 		widgetptr->pick_color = pick_color;
-		pick_id = pick_id + 100000;
+		pick_id = pick_id + 1;
 
 		/*Geometry*/
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
@@ -170,10 +170,11 @@ bool is_same_color(ei_color_t color1, ei_color_t color2)
 
 ei_widget_t find_widget(ei_widget_t current_widget, ei_color_t picked_color) //recursif
 {
-	if (ei_widget_get_first_child(current_widget) == NULL) {
-		return NULL;
-	}
 	if (is_same_color(*current_widget->pick_color, picked_color)) {
+		if(current_widget == ei_app_root_widget()){
+			return NULL;
+		}
+		//printf("%s\n", current_widget->wclass->name);
 		return current_widget;
 	}
 
@@ -193,7 +194,7 @@ ei_widget_t	ei_widget_pick (ei_point_t*	where) // A TESTER
 	//get the pick color at the coordinate of the point
 	ei_size_t size = hw_surface_get_size(get_picksurface());
 	ei_color_t picked_color = get_widget_offscreen_color(get_picksurface(), size.width ,*where);
-	printf("%i %i %i\n", picked_color.red, picked_color.green, picked_color.blue);
+	//printf("%i %i %i\n", picked_color.red, picked_color.green, picked_color.blue);
 
 	ei_widget_t current_widget = ei_app_root_widget(); //start exploring the widget tree
 
