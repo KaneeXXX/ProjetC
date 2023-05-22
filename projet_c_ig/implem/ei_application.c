@@ -32,7 +32,8 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	ei_size_t size_windows = hw_surface_get_size(root_surface);
 	//init offscreen surface
 	//penser a free plus tard
-	pick_surface = hw_surface_create(root_surface, size_windows, true);
+	//pick_surface = hw_surface_create(root_surface, size_windows, true);
+	pick_surface = hw_create_window(main_window_size, fullscreen);
 
 	pick_id = 0;
 
@@ -67,16 +68,10 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
-		hw_surface_lock	(surface);
-		hw_surface_lock(pick_surface);
 
 		ei_impl_placer_run(widget);
 		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
 
-		hw_surface_unlock(surface);
-		hw_surface_unlock(pick_surface);
-
-		hw_surface_update_rects(surface, NULL);
 	} else {
 		ei_widget_t currentchildren = childrenhead;
 		while(currentchildren != NULL){
@@ -95,10 +90,14 @@ _Noreturn void ei_app_run()
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
-		hw_surface_unlock(ei_app_root_surface());
-		hw_surface_unlock(get_picksurface());
+
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
+		hw_surface_unlock(ei_app_root_surface());
+		hw_surface_unlock(get_picksurface());
+
+		hw_surface_update_rects(ei_app_root_surface(), NULL);
+		hw_surface_update_rects(get_picksurface(), NULL);
 
 		//I) Attendre un event
 		hw_event_wait_next(event_listener);

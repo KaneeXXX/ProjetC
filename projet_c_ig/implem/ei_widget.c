@@ -57,9 +57,11 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		uint8_t R = tp8[0];
 		uint8_t G = tp8[1];
 		uint8_t B = tp8[2];
-		ei_color_t pick_color = {R, G, B, 0xff};
-		widgetptr->pick_color = &pick_color;
-		pick_id = pick_id + 10000;
+		ei_color_t* pick_color = calloc(1, sizeof(ei_color_t));
+		//Penser a free
+		*pick_color = (ei_color_t) {R, G, B, 0xff};
+		widgetptr->pick_color = pick_color;
+		pick_id = pick_id + 100000;
 
 		/*Geometry*/
 		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
