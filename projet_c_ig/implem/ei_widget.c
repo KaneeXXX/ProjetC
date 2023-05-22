@@ -12,7 +12,8 @@
 
 uint32_t pick_id;
 
-void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent){
+void addWidget_to_parent(ei_impl_widget_t* widgetptr, ei_widget_t parent)
+{
 	/*Add widget to parent chained list*/
 	//No children before
 	if(parent->children_head == NULL){
@@ -116,23 +117,26 @@ bool ei_widget_is_displayed(ei_widget_t widget)
 }
 
 //unused with picking
-bool is_point_in_rect(ei_rect_t rect, ei_point_t point){
+bool is_point_in_rect(ei_rect_t rect, ei_point_t point)
+{
 	int x_rect = rect.top_left.x;
 	int y_rect = rect.top_left.y;
 	int width = rect.size.width;
 	int height = rect.size.height;
-	if((point.x >= x_rect) && (point.x <= (x_rect + width)) && (point.y >= y_rect) && (point.y <= y_rect + height)){
+	if ((point.x >= x_rect) && (point.x <= (x_rect + width)) && (point.y >= y_rect) && (point.y <= y_rect + height)) {
 		return true;
 	}
 	return false;
 }
 
 //unused with picking
-bool is_point_in_widget(ei_widget_t widget, ei_point_t point){
+bool is_point_in_widget(ei_widget_t widget, ei_point_t point)
+{
 	return (is_point_in_rect(widget->screen_location, point)) ? true : false;
 }
 
-ei_color_t get_widget_offscreen_color(ei_surface_t surface, int width ,ei_point_t point){
+ei_color_t get_widget_offscreen_color(ei_surface_t surface, int width ,ei_point_t point)
+{
 	//Get order of colors in pixel because it's not always the same
 	int ir, ig, ib, ia;
 	hw_surface_get_channel_indices(surface, &ir, &ig, &ib, &ia);
@@ -154,25 +158,27 @@ ei_color_t get_widget_offscreen_color(ei_surface_t surface, int width ,ei_point_
 	return color;
 }
 
-bool is_same_color(ei_color_t color1, ei_color_t color2){
-	if(color1.red == color2.red && color1.green == color2.green && color1.blue == color2.blue && color1.alpha == color2.alpha){
+bool is_same_color(ei_color_t color1, ei_color_t color2)
+{
+	if (color1.red == color2.red && color1.green == color2.green && color1.blue == color2.blue && color1.alpha == color2.alpha) {
 		return true;
 	}
 	return false;
 }
 
-ei_widget_t find_widget(ei_widget_t current_widget, ei_color_t picked_color){ //recursif
-	if(ei_widget_get_first_child(current_widget) == NULL){
+ei_widget_t find_widget(ei_widget_t current_widget, ei_color_t picked_color) //recursif
+{
+	if (ei_widget_get_first_child(current_widget) == NULL) {
 		return NULL;
 	}
-	if(is_same_color(*current_widget->pick_color, picked_color)){
+	if (is_same_color(*current_widget->pick_color, picked_color)) {
 		return current_widget;
 	}
 
 	ei_widget_t child = ei_widget_get_first_child(current_widget);
-	while(child != NULL){
+	while (child != NULL) {
 		ei_widget_t widget = find_widget(child, picked_color);
-		if(widget != NULL){
+		if (widget != NULL) {
 			return widget;
 		}
 		child = child->next_sibling;
