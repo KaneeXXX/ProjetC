@@ -400,8 +400,8 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//Build TC
 	minmax_t critical_pts = min_max_y(point_array, point_array_size);
 	int y_min = critical_pts.y_min;
-	int size_tc = critical_pts.y_max - y_min + 1;
-	lc_t** tab_TC = calloc(size_tc, sizeof(lc_t*));
+	int size_tc = critical_pts.y_max - y_min + 1 + (1); // On commence a compter à 0 en info
+	lc_t** tab_TC = calloc(size_tc , sizeof(lc_t*));
 	ei_point_t p1;
 	ei_point_t p2;
 	for (size_t i = 0; i < point_array_size; i++) {
@@ -447,7 +447,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 		}
 	}
 	//Build TCA
-	lc_t** TCA = malloc(sizeof(lc_t));
+	lc_t** TCA = calloc(1, sizeof(lc_t));
 	*TCA = NULL; //TCA initially points to NULL
 	int scanline_num = y_min; //first scanline that touches the polygon
 	while ((isTC_empty(tab_TC, size_tc)==false) || (*TCA != NULL)) { //stops when TC is empty or TCA is empty

@@ -36,7 +36,7 @@ void release_toplevel(ei_widget_t widget){
 
 void draw_in_offscreen(ei_rect_t rectangle, ei_surface_t surface, ei_color_t color){
 	//Draw the big frame
-	int RADIUS = 10;
+	int RADIUS = 0;
 	tab_and_length conc;
 	ei_point_t top_left_point = rectangle.top_left;
 	int height = rectangle.size.height;
@@ -79,6 +79,8 @@ void drawtoplevel(ei_widget_t		widget,
 
 	//dessiner dans offscreen
 	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->requested_size}, pick_surface, *widget->pick_color);
+
+	//ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_toplevel(ei_widget_t widget){

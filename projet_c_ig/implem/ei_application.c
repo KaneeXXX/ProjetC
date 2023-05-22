@@ -33,6 +33,7 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	//init offscreen surface
 	//penser a free plus tard
 	pick_surface = hw_surface_create(root_surface, size_windows, true);
+	//pick_surface = hw_create_window(main_window_size, fullscreen);
 
 	pick_id = 0;
 
@@ -67,16 +68,10 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	ei_widget_t childrenhead = widget->children_head;
 
 	if(childrenhead == NULL) { //No children
-		hw_surface_lock	(surface);
-		hw_surface_lock(pick_surface);
 
 		ei_impl_placer_run(widget);
 		widget->wclass->drawfunc(widget, surface, pick_surface, clipper);
 
-		hw_surface_unlock(surface);
-		hw_surface_unlock(pick_surface);
-
-		hw_surface_update_rects(surface, NULL);
 	} else {
 		ei_widget_t currentchildren = childrenhead;
 		while(currentchildren != NULL){
@@ -95,10 +90,14 @@ _Noreturn void ei_app_run()
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 		ei_app_root_widget()->wclass->drawfunc(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
-		hw_surface_unlock(ei_app_root_surface());
-		hw_surface_unlock(get_picksurface());
+
 		ei_impl_widget_draw_children(ei_app_root_widget(), ei_app_root_surface(), get_picksurface(), NULL);
 
+		hw_surface_unlock(ei_app_root_surface());
+		hw_surface_unlock(get_picksurface());
+
+		hw_surface_update_rects(ei_app_root_surface(), NULL);
+		//hw_surface_update_rects(get_picksurface(), NULL);
 
 		//I) Attendre un event
 		hw_event_wait_next(event_listener);
@@ -107,20 +106,19 @@ _Noreturn void ei_app_run()
 		//appeler traitant associé
 
 		/*Si un event de souris*/
-		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
+		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup) {
 
 			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
-			//printf("widget manipulated : %s", widget_manipulated->wclass->name);
 			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
-			switch (event_listener->type) {
-				case ei_ev_mouse_buttondown:
-					printf("détecté dans boucle principale\n");
-					ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
-				case ei_ev_mouse_buttonup:
-					ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
-				case ei_ev_mouse_move:
-					widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
-				}
+				switch (event_listener->type) {
+					case ei_ev_mouse_buttondown:
+						printf("détecté dans boucle principale\n");
+						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
+					case ei_ev_mouse_buttonup:
+						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
+					case ei_ev_mouse_move:
+						widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+					}
 			}
 		}
 //		else if (c est un keyboard event) {
