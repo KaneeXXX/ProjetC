@@ -113,6 +113,8 @@ _Noreturn void ei_app_run()
 				switch (event_listener->type) {
 					case ei_ev_mouse_buttondown:
 						ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
+						bool res = widget_manipulated->wclass->handlefunc;
+						printf("%s", widget_manipulated->wclass->name);
 					case ei_ev_mouse_buttonup:
 						ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
 					case ei_ev_mouse_move:
