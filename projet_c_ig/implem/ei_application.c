@@ -110,7 +110,7 @@ _Noreturn void ei_app_run()
 		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
 
 			ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
-			printf("widget manipulated : %s", widget_manipulated->wclass->name);
+			//printf("widget manipulated : %s", widget_manipulated->wclass->name);
 			if(widget_manipulated != NULL){//Otherwise we're manipulating the root widget -> background
 			switch (event_listener->type) {
 				case ei_ev_mouse_buttondown:

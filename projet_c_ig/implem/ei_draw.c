@@ -854,6 +854,7 @@ tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end
 
 tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief)
 {
+	radius = 0;
 	tab_and_length conc;
 	ei_point_t top_left_point = rectangle.top_left;
 	int height = rectangle.size.height;
