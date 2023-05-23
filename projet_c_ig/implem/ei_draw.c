@@ -1046,6 +1046,7 @@ void draw_toplevel(ei_surface_t surface,
 //		if (min_size == NULL) {
 //			**min_size = (ei_size_t) {160, 120};
 //		}
+		RADIUS = 10; //delete when draw_polygon done
 		ei_point_t * list_rect_resize = calloc(4, sizeof(ei_point_t));
 		list_rect_resize[0] = (ei_point_t) {top_left_point.x + width - RADIUS, top_left_point.y + height - RADIUS};
 		list_rect_resize[1] = (ei_point_t) {top_left_point.x + width, top_left_point.y + height - RADIUS};
