@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <assert.h>
 #include "ei_types.h"
 #include "hw_interface.h"
 #include "ei_draw.h"
@@ -308,32 +309,27 @@ int delete_side_TCA(lc_t** TCA, int scanline_num)
 		return 0;
 	}
 	int size_TCA = 0; //will increase in the loop.
-	lc_t* ptr_previous = *TCA;
+	lc_t* ptr_previous = NULL;
 	lc_t* ptr_current_side = *TCA; //init to first cell
-	bool header = true;
 	while (ptr_current_side != NULL) {
+
 		if (ptr_current_side->y_max == scanline_num) {
-			if (header) {
+			lc_t * to_free = ptr_current_side;
+			if (ptr_previous == NULL) {
 				*TCA = ptr_current_side->next;
-				lc_t* to_free = ptr_current_side;
-				ptr_current_side = ptr_current_side->next;
-				free(to_free);
-			}
-			else {
-				//ptr_previous = ptr_current_side->next;
-				//free(ptr_current_side); //ptr_current_side is of type lc_t
-				//ptr_current_side = ptr_previous; //hang up
+			} else {
 				ptr_previous->next = ptr_current_side->next;
-				free(ptr_current_side);
-				size_TCA--;
+
 			}
-		}
-		else {
+			ptr_current_side = ptr_current_side->next;
+			free(to_free);
+
+		} else {
+			size_TCA++;
 			ptr_previous = ptr_current_side;
 			ptr_current_side = ptr_current_side->next;
-			size_TCA++;
-			header = false;
 		}
+
 	}
 	return size_TCA;
 }
@@ -341,14 +337,13 @@ int delete_side_TCA(lc_t** TCA, int scanline_num)
 enum draw_state {IN, OUT};
 
 //Draw a scanline of a polygon
-void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color, const ei_rect_t *clipper) {
-	lc_t* ptr_current_cell = *TCA;
+void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color, const ei_rect_t *clipper) {
 	enum draw_state state = IN;
 	double x_to_color1 = 0.0; //start of segment to draw
 	double x_to_color2 = 0.0; //end of segment to draw
 	//Visit TCA
 	for (int i = 0; i < size_TCA; i++) {
-		double x_ymin = ptr_current_cell -> x_ymin; //for each cell of TCA, x_ymin = intersections with scanline, not always int
+		double x_ymin = TCA -> x_ymin; //for each cell of TCA, x_ymin = intersections with scanline, not always int
 		if (state == IN) {
 			x_to_color1 = ceil(x_ymin); //round up
 			state = OUT;
@@ -357,7 +352,7 @@ void draw_scanline(lc_t** TCA, int size_TCA, int y,ei_surface_t surface, ei_colo
 			draw_line(surface, (ei_point_t) {(int) x_to_color1, y}, (ei_point_t) {(int) x_to_color2, y}, color, clipper);
 			state = IN;
 		}
-		ptr_current_cell = ptr_current_cell->next;
+		TCA = TCA->next;
 	}
 }
 
@@ -446,21 +441,24 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 			}
 		}
 	}
+
+
+
 	//Build TCA
-	lc_t** TCA = calloc(1, sizeof(lc_t));
-	*TCA = NULL; //TCA initially points to NULL
+	lc_t* TCA = NULL;
+
 	int scanline_num = y_min; //first scanline that touches the polygon
-	while ((isTC_empty(tab_TC, size_tc)==false) || (*TCA != NULL)) { //stops when TC is empty or TCA is empty
+	while ((isTC_empty(tab_TC, size_tc)==false) || (TCA != NULL)) { //stops when TC is empty or TCA is empty
 		//Move sides of TC to TCA (remove from TC, add to TCA)
 		lc_t* current_linked_list = tab_TC[scanline_num - y_min];
-		add_to_TCA(TCA, current_linked_list);
+		add_to_TCA(&TCA, current_linked_list);
 		tab_TC[scanline_num - y_min] = NULL; //pointer to that scanline becomes NULL in TC
 		//Remove from TCA the sides for which ymax = y (scanline_num)
-		int size_TCA = delete_side_TCA(TCA, scanline_num);
+		int size_TCA = delete_side_TCA(&TCA, scanline_num);
 		//Draw the pixels that are inside the polygon for the current scanline
 		draw_scanline(TCA, size_TCA, scanline_num, surface, color, clipper);
 		scanline_num++; //y++
-		update_x_ymin_sides(TCA); //new scanline => new x_ymin, find the new x_ymin in TCA
+		update_x_ymin_sides(&TCA); //new scanline => new x_ymin, find the new x_ymin in TCA
 	}
 	free(TCA);
 	free(tab_TC);
@@ -506,8 +504,8 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 				}
 				else {
 					for (int xsrc = 0, xdest = 0;
-					     xsrc <= sizesrc.width && xdest <= sizedest.width; xsrc++, xdest++) {
-						for (int ysrc = 0, ydest = 0; ysrc <= sizesrc.height && ydest <=
+					     xsrc < sizesrc.width && xdest < sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = 0; ysrc < sizesrc.height && ydest <
 													sizedest.height; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -534,9 +532,9 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 									    src_rect->top_left.y +
 									    src_rect->size.height};
 					for (int xsrc = top_left_rect_src.x, xdest = 0;
-					     xsrc <= bottom_right_src_rect.x && xdest <= sizedest.width; xsrc++, xdest++) {
+					     xsrc < bottom_right_src_rect.x && xdest < sizedest.width; xsrc++, xdest++) {
 						for (int ysrc = top_left_rect_src.y, ydest = 0;
-						     ysrc <= sizesrc.height && ydest <=
+						     ysrc < sizesrc.height && ydest <
 									       bottom_right_src_rect.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -566,8 +564,8 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					ei_point_t bottom_right_rect_dst = {dst_rect->size.width+top_left_rect_dst.x, dst_rect->size.height+top_left_rect_dst.y};
 
 					for (int xsrc = 0, xdest = top_left_rect_dst.x;
-					     xsrc <= sizesrc.width && xdest <= bottom_right_rect_dst.x; xsrc++, xdest++) {
-						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc <= sizesrc.height && ydest <=
+					     xsrc < sizesrc.width && xdest < bottom_right_rect_dst.x; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc < sizesrc.height && ydest <
 															  bottom_right_rect_dst.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -600,9 +598,9 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					ei_point_t bottom_right_dst_rect = {top_left_rect_dst.x+dst_rect->size.width, top_left_rect_dst.y+dst_rect->size.height};
 
 					for (int xsrc = top_left_src_rect.x, xdest = top_left_rect_dst.x;
-					     xsrc <= bottom_right_src_rect.x && xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
+					     xsrc < bottom_right_src_rect.x && xdest < bottom_right_dst_rect.x; xsrc++, xdest++) {
 						for (int ysrc = top_left_src_rect.y, ydest = top_left_rect_dst.y;
-						     ysrc <= bottom_right_src_rect.y && ydest <=
+						     ysrc < bottom_right_src_rect.y && ydest <
 											bottom_right_dst_rect.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -636,8 +634,8 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 
 					for (int xsrc = 0, xdest = 0;
-					     xsrc <= sizesrc.width && xdest <= sizedest.width; xsrc++, xdest++) {
-						for (int ysrc = 0, ydest = 0; ysrc <= sizesrc.height && ydest <=
+					     xsrc < sizesrc.width && xdest < sizedest.width; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = 0; ysrc < sizesrc.height && ydest <
 													sizedest.height; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -670,9 +668,9 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_get_channel_indices(source, &ir, &ig, &ib, &ia);
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 					for (int xsrc = top_left_rect_src.x, xdest = 0;
-					     xsrc <= bottom_right_src_rect.x && xdest <= sizedest.width; xsrc++, xdest++) {
+					     xsrc < bottom_right_src_rect.x && xdest < sizedest.width; xsrc++, xdest++) {
 						for (int ysrc = top_left_rect_src.y, ydest = 0;
-						     ysrc <= sizesrc.height && ydest <=
+						     ysrc < sizesrc.height && ydest <
 									       bottom_right_src_rect.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -708,8 +706,8 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 
 					for (int xsrc = 0, xdest = top_left_rect_dst.x;
-					     xsrc <= sizesrc.width && xdest <= bottom_right_rect_dst.x; xsrc++, xdest++) {
-						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc <= sizesrc.height && ydest <=
+					     xsrc < sizesrc.width && xdest < bottom_right_rect_dst.x; xsrc++, xdest++) {
+						for (int ysrc = 0, ydest = top_left_rect_dst.y; ysrc < sizesrc.height && ydest <
 															  bottom_right_rect_dst.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =
@@ -749,10 +747,10 @@ int ei_copy_surface(ei_surface_t destination, const ei_rect_t* dst_rect, ei_surf
 					hw_surface_get_channel_indices(destination, &ir2, &ig2, &ib2, &ia2);
 
 					for (int xsrc = top_left_src_rect.x, xdest = top_left_rect_dst.x;
-					     xsrc <= bottom_right_src_rect.x &&
-					     xdest <= bottom_right_dst_rect.x; xsrc++, xdest++) {
+					     xsrc < bottom_right_src_rect.x &&
+					     xdest < bottom_right_dst_rect.x; xsrc++, xdest++) {
 						for (int ysrc = top_left_src_rect.y, ydest = top_left_rect_dst.y;
-						     ysrc <= bottom_right_src_rect.y && ydest <=
+						     ysrc < bottom_right_src_rect.y && ydest <
 											bottom_right_dst_rect.y; ysrc++, ydest++) {
 							uint32_t *current_src = addr_src + sizesrc.width * ysrc + xsrc;
 							uint32_t *current_dst =

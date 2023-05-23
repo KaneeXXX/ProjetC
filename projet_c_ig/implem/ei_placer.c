@@ -29,10 +29,24 @@ void		ei_place	(ei_widget_t		widget,
 	if(y == NULL){ widget->placer_params->y = 0;} else {widget->placer_params->y = *y;}
 	if (width == NULL){ widget->placer_params->width = 0;}else{widget->placer_params->width = *width;}
 	if(height == NULL){ widget->placer_params->height = 0;}else{widget->placer_params->height = *height;}
-        if (rel_x == NULL){ widget->placer_params->rel_x = 0.0;}else {widget->placer_params->rel_x = *rel_x;}
-	if (rel_y == NULL){ widget->placer_params->rel_y = 0.0;}else {widget->placer_params->rel_y = *rel_y;}
-	if (rel_width == NULL){ widget->placer_params->rel_width = 0.0;}else {widget->placer_params->rel_width = *rel_width;}
-	if (rel_height == NULL){ widget->placer_params->rel_height = 0.0;}else {widget->placer_params->rel_height = *rel_height;}
+	if (rel_x == NULL){ widget->placer_params->rel_x = 0;}else {widget->placer_params->rel_x = *rel_x;}
+	if (rel_y == NULL){ widget->placer_params->rel_y = 0;}else {widget->placer_params->rel_y = *rel_y;}
+	if (rel_width == NULL){ widget->placer_params->rel_width = 0;}else {widget->placer_params->rel_width = *rel_width;}
+	if (rel_height == NULL){ widget->placer_params->rel_height = 0;}else {widget->placer_params->rel_height = *rel_height;}
+
+	/*if(strcmp(widget->wclass->name, "toplevel") == 0){
+		ei_widget_t buttonred = ei_widget_get_first_child(widget);
+		ei_point_t topleft_toplevel = widget->screen_location.top_left;
+		ei_anchor_t nw = ei_anc_northwest;
+		int x = 1;
+		int y = 1;
+
+		int height = 15;
+		int width = 15;
+
+		ei_place(buttonred, &nw, &x, &y, &width, &height, NULL, NULL, NULL, NULL);
+	}*/
+
 }
 
 void ei_impl_placer_run(ei_widget_t widget) {
@@ -42,15 +56,16 @@ void ei_impl_placer_run(ei_widget_t widget) {
 
 		// On récupère le content_rect du parent
 		ei_widget_t parent = ei_widget_get_parent(widget);
-		const ei_rect_t *repere = ei_widget_get_content_rect(parent);
+		//const ei_rect_t *repere = ei_widget_get_content_rect(parent);
+		const ei_rect_t repere = {parent->screen_location.top_left, parent->requested_size};
 		// On cherche les coordonnées du widget avant considération de
 		// l'anchor
 		// Coordonnées absolues par rapport au repère root
-		ei_point_t top_left = repere->top_left;
+		ei_point_t top_left = repere.top_left;
 		float rel_x = widget->placer_params->rel_x;
 		int x = widget->placer_params->x;
-		int x_coor_sans_anchor = top_left.x + rel_x * repere->size.width + x;
-		int y_coor_sans_anchor = (int) (top_left.y) + (int) (widget->placer_params->rel_y) * repere->size.height +
+		int x_coor_sans_anchor = top_left.x + rel_x * repere.size.width+ x;
+		int y_coor_sans_anchor = top_left.y + widget->placer_params->rel_y * repere.size.height +
 					 widget->placer_params->y;
 		//largeur
 		int largeur;
@@ -58,9 +73,13 @@ void ei_impl_placer_run(ei_widget_t widget) {
 			largeur = widget->placer_params->width;
 		} else {
 			if (widget->placer_params->rel_width == 0) {
-				largeur = 0;
+				if (widget->requested_size.width != 0){
+					largeur = widget->requested_size.width;
+				}else{
+					largeur = 20;
+				}
 			} else {
-				largeur = (int) widget->placer_params->rel_width * repere->size.width;
+				largeur = (int)(widget->placer_params->rel_width * repere.size.width);
 			}
 		}
 		//longueur
@@ -69,9 +88,14 @@ void ei_impl_placer_run(ei_widget_t widget) {
 			longueur = widget->placer_params->height;
 		} else {
 			if (widget->placer_params->rel_height == 0) {
-				longueur = 0;
+				if (widget->requested_size.height != 0){
+					longueur = widget->requested_size.height;
+				}else{
+					longueur = 20;
+				}
+
 			} else {
-				longueur = (int) widget->placer_params->rel_height * repere->size.height;
+				longueur = (int) ( widget->placer_params->rel_height * repere.size.height);
 			}
 		}
 
@@ -113,10 +137,14 @@ void ei_impl_placer_run(ei_widget_t widget) {
 		screen_location.top_left = top_left_widget;
 		screen_location.size.width = largeur;
 		screen_location.size.height = longueur;
-
 		widget->screen_location = screen_location;
+
 	}
 
 }
+
+
+
+
 
 

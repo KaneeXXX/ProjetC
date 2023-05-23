@@ -71,7 +71,7 @@ void drawtoplevel(ei_widget_t		widget,
 		   ei_rect_t*		clipper){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	draw_toplevel(surface,
-	       (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+	       (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 		toplevel->color,
 		toplevel->border_width,
 		toplevel->title,
@@ -81,7 +81,7 @@ void drawtoplevel(ei_widget_t		widget,
 		);
 
 	//dessiner dans offscreen
-	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->requested_size}, pick_surface, *widget->pick_color);
+	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size}, pick_surface, *widget->pick_color);
 
 	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
@@ -108,10 +108,18 @@ void geomnotify_toplevel(ei_widget_t widget){
 bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 	switch (event->type) {
 		case ei_ev_mouse_buttondown:
-			ei_event_set_active_widget(toplevel);
-			current_pointer_pos = event->param.mouse.where;
-			return true;
-			break;
+			printf("");
+			ei_point_t topleft = toplevel->screen_location.top_left;
+			if(is_point_in_rect((ei_rect_t) {(ei_point_t){toplevel->screen_location.top_left.x + 1, toplevel->screen_location.top_left.y + 1}, 20, 20},event->param.mouse.where)){
+				ei_widget_destroy(toplevel);//déclenche mémoire pb
+			}
+			if(event->param.mouse.where.y >= topleft.y && event->param.mouse.where.y <= (topleft.y + 20)) {
+				ei_event_set_active_widget(toplevel);
+				current_pointer_pos = event->param.mouse.where;
+				return true;
+			}
+			return false;
+
 		case ei_ev_mouse_move:
 			if(toplevel == ei_event_get_active_widget()){
 				int rel_x = current_pointer_pos.x - event->param.mouse.where.x;

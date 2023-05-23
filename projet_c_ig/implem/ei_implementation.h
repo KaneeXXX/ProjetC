@@ -169,6 +169,7 @@ typedef struct ei_impl_toplevel_t {
     bool closable;
     ei_axis_set_t resizable;
     ei_size_ptr_t min_size;
+
 } ei_impl_toplevel_t;
 
 /**
