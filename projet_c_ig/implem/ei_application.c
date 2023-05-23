@@ -114,21 +114,25 @@ _Noreturn void ei_app_run()
 				if(event_listener->type == ei_ev_mouse_buttonup) {
 					ei_widget_t active = ei_event_get_active_widget();
 					if(active != NULL) { //marche que pour button
-						ei_relief_t relief_raised = ei_relief_raised;
-						ei_button_configure(active, NULL, NULL, NULL, NULL, &relief_raised, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+						if (strcmp(active->wclass->name, "button") == 0) {
+							ei_relief_t relief_raised = ei_relief_raised;
+							ei_button_configure(active, NULL, NULL, NULL, NULL,
+									    &relief_raised, NULL, NULL, NULL, NULL,
+									    NULL, NULL, NULL, NULL, NULL);
+
+						} else if(strcmp(active->wclass->name, "toplevel") == 0){
+
+						}
 						ei_event_set_active_widget(NULL);
 					}
 				}
 			}
 		}
-//		else if (c est un keyboard event) {
-//			current_widget->wclass->handlefunc(current_widget, event_listener);
-//		}
-//		else if (c est un application event) {
-//			current_widget->wclass->handlefunc(current_widget, event_listener);
-//		}//Event de keyboard et autre
+//
 		else {
 			//call default handle function
+			//try to execute handle func ?
+			ei_event_get_default_handle_func();
 		}
 
 	}

@@ -14,6 +14,7 @@
 #include "ei_widget_configure.h"
 #include "ei_event.h"
 #include "ei_application.h"
+#include "ei_types.h"
 
 //(ei_widget_t	widget,
 //ei_size_t*	requested_size,
@@ -23,6 +24,8 @@
 //bool*		losable,
 //ei_axis_set_t*resizable,
 //ei_size_ptr_t*min_size);
+
+ei_point_t current_pointer_pos;
 
 ei_widget_t alloc_toplevel(){
 	ei_impl_toplevel_t* toplevel = calloc(1, sizeof(ei_impl_toplevel_t));
@@ -102,14 +105,33 @@ void geomnotify_toplevel(ei_widget_t widget){
 }
 
 //traitant interne de la classe toplevel
-bool handle_toplevel(ei_widget_t widget, struct ei_event_t* event){
-	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
-	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(15, 15)), event->param.mouse.where);
-	if (event->type == ei_ev_keydown){
-		return true;
-	}
-	if ((event->type == ei_ev_mouse_buttonup)&&(event->param.mouse.button == ei_mouse_button_left)&&(mouse_location)){
-		return true;
+bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
+	switch (event->type) {
+		case ei_ev_mouse_buttondown:
+			ei_event_set_active_widget(toplevel);
+			current_pointer_pos = event->param.mouse.where;
+			return true;
+			break;
+		case ei_ev_mouse_move:
+			if(toplevel == ei_event_get_active_widget()){
+				int rel_x = current_pointer_pos.x - event->param.mouse.where.x;
+				int rel_y = current_pointer_pos.y - event->param.mouse.where.y;
+				int x = toplevel->screen_location.top_left.x - rel_x;
+				int y = toplevel->screen_location.top_left.y - rel_y;
+				ei_place_xy(toplevel, x, y);
+
+				//update current pos
+				current_pointer_pos.x = event->param.mouse.where.x;
+				current_pointer_pos.y = event->param.mouse.where.y;
+			}
+			return true;
+			break;
+
+		case ei_ev_mouse_buttonup:
+			ei_event_set_active_widget(NULL);
+			return true;
+		default:
+			break;
 	}
 	return false;
 }
