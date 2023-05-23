@@ -68,7 +68,7 @@ void drawtoplevel(ei_widget_t		widget,
 		   ei_rect_t*		clipper){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	draw_toplevel(surface,
-	       (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+	       (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 		toplevel->color,
 		toplevel->border_width,
 		toplevel->title,
@@ -78,7 +78,7 @@ void drawtoplevel(ei_widget_t		widget,
 		);
 
 	//dessiner dans offscreen
-	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->requested_size}, pick_surface, *widget->pick_color);
+	draw_in_offscreen((ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size}, pick_surface, *widget->pick_color);
 
 	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }

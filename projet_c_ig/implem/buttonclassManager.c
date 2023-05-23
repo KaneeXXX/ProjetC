@@ -35,8 +35,10 @@ void drawbutton(ei_widget_t		widget,
 		 ei_rect_t*		clipper)
 		 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
+
+
 	draw_button(surface,
-	     (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+	     (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 	     button->color,
 	     button->border_width,
 	     button->corner_radius,
@@ -50,7 +52,7 @@ void drawbutton(ei_widget_t		widget,
 
 	//dessiner dans l'offscreen
 	 draw_button(pick_surface,
-		     (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+		     (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 		     *(widget->pick_color),
 		     button->border_width,
 		     button->corner_radius,
