@@ -96,7 +96,7 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 		//get the list of children and DESTROY THEM !! AHAHAHAHAH (the evil strikes again)
 		ei_widget_t current_widgetchild = widget->children_head; //head of the list
 		while (current_widgetchild != NULL) {
-			//Calls its destructor if it was provided.
+			//Calls its destructor if provided.
 			if (widget->destructor != NULL) {
 				widget->destructor(widget);
 			}

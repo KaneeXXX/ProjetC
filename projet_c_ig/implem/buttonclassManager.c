@@ -85,19 +85,21 @@ void geomnotify_button(ei_widget_t widget){
 }
 
 //traitant interne de la calsse button
-bool handle_button(ei_widget_t widget_manipulated,  ei_event_t* event_listener) {
+bool handle_button(ei_widget_t widget_manipulated,  ei_event_t* event) {
 
-	switch (event_listener->type) {
+	switch (event->type) {
 		case ei_ev_mouse_buttondown:
+
 			ei_event_set_active_widget(widget_manipulated); //Full attention focused on this amazing widget !
 			ei_relief_t relief_pushed = ei_relief_sunken;
 			ei_button_configure(widget_manipulated, NULL, NULL, NULL, NULL, &relief_pushed, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-			//widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
-			//printf("%s", widget_manipulated->wclass->name);
+
+			ei_impl_button_t* button = (ei_impl_button_t*) widget_manipulated;
+			button->callback(widget_manipulated, event, event->param.application.user_param);
 			return true;
 			break;
 		case ei_ev_mouse_buttonup:
-			printf("er");
+			printf("");
 			ei_relief_t relief_raised = ei_relief_raised;
 			ei_button_configure(widget_manipulated, NULL, NULL, NULL, NULL, &relief_raised, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 			ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !

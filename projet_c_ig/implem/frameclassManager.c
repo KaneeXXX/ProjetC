@@ -59,13 +59,7 @@ void geomnotify_frame(ei_widget_t widget){
 
 //traitant interne de la classe frame
 bool handle_frame(ei_widget_t widget, ei_event_t* event){
-	bool mouse_location = is_point_in_rect(ei_rect(widget->screen_location.top_left, ei_size(widget->requested_size.width, widget->requested_size.height)), event->param.mouse.where);
-	if (event->type == ei_ev_keydown){
-		return true;
-	}
-	if ((event->type == ei_ev_mouse_buttonup)&&(event->param.mouse.button == ei_mouse_button_left)&&(mouse_location)){
-		return true;
-	}
+
 	return false;
 }
 
