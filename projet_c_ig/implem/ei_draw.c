@@ -937,11 +937,11 @@ void draw_button(ei_surface_t surface,
 	int size_text = min_size / 4;
 	ei_point_t where; //arbitrary values
 
-	/*ei_surface_t surface_text = hw_text_create_surface(text, text_font, text_color);
-	ei_size_t sizetext = hw_surface_get_size(surface_text);
-	int abs_where = rectangle.top_left.x + (rectangle.size.width - sizetext.width)/2;
-	int ord_where = rectangle.top_left.y +  (rectangle.size.height - sizetext.height)/2;
-	where = (ei_point_t){abs_where, ord_where};*/
+	//ei_surface_t surface_text = hw_text_create_surface(text, text_font, text_color);
+	//ei_size_t sizetext = hw_surface_get_size(surface_text);
+	//int abs_where = rectangle.top_left.x + (rectangle.size.width - sizetext.width)/2;
+	//int ord_where = rectangle.top_left.y + (rectangle.size.height - sizetext.height)/2;
+	//where = (ei_point_t){abs_where, ord_where};
 	if (relief == ei_relief_none) {
 		where = (ei_point_t) {rectangle.top_left.x + width / 3 - size_text / 2, rectangle.top_left.y + height / 2 - 3 * size_text / 4};
 		ei_draw_polygon(surface, arr_upper.tab, arr_upper.length, color_inside, NULL);

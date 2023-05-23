@@ -111,7 +111,6 @@ bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 			ei_event_set_active_widget(toplevel);
 			current_pointer_pos = event->param.mouse.where;
 			return true;
-			break;
 		case ei_ev_mouse_move:
 			if(toplevel == ei_event_get_active_widget()){
 				int rel_x = current_pointer_pos.x - event->param.mouse.where.x;
@@ -125,8 +124,6 @@ bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 				current_pointer_pos.y = event->param.mouse.where.y;
 			}
 			return true;
-			break;
-
 		case ei_ev_mouse_buttonup:
 			ei_event_set_active_widget(NULL);
 			return true;
