@@ -35,6 +35,8 @@ void drawbutton(ei_widget_t		widget,
 		 ei_rect_t*		clipper)
 		 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
+
+
 	draw_button(surface,
 	     (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 	     button->color,
@@ -95,14 +97,12 @@ bool handle_button(ei_widget_t widget_manipulated,  ei_event_t* event) {
 			ei_impl_button_t* button = (ei_impl_button_t*) widget_manipulated;
 			button->callback(widget_manipulated, event, event->param.application.user_param);
 			return true;
-
 		case ei_ev_mouse_buttonup:
 			printf("");
 			ei_relief_t relief_raised = ei_relief_raised;
 			ei_button_configure(widget_manipulated, NULL, NULL, NULL, NULL, &relief_raised, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 			ei_event_set_active_widget(NULL); //We are no longer manipulating the amazing widget, so the attention is no longer focus on it !
 			return true;
-
 
 			/*case ei_ev_mouse_move:
 				widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);

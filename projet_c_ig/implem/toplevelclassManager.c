@@ -108,18 +108,9 @@ void geomnotify_toplevel(ei_widget_t widget){
 bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 	switch (event->type) {
 		case ei_ev_mouse_buttondown:
-			printf("");
-			ei_point_t topleft = toplevel->screen_location.top_left;
-			if(is_point_in_rect((ei_rect_t) {(ei_point_t){toplevel->screen_location.top_left.x + 1, toplevel->screen_location.top_left.y + 1}, 20, 20},event->param.mouse.where)){
-				ei_widget_destroy(toplevel);//déclenche mémoire pb
-			}
-			if(event->param.mouse.where.y >= topleft.y && event->param.mouse.where.y <= (topleft.y + 20)) {
-				ei_event_set_active_widget(toplevel);
-				current_pointer_pos = event->param.mouse.where;
-				return true;
-			}
-			return false;
-
+			ei_event_set_active_widget(toplevel);
+			current_pointer_pos = event->param.mouse.where;
+			return true;
 		case ei_ev_mouse_move:
 			if(toplevel == ei_event_get_active_widget()){
 				int rel_x = current_pointer_pos.x - event->param.mouse.where.x;
@@ -133,8 +124,6 @@ bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 				current_pointer_pos.y = event->param.mouse.where.y;
 			}
 			return true;
-			break;
-
 		case ei_ev_mouse_buttonup:
 			ei_event_set_active_widget(NULL);
 			return true;

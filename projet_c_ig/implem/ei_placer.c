@@ -29,24 +29,10 @@ void		ei_place	(ei_widget_t		widget,
 	if(y == NULL){ widget->placer_params->y = 0;} else {widget->placer_params->y = *y;}
 	if (width == NULL){ widget->placer_params->width = 0;}else{widget->placer_params->width = *width;}
 	if(height == NULL){ widget->placer_params->height = 0;}else{widget->placer_params->height = *height;}
-	if (rel_x == NULL){ widget->placer_params->rel_x = 0;}else {widget->placer_params->rel_x = *rel_x;}
+        if (rel_x == NULL){ widget->placer_params->rel_x = 0;}else {widget->placer_params->rel_x = *rel_x;}
 	if (rel_y == NULL){ widget->placer_params->rel_y = 0;}else {widget->placer_params->rel_y = *rel_y;}
 	if (rel_width == NULL){ widget->placer_params->rel_width = 0;}else {widget->placer_params->rel_width = *rel_width;}
 	if (rel_height == NULL){ widget->placer_params->rel_height = 0;}else {widget->placer_params->rel_height = *rel_height;}
-
-	/*if(strcmp(widget->wclass->name, "toplevel") == 0){
-		ei_widget_t buttonred = ei_widget_get_first_child(widget);
-		ei_point_t topleft_toplevel = widget->screen_location.top_left;
-		ei_anchor_t nw = ei_anc_northwest;
-		int x = 1;
-		int y = 1;
-
-		int height = 15;
-		int width = 15;
-
-		ei_place(buttonred, &nw, &x, &y, &width, &height, NULL, NULL, NULL, NULL);
-	}*/
-
 }
 
 void ei_impl_placer_run(ei_widget_t widget) {
@@ -142,9 +128,5 @@ void ei_impl_placer_run(ei_widget_t widget) {
 	}
 
 }
-
-
-
-
 
 
