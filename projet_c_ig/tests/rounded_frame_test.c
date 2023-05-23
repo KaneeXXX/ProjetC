@@ -74,6 +74,20 @@ int main(int argc, char** argv)
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
 
+	free(whole_figure_polygon.tab);
+	free(l);
+	free(top_figure_polygon.tab);
+	free(bottom_figure_polygon.tab);
+	free(whole_fig_polygon.tab);
+	free(top_fig_polygon.tab);
+	free(bottom_fig_polygon.tab);
+	free(whole_figure.tab);
+	free(top_figure.tab);
+	free(bottom_figure.tab);
+	free(whole_figurep.tab);
+	free(top_figurep.tab);
+	free(bottom_figurep.tab);
+
 	/* Wait for a character on command line. */
 	event.type = ei_ev_none;
 	while ((event.type != ei_ev_close) && (event.type != ei_ev_keydown))

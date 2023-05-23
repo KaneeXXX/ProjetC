@@ -26,6 +26,7 @@ ei_widget_t alloc_button()
 void release_button(ei_widget_t widget)
 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
+	ei_widget_destroy(button);
 	free(button);
 }
 
@@ -35,7 +36,6 @@ void drawbutton(ei_widget_t		widget,
 		 ei_rect_t*		clipper)
 		 {
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
-
 
 	draw_button(surface,
 	     (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
@@ -51,7 +51,7 @@ void drawbutton(ei_widget_t		widget,
 	     );
 
 	//dessiner dans l'offscreen
-	 draw_button(pick_surface,
+	draw_button(pick_surface,
 		     (ei_rect_t) {widget->screen_location.top_left, widget->screen_location.size},
 		     *(widget->pick_color),
 		     button->border_width,
@@ -62,8 +62,8 @@ void drawbutton(ei_widget_t		widget,
 		     button->text_color,
 		     NULL,
 		     NULL
-	 );
-	 ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
+		     );
+	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }
 
 void setdefaults_button(ei_widget_t widget){

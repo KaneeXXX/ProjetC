@@ -80,7 +80,20 @@ int main(int argc, char** argv)
 	ei_draw_polygon(main_window, arc23.tab, arc23.length, (ei_color_t){0, 255, 255, 255}, NULL);
 	tab_and_length arc24 = (tab_and_length) arc((ei_point_t) {300,100}, 100, 270, 360);
 	ei_draw_polygon(main_window, arc24.tab, arc24.length, (ei_color_t){0, 255, 255, 255}, NULL);
-*/
+
+	free(arc11.tab);
+	free(arc12.tab);
+	free(arc13.tab);
+	free(arc14.tab);
+	free(circle.tab);
+	free(arc11b.tab);
+	free(arc12b.tab);
+	free(arc13b.tab);
+	free(arc14b.tab);
+	free(arc21.tab);
+	free(arc22.tab);
+	free(arc23.tab);
+	free(arc24.tab);
 
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);

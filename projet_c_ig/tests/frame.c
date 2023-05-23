@@ -19,7 +19,6 @@ int main(int argc, char** argv)
 
 	/* Create the application and change the color of the background. */
 	ei_app_create((ei_size_t){600, 600}, false);
-	ei_widget_t wig = ei_app_root_widget();
 	ei_frame_set_bg_color(ei_app_root_widget(), (ei_color_t){0x52, 0x7f, 0xb4, 0xff});
 
 

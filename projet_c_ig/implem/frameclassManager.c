@@ -24,6 +24,7 @@ ei_widget_t alloc_frame()
 
 void release_frame(ei_widget_t widget){
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
+	ei_widget_destroy(frame);
 	free(frame);
 }
 
@@ -33,16 +34,41 @@ void draw_frame(ei_widget_t		widget,
 		ei_rect_t*		clipper)
 		{
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
-	int x=widget->screen_location.top_left.x;
-	int y=widget->screen_location.top_left.y;
-	int width=widget->requested_size.width;
-	int height=widget->requested_size.height;
-	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
-	size_t size=4;
-	ei_draw_polygon(surface, points_rectangle, size, frame->color, clipper);
+//	int x=widget->screen_location.top_left.x;
+//	int y=widget->screen_location.top_left.y;
+//	int width=widget->requested_size.width;
+//	int height=widget->requested_size.height;
+//	ei_point_t points_rectangle[] = {{x, y}, {x+width, y}, {x+width, y+height}, {x, y+height}};
+//	size_t size=4;
+	//ei_draw_polygon(surface, points_rectangle, size, frame->color, clipper);
+	draw_button(surface,
+		    (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+		    frame->color,
+		    frame->border_width,
+		    0,
+		    frame->relief,
+		    frame->text,
+		    frame->text_font,
+		    frame->text_color,
+		    frame->img,
+		    NULL
+	);
 
-	//dessiner dans offscreen
-	ei_draw_polygon(pick_surface, points_rectangle, size, *(widget->pick_color), NULL);
+
+			//dessiner dans offscreen
+	draw_button(pick_surface,
+		    (ei_rect_t) {widget->screen_location.top_left, widget->requested_size},
+		    *(widget->pick_color),
+		    frame->border_width,
+		    0,
+		    frame->relief,
+		    frame->text,
+		    frame->text_font,
+		    frame->text_color,
+		    frame->img,
+		    NULL
+	);
+	//ei_draw_polygon(pick_surface, points_rectangle, size, *(widget->pick_color), NULL);
 
 	ei_impl_widget_draw_children(widget, ei_app_root_surface(), get_picksurface(), NULL);
 }

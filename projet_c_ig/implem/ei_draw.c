@@ -395,7 +395,7 @@ void ei_draw_polygon (ei_surface_t surface, ei_point_t*  point_array, size_t poi
 	//Build TC
 	minmax_t critical_pts = min_max_y(point_array, point_array_size);
 	int y_min = critical_pts.y_min;
-	int size_tc = critical_pts.y_max - y_min + 1 + (1); // On commence a compter à 0 en info
+	int size_tc = critical_pts.y_max - y_min + 1  + 1; // On commence a compter à 0 en info
 	lc_t** tab_TC = calloc(size_tc , sizeof(lc_t*));
 	ei_point_t p1;
 	ei_point_t p2;
@@ -794,6 +794,9 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	if (text == NULL) { //according to function documentation
 		printf("Text is NULL.\n");
 	}
+	if (strcmp(text, "") == 0) {
+		return;
+	}
 	ei_surface_t surface_of_text = hw_text_create_surface(text, font, color);
 
 	//Check if clipping is possible
@@ -868,7 +871,7 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 
 	ei_point_t center_bottom_left;
 
-	int min_size = (width < height) ? width : height;
+	ei_point_t list_2points[2];
 
 	if (relief == ei_relief_none) {
 		center_top_right = (ei_point_t) {top_left_point.x + (width - radius) , top_left_point.y + radius};
@@ -876,6 +879,8 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 		center_bottom_left = (ei_point_t) {top_left_point.x + radius, top_left_point.y + (height - radius)};
 		tab_and_length t4 = arc(center_bottom_left, radius, 90, 180);
 		conc = concatenate_four_point_lists(t1.tab, t2.tab, t3.tab, t4.tab, t1.length, t2.length, t3.length, t4.length);
+		free(t2.tab);
+		free(t4.tab);
 	}
 	else if (relief == ei_relief_raised) {
 		center_top_right = (ei_point_t) {top_left_point.x + (width - radius), top_left_point.y + radius};
@@ -883,13 +888,14 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 		center_bottom_left = (ei_point_t) {top_left_point.x + radius, top_left_point.y + (height - radius)};
 		tab_and_length t4 = arc(center_bottom_left, radius, 135, 180);
 		//+2 interior points
-		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
 		int h = (int) (width < height ? width : height) / 2;
 		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
 		list_2points[0] = p1;
 		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
 		list_2points[1] = p2;
 		conc = concatenate_four_point_lists(t1.tab, t2.tab, list_2points, t4.tab, t1.length, t2.length, 2, t4.length);
+		free(t2.tab);
+		free(t4.tab);
 	}
 	else { //ei_relief_sunken
 		center_top_right = (ei_point_t) {top_left_point.x + (width - radius), top_left_point.y + radius};
@@ -897,14 +903,17 @@ tab_and_length rounded_frame(ei_rect_t rectangle, int radius, ei_relief_t relief
 		center_bottom_left = (ei_point_t) {top_left_point.x + radius, top_left_point.y + (height - radius)};
 		tab_and_length t4 = arc(center_bottom_left, radius, 90, 135);
 		//+2 interior points
-		ei_point_t * list_2points = calloc(2, sizeof(ei_point_t));
 		int h = (int) (width < height ? width : height) / 2;
 		ei_point_t p1 = {top_left_point.x + (width - h), top_left_point.y + h};
 		list_2points[1] = p1;
 		ei_point_t p2 = {top_left_point.x + h, top_left_point.y + (height - h)};
 		list_2points[0] = p2;
 		conc = concatenate_four_point_lists(t4.tab, list_2points, t2.tab, t3.tab, t4.length, 2, t2.length, t3.length);
+		free(t2.tab);
+		free(t4.tab);
 	}
+	free(t1.tab);
+	free(t3.tab);
 	return conc;
 }
 
@@ -1008,9 +1017,14 @@ void draw_toplevel(ei_surface_t surface,
 	ei_point_t * list_1point2 = calloc(1, sizeof(ei_point_t));
 	list_1point2[0] = center_bottom_left;
 
+
+
 	conc = concatenate_four_point_lists(t1.tab, t2.tab, list_1point, list_1point2, t1.length, t2.length, 1, 1);
 
 	ei_draw_polygon(surface, conc.tab, conc.length, color, NULL);
+
+	free(list_1point);
+	free(list_1point2);
 
 	//Draw the interior frame
 	ei_point_t * list_rect_inter = calloc(4, sizeof(ei_point_t));
@@ -1020,6 +1034,8 @@ void draw_toplevel(ei_surface_t surface,
 	list_rect_inter[3] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + height - border_width};
 
 	ei_draw_polygon(surface, list_rect_inter, 4, ei_font_default_color, NULL);
+
+	free(list_rect_inter);
 
 	//Draw the close button
 	if (closable == true) {
@@ -1058,5 +1074,7 @@ void draw_toplevel(ei_surface_t surface,
 		list_rect_resize[3] = (ei_point_t) {top_left_point.x + width - RADIUS, top_left_point.y + height};
 
 		ei_draw_polygon(surface, list_rect_resize, 4, color, NULL);
+
+		free(list_rect_resize);
 	}
 }

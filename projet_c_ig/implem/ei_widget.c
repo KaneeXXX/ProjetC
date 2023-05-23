@@ -68,14 +68,14 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		pick_id = pick_id + 1;
 
 		/*Geometry*/
-		struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
+		struct ei_impl_placer_params_t* params = NULL;
 		widgetptr->placer_params = params;
 		ei_size_t size = ei_size(0,0);
 		widgetptr->requested_size = size;
 		ei_point_t point = ei_point(0,0);
 		ei_rect_t rect = ei_rect(point, size);
 		widgetptr->screen_location = rect;
-		widgetptr->content_rect = rect;
+		widgetptr->content_rect = widgetptr->screen_location;
 
 		/*Call the function which init specifics attributs of the class*/
 		widgetclassptr->setdefaultsfunc(widgetptr);
@@ -106,12 +106,27 @@ void create_buttons_toplevel(ei_point_t topleft, ei_widget_t parent){
 
 void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 {
-	//Removes the widget from the screen if it is currently displayed.
+
+	ei_widget_t child = ei_widget_get_first_child(widget);
+	if(child == NULL) {
+		return; //plus rien a dessiner en dessous dans hiérarchie
+	}
+	while(child != NULL){
+
+		ei_widget_t temp =  child;
+		child = child->next_sibling;
+		temp->wclass->releasefunc(temp);
+
+	}
+
+
+
+	/*//Removes the widget from the screen if it is currently displayed.
 	if(ei_widget_is_displayed(widget)){
 		//TODO
 	}
 
-	/*Destroy widget and all its offspring (descendance)*/
+	//Destroy widget and all its offspring (descendance)
 	//destruction recursive
 	if(widget->children_head != NULL) { //No children
 		//get the list of children and DESTROY THEM !! AHAHAHAHAH (the evil strikes again)
@@ -132,8 +147,8 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 	}
 
 	//Destroy the widget itself
-	printf("destroy: %s\n", widget->wclass->name);
-	free(widget);
+	printf("destroy upper widget: %s\n", widget->wclass->name);
+	free(widget);*/
 
 }
 

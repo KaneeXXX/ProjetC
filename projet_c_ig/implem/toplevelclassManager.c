@@ -34,7 +34,9 @@ ei_widget_t alloc_toplevel(){
 
 void release_toplevel(ei_widget_t widget){
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
+	ei_widget_destroy(toplevel);
 	free(toplevel);
+
 }
 
 void draw_in_offscreen(ei_rect_t rectangle, ei_surface_t surface, ei_color_t color){
@@ -108,7 +110,16 @@ void geomnotify_toplevel(ei_widget_t widget){
 bool handle_toplevel(ei_widget_t toplevel, struct ei_event_t* event){
 	switch (event->type) {
 		case ei_ev_mouse_buttondown:
-			ei_event_set_active_widget(toplevel);
+			printf("");
+			ei_point_t topleft = toplevel->screen_location.top_left;
+			ei_rect_t buttonrect = ei_rect(topleft, ei_size(20, 20));
+			if (is_point_in_rect(buttonrect, event->param.mouse.where)){
+				printf("close top level\n");
+				toplevel->placer_params = NULL;
+			}
+			if(event->param.mouse.where.y >= topleft.y && event->param.mouse.where.y <= (topleft.y + 20)) {
+				ei_event_set_active_widget(toplevel);
+			}
 			current_pointer_pos = event->param.mouse.where;
 			return true;
 		case ei_ev_mouse_move:

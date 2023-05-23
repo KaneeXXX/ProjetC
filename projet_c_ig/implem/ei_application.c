@@ -20,6 +20,7 @@
 ei_widget_t root_widget;
 ei_surface_t root_surface;
 ei_surface_t pick_surface;
+bool quitrequested = false;
 
 ei_event_t *event_listener;
 
@@ -47,6 +48,8 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 
 	//create root widget
 	root_widget = ei_widget_create("frame", NULL, NULL, NULL);
+	struct ei_impl_placer_params_t* params = calloc(1, sizeof(struct ei_impl_placer_params_t));
+	root_widget->placer_params = params;
 
 	ei_frame_set_requested_size(root_widget, size_windows);
 
@@ -58,7 +61,7 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 void ei_app_free()
 {
 	printf("let's close everything");
-	ei_widget_destroy(root_widget);
+	ei_app_root_widget()->wclass->releasefunc(ei_app_root_widget());
 	hw_quit();
 }
 
@@ -76,8 +79,11 @@ void ei_impl_widget_draw_children      (ei_widget_t		widget,
 	}
 
 	while(child != NULL){
-		child->wclass->drawfunc(child, ei_app_root_surface(), get_picksurface(), NULL);
-		child = child->next_sibling;
+		if(ei_widget_is_displayed(child)) {
+			child->wclass->drawfunc(child, ei_app_root_surface(), get_picksurface(), NULL);
+			child = child->next_sibling;
+		}else{
+			child = child->next_sibling;}
 	}
 }
 
@@ -86,7 +92,7 @@ _Noreturn void ei_app_run()
 	//WHILE( l'utilisateur n'appuie pas sur croix pour ferme l'appli)
 	//Draw tout l'arbre de widget
 
-	while(event_listener->type != ei_ev_close) {
+	while(!quitrequested) {
 		hw_surface_lock	(ei_app_root_surface());
 		hw_surface_lock(get_picksurface());
 
@@ -131,12 +137,14 @@ _Noreturn void ei_app_run()
 		}
 //
 		else {
-			//call default handle function
-			//try to execute handle func ?
-			ei_event_get_default_handle_func();
+			ei_default_handle_func_t defhand = ei_event_get_default_handle_func();
+			defhand(event_listener);
+
+
 		}
 
 	}
+	ei_app_free();
 }
 
 void ei_app_invalidate_rect(const ei_rect_t* rect)
@@ -146,7 +154,7 @@ void ei_app_invalidate_rect(const ei_rect_t* rect)
 
 void ei_app_quit_request()
 {
-	ei_app_free();
+	quitrequested = true;
 }
 
 ei_widget_t ei_app_root_widget()
