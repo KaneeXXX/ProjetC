@@ -117,5 +117,8 @@ int	ei_copy_surface		(ei_surface_t		destination,
 				 ei_surface_t		source,
 				 const ei_rect_t*	src_rect,
 				 bool			alpha);
-void arc_bresenham(ei_surface_t surface, ei_point_t centre, int radius, int angle_start_radian, int angle_end);
+
+
+
+
 #endif
