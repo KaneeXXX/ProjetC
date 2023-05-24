@@ -22,7 +22,7 @@ ei_surface_t root_surface;
 ei_surface_t pick_surface;
 bool quitrequested = false;
 
-ei_event_t *event_listener;
+ei_event_t *event;
 
 void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 {
@@ -40,6 +40,7 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 	pick_id = 0;
 
 	initlistclassToNull();
+	//set_defhandle_func_toNULL();
 
 	//Register class
 	create_widgetclass_button();
@@ -53,14 +54,14 @@ void ei_app_create(ei_size_t main_window_size, bool fullscreen)
 
 	ei_frame_set_requested_size(root_widget, size_windows);
 
-	//register event_listener
-	event_listener = malloc(sizeof(ei_event_t));
-	event_listener->type = ei_ev_none;
+	//register event
+	event = malloc(sizeof(ei_event_t));
+	event->type = ei_ev_none;
 }
 
 void ei_app_free()
 {
-	printf("let's close everything");
+	printf("let's close everything\n");
 	ei_app_root_widget()->wclass->releasefunc(ei_app_root_widget());
 	hw_quit();
 }
@@ -105,20 +106,20 @@ _Noreturn void ei_app_run()
 		//hw_surface_update_rects(get_picksurface(), NULL);
 
 		//I) Attendre un event
-		hw_event_wait_next(event_listener);
+		hw_event_wait_next(event);
 
 		//II) Analyser l'event pour trouver traitant associe
 		//appeler traitant associé
-		ei_widget_t widget_manipulated = ei_widget_pick(&event_listener->param.mouse.where);
+		ei_widget_t widget_manipulated = ei_widget_pick(&event->param.mouse.where);
 
 		/*Si un event de souris*/
-		if (event_listener->type == ei_ev_mouse_buttondown || event_listener->type == ei_ev_mouse_buttonup || event_listener->type == ei_ev_mouse_move) {
+		if (event->type == ei_ev_mouse_buttondown || event->type == ei_ev_mouse_buttonup || event->type == ei_ev_mouse_move) {
 
 			if(widget_manipulated != NULL){ //Otherwise we're manipulating the root widget -> background
-				widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+				widget_manipulated->wclass->handlefunc(widget_manipulated, event);
 			}
 			else {
-				if(event_listener->type == ei_ev_mouse_buttonup) {
+				if(event->type == ei_ev_mouse_buttonup) {
 					ei_widget_t active = ei_event_get_active_widget();
 					if(active != NULL) { //marche que pour button
 						if (strcmp(active->wclass->name, "button") == 0) {
@@ -135,16 +136,14 @@ _Noreturn void ei_app_run()
 				}
 			}
 		}
-//
+
 		else {
 			ei_default_handle_func_t defhand = ei_event_get_default_handle_func();
-			defhand(event_listener);
-
-
+			if(defhand != NULL) {
+				defhand(event);
+			}
 		}
-
 	}
-	ei_app_free();
 }
 
 void ei_app_invalidate_rect(const ei_rect_t* rect)

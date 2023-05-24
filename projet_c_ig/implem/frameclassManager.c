@@ -23,8 +23,11 @@ ei_widget_t alloc_frame()
 }
 
 void release_frame(ei_widget_t widget){
+	printf("destroy frame\n");
 	ei_impl_frame_t* frame = (ei_impl_frame_t*) widget;
 	ei_widget_destroy(frame);
+	//free(frame->widget.placer_params);
+	//free(frame->widget.pick_color);
 	free(frame);
 }
 

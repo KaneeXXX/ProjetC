@@ -30,6 +30,8 @@ int main(int argc, char** argv)
 	ei_fill(main_window, &white, NULL);
 	ei_color_t black = { 0, 0, 0, 0xff};
 
+	ei_font_t font = hw_text_font_create(ei_default_font_filename, ei_style_italic, 20);
+
 	ei_rect_t rectangle11 = (ei_rect_t) {{0, 0}, {150, 100}};
 	draw_button(main_window,
 		    rectangle11,
@@ -50,7 +52,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_raised,
 		    "Bouton",
-		    (ei_font_t) hw_text_font_create(ei_default_font_filename, ei_style_normal, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -62,7 +64,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_sunken,
 		    "Boutonricotapanamariejevoussalue",
-		    hw_text_font_create(ei_default_font_filename, ei_style_italic, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -74,7 +76,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_none,
 		    "Bouton",
-		    hw_text_font_create(ei_default_font_filename, ei_style_strikethrough, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -86,7 +88,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_raised,
 		    "Bouton",
-		    hw_text_font_create(ei_default_font_filename, ei_style_underline, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -98,7 +100,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_sunken,
 		    "Bouton",
-		    hw_text_font_create(ei_default_font_filename, ei_style_bold, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -110,7 +112,7 @@ int main(int argc, char** argv)
 		    1,
 		    ei_relief_none,
 		    "W",
-		    hw_text_font_create(ei_default_font_filename, ei_style_normal, 3),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -122,7 +124,7 @@ int main(int argc, char** argv)
 		    1,
 		    ei_relief_raised,
 		    "123",
-		    hw_text_font_create(ei_default_font_filename, ei_style_normal, 20),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -134,7 +136,7 @@ int main(int argc, char** argv)
 		    16,
 		    ei_relief_sunken,
 		    "&é'(-è_çà))=",
-		    hw_text_font_create(ei_default_font_filename, ei_style_normal, 12),
+		    font,
 		    black,
 		    NULL,
 		    NULL);
@@ -142,6 +144,8 @@ int main(int argc, char** argv)
 	/* Unlock and update the surface. */
 	hw_surface_unlock(main_window);
 	hw_surface_update_rects(main_window, NULL);
+
+	free(font);
 
 	/* Wait for a character on command line. */
 	event.type = ei_ev_none;

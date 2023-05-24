@@ -30,8 +30,9 @@ int main(int argc, char** argv)
 
 	/* Draw the polygon */
 	ei_fill(main_window, &white, NULL);
-	ei_point_t  point_array[] = {{200, 300}, {900, 100},{1400, 100},{1400, 500}};//, {1200, 1000}, {700, 700}, {200, 900}};
-	size_t length=4;
+	//Remarque: quand on prend les 4 premiers points, ça ne marche plus
+	ei_point_t  point_array[] = {{200, 300}, {900, 100},{1400, 100},{1400, 500}, {1200, 1000}, {700, 700}, {200, 900}};
+	size_t length=7;
 	ei_draw_polygon (main_window, point_array, length, color, clipper_ptr);
 
 	/* Place the points of the polygon in theory on the figure */

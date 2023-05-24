@@ -33,8 +33,11 @@ ei_widget_t alloc_toplevel(){
 }
 
 void release_toplevel(ei_widget_t widget){
+	printf("destroy toplevel\n");
 	ei_impl_toplevel_t* toplevel = (ei_impl_toplevel_t*) widget;
 	ei_widget_destroy(toplevel);
+	//free(toplevel->widget.placer_params);
+	//free(toplevel->widget.pick_color);
 	free(toplevel);
 
 }

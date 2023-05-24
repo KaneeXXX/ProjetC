@@ -138,6 +138,12 @@ add_executable(toplevel		${TEST_DIR}/toplevel.c)
 target_link_libraries(toplevel	ei ${PLATFORM_LIB_FLAGS})
 target_include_directories(toplevel	PRIVATE ${SRC_DIR})
 
+# target toplevel
+
+add_executable(image_test		${TEST_DIR}/image_test.c)
+target_link_libraries(image_test	ei ${PLATFORM_LIB_FLAGS})
+target_include_directories(image_test	PRIVATE ${SRC_DIR})
+
 # target minimal
 
 add_executable(minimal 			${TEST_DIR}/minimal.c)

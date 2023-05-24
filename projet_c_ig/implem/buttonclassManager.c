@@ -6,7 +6,6 @@
 /*This file contains the methods of ei_widget_class_t button*/
 
 #include "ei_widgetclass.h"
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "ei_implementation.h"
@@ -25,8 +24,11 @@ ei_widget_t alloc_button()
 
 void release_button(ei_widget_t widget)
 {
+	printf("destroy button\n");
 	ei_impl_button_t* button = (ei_impl_button_t*) widget;
 	ei_widget_destroy(button);
+	//free(button->widget.placer_params);
+	//free(button->widget.pick_color);
 	free(button);
 }
 
@@ -105,7 +107,7 @@ bool handle_button(ei_widget_t widget_manipulated,  ei_event_t* event) {
 			return true;
 
 			/*case ei_ev_mouse_move:
-				widget_manipulated->wclass->handlefunc(widget_manipulated, event_listener);
+				widget_manipulated->wclass->handlefunc(widget_manipulated, event);
 				break;*/
 		default:
 			break;

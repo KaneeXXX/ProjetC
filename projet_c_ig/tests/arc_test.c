@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	ei_fill(main_window, &white, NULL);
 
 
-	ei_color_t black = {0,0,0,0xff};
+	//ei_color_t black = {0,0,0,0xff};
 	/*ei_point_t point_array[] = {{10,0}, {30,0}, {50,10}, {60,10}, {40,40}, {20, 30}};
 
 	ei_draw_polygon(main_window, point_array, 6, black,NULL);*/

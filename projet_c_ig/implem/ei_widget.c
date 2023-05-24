@@ -64,6 +64,7 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 		ei_color_t* pick_color = calloc(1, sizeof(ei_color_t));
 		//Penser a free
 		*pick_color = (ei_color_t) {R, G, B, 0xff};
+		//ei_color_t pick_color = (ei_color_t) {R, G, B, 0xff};
 		widgetptr->pick_color = pick_color;
 		pick_id = pick_id + 1;
 
@@ -87,26 +88,8 @@ ei_widget_t ei_widget_create(ei_const_string_t class_name, ei_widget_t parent, e
 	}
 }
 
-/*void close_toplevel(ei_widget_t toplevel, struct ei_event_t* event, ei_user_param_t user_param){
-	if(event->type == ei_ev_mouse_buttondown){
-		printf("close top level\n");
-		ei_widget_destroy(toplevel);
-	}
-}
-
-void create_buttons_toplevel(ei_point_t topleft, ei_widget_t parent){
-	ei_widget_t button = ei_widget_create("button", parent, NULL, NULL);
-	//ei_rect_t rectangle_button_close = (ei_rect_t) {{topleft.x + 1, topleft.y + 1}, {20, 20}};
-	ei_size_t size = ei_size(20,20);
-	ei_color_t red = {128, 0, 0, 0};
-	int border_width = 2; int border_radius = 0;
-	ei_relief_t relief = ei_relief_raised;
-	ei_button_configure(button, &size, &red, &border_width, &border_radius, &relief, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &(ei_callback_t){close_toplevel}, NULL);
-}*/
-
 void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 {
-
 	ei_widget_t child = ei_widget_get_first_child(widget);
 	if(child == NULL) {
 		return; //plus rien a dessiner en dessous dans hiérarchie
@@ -118,38 +101,6 @@ void ei_widget_destroy(ei_widget_t widget) //A CHECKER CELLE LA
 		temp->wclass->releasefunc(temp);
 
 	}
-
-
-
-	/*//Removes the widget from the screen if it is currently displayed.
-	if(ei_widget_is_displayed(widget)){
-		//TODO
-	}
-
-	//Destroy widget and all its offspring (descendance)
-	//destruction recursive
-	if(widget->children_head != NULL) { //No children
-		//get the list of children and DESTROY THEM !! AHAHAHAHAH (the evil strikes again)
-		ei_widget_t current_widgetchild = widget->children_head; //head of the list
-		while (current_widgetchild != NULL) {
-			//Calls its destructor if provided.
-			if (widget->destructor != NULL) {
-				widget->destructor(widget);
-			}
-			printf("destroy :%s\n", widget->wclass->name);
-
-			//free memory
-			ei_widget_t to_delete = current_widgetchild;
-
-			current_widgetchild = current_widgetchild->next_sibling; //move in the list of children before detroying
-			ei_widget_destroy(to_delete);
-		}
-	}
-
-	//Destroy the widget itself
-	printf("destroy upper widget: %s\n", widget->wclass->name);
-	free(widget);*/
-
 }
 
 bool ei_widget_is_displayed(ei_widget_t widget)

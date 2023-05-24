@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <assert.h>
 #include "ei_types.h"
 #include "hw_interface.h"
 #include "ei_draw.h"
@@ -340,7 +339,7 @@ enum draw_state {IN, OUT};
 void draw_scanline(lc_t* TCA, int size_TCA, int y,ei_surface_t surface, ei_color_t color, const ei_rect_t *clipper) {
 	enum draw_state state = IN;
 	double x_to_color1 = 0.0; //start of segment to draw
-	double x_to_color2 = 0.0; //end of segment to draw
+	double x_to_color2; //end of segment to draw
 	//Visit TCA
 	for (int i = 0; i < size_TCA; i++) {
 		double x_ymin = TCA -> x_ymin; //for each cell of TCA, x_ymin = intersections with scanline, not always int
@@ -813,30 +812,8 @@ void ei_draw_text(ei_surface_t	surface, const ei_point_t* where, ei_const_string
 	if (copy_done==1) { //copy_done==0 => success, copy_done==1 => fail
 		printf("Copy has failed in ei_draw_text.\n");
 	}
+	hw_surface_free(surface_of_text);
 }
-
-///*Returns array of points forming an arc*/
-//tab_and_length arc(ei_point_t centre, int radius, int angle_start_radian, int angle_end) {
-//	int d_theta = 4;
-//
-//	double radian_start_angle = (angle_start_radian * PI) / 180;  //ALways angle_start_radian <= angle_end
-//	double radian_end_angle = (angle_end * PI) / 180;
-//
-//	int nb_of_points= (int) (abs(angle_end - angle_start_radian)/d_theta + 1);
-//	ei_point_t* array =calloc((nb_of_points), sizeof(ei_point_t));
-//
-//	double current_theta = radian_start_angle;
-//	int num_point_in_list = 0;
-//
-//	while(current_theta < radian_end_angle) {
-//		ei_point_t p = {centre.x + (int) (radius * cos(current_theta)), centre.y + (int) (radius * sin(current_theta))};
-//		array[num_point_in_list] = p;
-//		current_theta = current_theta + ((d_theta * PI) / 180);
-//		num_point_in_list++;
-//	}
-//	tab_and_length tab = {array, num_point_in_list};
-//	return tab;
-//}
 
 /*Returns array of points forming an arc*/
 tab_and_length arc(ei_point_t centre, int radius, int angle_start, int angle_end)
@@ -944,6 +921,7 @@ void draw_button(ei_surface_t surface,
 	int size_text = min_size / 4;
 	ei_point_t where; //arbitrary values
 
+	//The following commented lines are for trying to center the text
 	//ei_surface_t surface_text = hw_text_create_surface(text, text_font, text_color);
 	//ei_size_t sizetext = hw_surface_get_size(surface_text);
 	//int abs_where = rectangle.top_left.x + (rectangle.size.width - sizetext.width)/2;
@@ -976,15 +954,16 @@ void draw_button(ei_surface_t surface,
 	ei_draw_polygon(surface, arr_inside_rect.tab, arr_inside_rect.length, color_inside, NULL);
 	//Add the image
 	if (img != NULL) {
-		ei_surface_t image = img;
-		ei_size_t image_size = hw_surface_get_size(image);
-
 		ei_copy_surface(surface, &rectangle, img, img_rect, true);
 	}
 	//Add the text
 	if (text != NULL) { //note: every sensible parameter such as text_font==NULL is not tested because already taken into account in the function
 		ei_draw_text(surface, &where, text, text_font, text_color, NULL);
 	}
+	//Free
+	free(arr_upper.tab);
+	free(arr_lower.tab);
+	free(arr_inside_rect.tab);
 }
 
 void draw_toplevel(ei_surface_t surface,
@@ -1023,9 +1002,6 @@ void draw_toplevel(ei_surface_t surface,
 
 	ei_draw_polygon(surface, conc.tab, conc.length, color, NULL);
 
-	free(list_1point);
-	free(list_1point2);
-
 	//Draw the interior frame
 	ei_point_t * list_rect_inter = calloc(4, sizeof(ei_point_t));
 	list_rect_inter[0] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + 20}; //draw_poly -> 2*RADIUS
@@ -1034,8 +1010,6 @@ void draw_toplevel(ei_surface_t surface,
 	list_rect_inter[3] = (ei_point_t) {top_left_point.x + border_width, top_left_point.y + height - border_width};
 
 	ei_draw_polygon(surface, list_rect_inter, 4, ei_font_default_color, NULL);
-
-	free(list_rect_inter);
 
 	//Draw the close button
 	if (closable == true) {
@@ -1077,4 +1051,8 @@ void draw_toplevel(ei_surface_t surface,
 
 		free(list_rect_resize);
 	}
+	//Free
+	free(t1.tab);
+	free(t2.tab);
+	free(conc.tab);
 }
