@@ -5,22 +5,18 @@
 #include "ei_event.h"
 #include "hw_interface.h"
 #include "ei_widget_configure.h"
-#include "ei_widget.h"
-#include "ei_placer.h"
 
 
-
-static ei_string_t		k_default_image_filename	= "misc/klimt.jpg";
 /*
-
  * button_press --
  *
  *	Callback called when a user clicks on the button.
-*/
+ */
 void button_press(ei_widget_t widget, ei_event_t* event, ei_user_param_t user_param)
 {
 	printf("Click !\n");
 }
+
 /*
  * process_key --
  *

@@ -125,8 +125,8 @@ int main(int argc, char** argv)
 	ei_surface_t		main_window	= NULL;
 	ei_color_t		white		= { 0xff, 0xff, 0xff, 0xff };
 	ei_rect_t*		clipper_ptr	= NULL;
-	ei_rect_t		clipper		= ei_rect(ei_point(0, 0), ei_size(800, 600));
-	clipper_ptr		= &clipper;
+//	ei_rect_t		clipper		= ei_rect(ei_point(200, 150), ei_size(400, 300));
+//	clipper_ptr		= &clipper;
 	ei_event_t		event;
 
 	hw_init();
@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 	hw_surface_lock	(main_window);
 	ei_fill		(main_window, &white, clipper_ptr);
 
-	/* Draw polylines.*/
+	/* Draw polylines. */
 	test_line	(main_window, clipper_ptr);
 	test_octogone	(main_window, clipper_ptr);
 	test_square	(main_window, clipper_ptr);

@@ -74,8 +74,6 @@ int main(int argc, char** argv)
 	/* Run the application's main loop. */
 	ei_app_run();
 
-	ei_widget_t test = button;
-
 	ei_app_free();
 
 	return (EXIT_SUCCESS);
